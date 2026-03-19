@@ -5,7 +5,7 @@
 - `docker/wvp/application-docker.yml`
 - `docker/zlm/config.ini`
 - `docker/wvp/start-wvp.sh`
-- `docker/mysql/init/001-wvp-init.sql`（当前为占位，需要替换为官方 SQL）
+- `docker/mysql/init/001-wvp-init.sql`（已落地官方 2.7.4 初始化 SQL）
 
 ## 官方参考仓库
 
@@ -30,19 +30,18 @@
 
 ## 仍需人工确认的关键点
 
-1. 初始化 SQL 需要使用官方版本对应的真实内容替换当前占位文件
-2. `data/wvp/` 目录当前权限为 root，需要在宿主机修正权限后再写入 jar
-3. 首次 MySQL 初始化时需保证 `wvp` 数据库使用官方 SQL 建表
+1. `data/wvp/` 目录当前权限为 root，需要在宿主机修正权限后再写入 jar
+2. 首次 MySQL 初始化时需保证 `wvp` 数据库使用官方 SQL 建表
+3. 如果当前 MySQL 数据目录已存在，init SQL 不会自动重跑，需要清卷后验证冷启动流程
 4. SIP / RTP / Stream IP 需要根据真实部署环境微调
 
 ## 推荐下一步
 
 1. 修复 `data/wvp` 与 `data/zlm` 宿主机目录权限
-2. 将官方 2.7.4 MySQL 初始化脚本正式落地到 `docker/mysql/init/001-wvp-init.sql`
-3. 清空并重建 MySQL 数据卷后重新启动视频栈
-4. 验证 WVP 管理页面、默认登录流程与节点状态展示
-5. 视需要补充 Django 对 WVP 运行态的主动探测
-6. 验证：
+2. 清空并重建 MySQL 数据卷后重新启动视频栈，验证官方 SQL 冷启动初始化流程
+3. 验证 WVP 管理页面、默认登录流程与节点状态展示
+4. 视需要补充 Django 对 WVP 运行态的主动探测
+5. 验证：
    - `http://localhost:28080`
    - `http://localhost:28082`
    - `/api/video/status/`
