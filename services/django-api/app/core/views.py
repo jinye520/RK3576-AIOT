@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import check_password
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils import timezone
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -311,6 +312,27 @@ def video_runtime(request):
     })
 
 
+@api_view(['GET'])
+@ensure_csrf_cookie
+def platform_session(request):
+    _seed_platform_users()
+    username = request.session.get('platform_username')
+    if not username:
+        return Response({'authenticated': False, 'user': None})
+
+    try:
+        user = PlatformUser.objects.get(username=username, is_active=True)
+    except PlatformUser.DoesNotExist:
+        request.session.flush()
+        return Response({'authenticated': False, 'user': None})
+
+    return Response({
+        'authenticated': True,
+        'token': f'local-role::{user.username}',
+        'user': PlatformUserSerializer(user).data,
+    })
+
+
 @api_view(['POST'])
 def platform_login(request):
     _seed_platform_users()
@@ -329,10 +351,20 @@ def platform_login(request):
 
     user.last_login_at = timezone.now()
     user.save(update_fields=['last_login_at', 'updated_at'])
+    request.session['platform_username'] = user.username
+    request.session['platform_role'] = user.role
+    request.session['platform_menus'] = user.menus
     return Response({
+        'authenticated': True,
         'token': f'local-role::{user.username}',
         'user': PlatformUserSerializer(user).data,
     })
+
+
+@api_view(['POST'])
+def platform_logout(request):
+    request.session.flush()
+    return Response({'authenticated': False})
 
 
 @api_view(['GET'])

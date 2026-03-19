@@ -368,6 +368,12 @@
       .mini .label { color: var(--muted); font-size: 12px; }
       .mini .value { margin-top: 6px; font-size: 22px; font-weight: 800; }
 
+      .access-note {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
       @media (max-width: 1480px) {
         .screen {
           height: auto;
@@ -442,6 +448,7 @@
               </div>
             </div>
             <div class="status-grid" id="statusGrid"></div>
+            <div class="access-note" id="accessNote">未检查平台登录态。</div>
           </div>
 
           <div class="panel" style="flex: 1;">
@@ -632,6 +639,27 @@
         if (el) el.textContent = value;
       }
 
+      function updateAccessNote(session) {
+        const el = document.getElementById('accessNote');
+        if (!el) return;
+        if (!session || !session.authenticated || !session.user) {
+          el.textContent = '当前未登录平台账户，大屏处于公开演示模式。';
+          return;
+        }
+        el.textContent = `当前登录：${session.user.display_name}（${session.user.role}），已按角色联动首页菜单。`;
+      }
+
+      async function loadSession() {
+        try {
+          const res = await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+          if (!res.ok) throw new Error('session failed');
+          const data = await res.json();
+          updateAccessNote(data);
+        } catch (err) {
+          updateAccessNote(null);
+        }
+      }
+
       function renderStatusGrid(data) {
         const video = data.video || {};
         const runtime = data.video_runtime?.wvp || {};
@@ -752,6 +780,7 @@
       setInterval(syncClock, 1000);
       window.addEventListener('resize', resizeCanvas);
       setTimeout(resizeCanvas, 80);
+      loadSession();
       refreshBigscreen();
       setInterval(refreshBigscreen, 5000);
     </script>

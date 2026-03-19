@@ -126,6 +126,12 @@
         padding: 10px 0;
         border-bottom: 1px solid rgba(255,255,255,0.06);
       }
+
+      .create-box {
+        margin-top: 22px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+      }
       .account-row:last-child { border-bottom: none; }
       .account-name { font-weight: 700; }
       .account-meta { color: var(--muted); font-size: 12px; }
@@ -186,19 +192,63 @@
           <div class="user-list-title">账户列表</div>
           <div class="account-meta">点击“查看账户列表”加载。</div>
         </div>
+
+        <div class="create-box">
+          <div class="login-title" style="font-size: 18px;">创建平台账户</div>
+          <div class="login-subtitle">管理员后续可基于此接口扩展正式用户管理页。</div>
+          <div class="field">
+            <label>显示名称</label>
+            <input id="createDisplayName" value="测试操作员" />
+          </div>
+          <div class="field">
+            <label>用户名</label>
+            <input id="createUsername" value="demo_operator" />
+          </div>
+          <div class="field">
+            <label>角色</label>
+            <select id="createRole">
+              <option value="operator">operator</option>
+              <option value="viewer">viewer</option>
+              <option value="admin">admin</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>密码</label>
+            <input id="createPassword" type="password" value="demo123456" />
+          </div>
+          <div class="actions">
+            <button class="primary" id="createUserBtn">创建账户</button>
+          </div>
+        </div>
       </section>
     </div>
 
     <script>
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return '';
+      }
+
+      async function ensureSessionCookie() {
+        await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+      }
+
       async function login() {
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
         const resultBox = document.getElementById('resultBox');
         resultBox.innerHTML = '<div class="result-title">登录结果</div><div class="account-meta">登录中...</div>';
         try {
+          await ensureSessionCookie();
           const res = await fetch('/api/platform/login/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken'),
+            },
+            credentials: 'same-origin',
             body: JSON.stringify({ username, password }),
           });
           const data = await res.json();
@@ -217,6 +267,46 @@
           `;
         } catch (err) {
           resultBox.innerHTML = `<div class="result-title">登录失败</div><div class="warn">${err.message}</div>`;
+        }
+      }
+
+      async function createUser() {
+        const payload = {
+          display_name: document.getElementById('createDisplayName').value.trim(),
+          username: document.getElementById('createUsername').value.trim(),
+          role: document.getElementById('createRole').value,
+          password: document.getElementById('createPassword').value,
+          is_active: true,
+        };
+        const box = document.getElementById('resultBox');
+        box.innerHTML = '<div class="result-title">创建账户</div><div class="account-meta">提交中...</div>';
+        try {
+          await ensureSessionCookie();
+          const res = await fetch('/api/platform/users/create/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken'),
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
+          box.innerHTML = `
+            <div class="result-title">创建成功</div>
+            <div class="account-row">
+              <div>
+                <div class="account-name">${data.display_name}（${data.username}）</div>
+                <div class="account-meta">角色：${data.role}</div>
+              </div>
+              <div class="ok">已创建</div>
+            </div>
+            <div class="pill-row">${(data.menus || []).map(menu => `<span class="pill">${menu}</span>`).join('')}</div>
+          `;
+          loadUsers();
+        } catch (err) {
+          box.innerHTML = `<div class="result-title">创建失败</div><div class="warn">${err.message}</div>`;
         }
       }
 
@@ -246,7 +336,8 @@
 
       document.getElementById('loginBtn').addEventListener('click', login);
       document.getElementById('loadUsersBtn').addEventListener('click', loadUsers);
-      loadUsers();
+      document.getElementById('createUserBtn').addEventListener('click', createUser);
+      ensureSessionCookie().then(loadUsers);
     </script>
   </body>
 </html>

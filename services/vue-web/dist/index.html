@@ -376,6 +376,55 @@
         font-size: 12px;
       }
 
+      .session-banner {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .session-box {
+        padding: 18px 20px;
+      }
+
+      .session-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .session-title {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .session-desc {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .menu-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .menu-pill {
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(56, 189, 248, 0.16);
+        background: rgba(56, 189, 248, 0.08);
+        font-size: 12px;
+      }
+
+      .hidden-by-role {
+        display: none !important;
+      }
+
       @media (max-width: 1100px) {
         .hero,
         .content-grid {
@@ -468,6 +517,43 @@
             <button id="toggleAutoBtn">关闭自动刷新</button>
           </div>
           <div class="footer-note">默认每 5 秒刷新一次概览数据。</div>
+        </div>
+      </section>
+
+      <section class="session-banner">
+        <div class="panel session-box">
+          <div class="session-top">
+            <div>
+              <div class="session-title">平台登录态</div>
+              <div class="session-desc" id="sessionDesc">正在检查当前登录状态...</div>
+            </div>
+            <div class="toolbar">
+              <button id="goLoginBtn">前往登录</button>
+              <button id="logoutBtn">退出登录</button>
+            </div>
+          </div>
+          <div class="menu-pills" id="menuPills">
+            <span class="menu-pill">未登录</span>
+          </div>
+        </div>
+        <div class="panel session-box">
+          <div class="session-top">
+            <div>
+              <div class="session-title">角色菜单说明</div>
+              <div class="session-desc">登录后首页会根据菜单权限动态显示模块入口，管理员可见用户管理与系统设置，观察员仅保留大屏、遥测和视频。</div>
+            </div>
+          </div>
+          <div class="menu-pills">
+            <span class="menu-pill">dashboard</span>
+            <span class="menu-pill">bigscreen</span>
+            <span class="menu-pill">telemetry</span>
+            <span class="menu-pill">devices</span>
+            <span class="menu-pill">gateways</span>
+            <span class="menu-pill">video</span>
+            <span class="menu-pill">nodered</span>
+            <span class="menu-pill">users</span>
+            <span class="menu-pill">system</span>
+          </div>
         </div>
       </section>
 
@@ -584,39 +670,39 @@
             </div>
           </div>
           <div class="link-list">
-            <a class="link-card" href="/nodered/" target="_blank" rel="noreferrer">
+            <a class="link-card menu-card" data-menu="nodered" href="/nodered/" target="_blank" rel="noreferrer">
               <div class="link-title">Node-RED 在线编程</div>
               <div class="link-desc">配置数据流、协议转换、MQTT 发布与边缘自动化逻辑。</div>
             </a>
-            <a class="link-card" href="/api/gateways/" target="_blank" rel="noreferrer">
+            <a class="link-card menu-card" data-menu="gateways" href="/api/gateways/" target="_blank" rel="noreferrer">
               <div class="link-title">网关管理 API</div>
               <div class="link-desc">查看网关对象，后续可增加网关状态、心跳和配置管理。</div>
             </a>
-            <a class="link-card" href="/api/devices/" target="_blank" rel="noreferrer">
+            <a class="link-card menu-card" data-menu="devices" href="/api/devices/" target="_blank" rel="noreferrer">
               <div class="link-title">设备管理 API</div>
               <div class="link-desc">查看传感器和设备建档结果，支持协议、状态和网关筛选。</div>
             </a>
-            <a class="link-card" href="/api/telemetry/" target="_blank" rel="noreferrer">
+            <a class="link-card menu-card" data-menu="telemetry" href="/api/telemetry/" target="_blank" rel="noreferrer">
               <div class="link-title">遥测数据 API</div>
               <div class="link-desc">查看最新采集数据，后续可扩展图表、时间范围查询和报表导出。</div>
             </a>
-            <a class="link-card" href="http://localhost:28080/#/login" target="_blank" rel="noreferrer">
+            <a class="link-card menu-card" data-menu="video" href="http://localhost:28080/#/login" target="_blank" rel="noreferrer">
               <div class="link-title">WVP 后台登录</div>
               <div class="link-desc">进入 WVP 原生 Vue 管理后台登录页，用于设备接入、媒体节点与国标平台管理。</div>
             </a>
-            <a class="link-card" href="http://localhost:28080/" target="_blank" rel="noreferrer">
+            <a class="link-card menu-card" data-menu="video" href="http://localhost:28080/" target="_blank" rel="noreferrer">
               <div class="link-title">WVP 管理后台</div>
               <div class="link-desc">进入 WVP 原生前端首页，登录后可查看控制台、设备接入、媒体节点与录像等模块。</div>
             </a>
-            <a class="link-card" href="http://localhost:28080/doc.html" target="_blank" rel="noreferrer">
+            <a class="link-card menu-card" data-menu="video" href="http://localhost:28080/doc.html" target="_blank" rel="noreferrer">
               <div class="link-title">WVP 接口文档</div>
               <div class="link-desc">查看 Knife4j 接口文档，便于调试登录、设备、点播、录像和媒体节点相关 API。</div>
             </a>
-            <a class="link-card" href="http://localhost:28080/swagger-ui/index.html" target="_blank" rel="noreferrer">
+            <a class="link-card menu-card" data-menu="video" href="http://localhost:28080/swagger-ui/index.html" target="_blank" rel="noreferrer">
               <div class="link-title">WVP Swagger UI</div>
               <div class="link-desc">查看 Swagger UI 页面与 OpenAPI 接口定义，适合联调与接口探索。</div>
             </a>
-            <a class="link-card" href="/api/video/status/" target="_blank" rel="noreferrer">
+            <a class="link-card menu-card" data-menu="video" href="/api/video/status/" target="_blank" rel="noreferrer">
               <div class="link-title">视频子系统状态 API</div>
               <div class="link-desc">查看当前 ZLMediaKit 与 WVP 真实运行状态，以及平台探测结果。</div>
             </a>
@@ -630,12 +716,74 @@
       const healthUrl = '/api/health/';
       const refreshBtn = document.getElementById('refreshBtn');
       const toggleAutoBtn = document.getElementById('toggleAutoBtn');
+      const goLoginBtn = document.getElementById('goLoginBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
       let autoRefresh = true;
       let timer = null;
+      let currentSession = { authenticated: false, user: null };
 
       function setText(id, value) {
         const el = document.getElementById(id);
         if (el) el.textContent = value;
+      }
+
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return '';
+      }
+
+      function applyRoleMenus(session) {
+        const menus = session?.user?.menus || [];
+        document.querySelectorAll('.menu-card').forEach((card) => {
+          const required = card.dataset.menu;
+          if (!required) return;
+          const allowed = menus.includes(required);
+          card.classList.toggle('hidden-by-role', session?.authenticated ? !allowed : false);
+        });
+      }
+
+      function renderSession(session) {
+        currentSession = session || { authenticated: false, user: null };
+        const desc = document.getElementById('sessionDesc');
+        const pills = document.getElementById('menuPills');
+        if (!currentSession.authenticated || !currentSession.user) {
+          desc.textContent = '当前未登录平台账户。未登录时默认展示全部入口，便于演示；登录后将按角色收敛菜单。';
+          pills.innerHTML = '<span class="menu-pill">未登录</span><span class="menu-pill">演示模式</span>';
+          applyRoleMenus(currentSession);
+          return;
+        }
+
+        const user = currentSession.user;
+        desc.textContent = `当前登录：${user.display_name}（${user.username}）· 角色：${user.role}`;
+        pills.innerHTML = (user.menus || []).map(menu => `<span class="menu-pill">${menu}</span>`).join('');
+        applyRoleMenus(currentSession);
+      }
+
+      async function loadSession() {
+        try {
+          const res = await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+          if (!res.ok) throw new Error('session request failed');
+          const data = await res.json();
+          renderSession(data);
+        } catch (err) {
+          renderSession({ authenticated: false, user: null });
+        }
+      }
+
+      async function logoutPlatform() {
+        try {
+          await fetch('/api/platform/logout/', {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+            },
+            credentials: 'same-origin',
+          });
+        } catch (err) {
+        }
+        renderSession({ authenticated: false, user: null });
       }
 
       function formatTime(value) {
@@ -891,6 +1039,10 @@
       }
 
       refreshBtn.addEventListener('click', refreshAll);
+      goLoginBtn.addEventListener('click', () => {
+        window.location.href = '/login.html';
+      });
+      logoutBtn.addEventListener('click', logoutPlatform);
       toggleAutoBtn.addEventListener('click', () => {
         autoRefresh = !autoRefresh;
         toggleAutoBtn.textContent = autoRefresh ? '关闭自动刷新' : '开启自动刷新';
@@ -902,6 +1054,7 @@
         }
       });
 
+      loadSession();
       refreshAll();
       startAutoRefresh();
     </script>
