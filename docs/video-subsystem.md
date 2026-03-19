@@ -68,6 +68,8 @@ docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.vide
 视频入口验证：
 
 ```bash
+curl http://localhost:28080/
+curl http://localhost:28080/#/login
 curl http://localhost:28080/doc.html
 curl http://localhost:28080/swagger-ui/index.html
 curl http://localhost:28080/v3/api-docs
