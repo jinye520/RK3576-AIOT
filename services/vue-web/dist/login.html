@@ -181,6 +181,7 @@
         <div class="actions">
           <button class="primary" id="loginBtn">立即登录</button>
           <button class="ghost" id="loadUsersBtn">查看账户列表</button>
+          <button class="ghost" id="openUsersBtn">打开用户管理页</button>
         </div>
 
         <div class="result" id="resultBox">
@@ -336,6 +337,9 @@
 
       document.getElementById('loginBtn').addEventListener('click', login);
       document.getElementById('loadUsersBtn').addEventListener('click', loadUsers);
+      document.getElementById('openUsersBtn').addEventListener('click', () => {
+        window.location.href = '/users.html';
+      });
       document.getElementById('createUserBtn').addEventListener('click', createUser);
       ensureSessionCookie().then(loadUsers);
     </script>

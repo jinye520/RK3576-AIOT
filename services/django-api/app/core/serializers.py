@@ -46,6 +46,14 @@ class PlatformUserCreateSerializer(serializers.ModelSerializer):
         model = PlatformUser
         fields = ['id', 'username', 'display_name', 'role', 'is_active', 'password']
 
+    def validate_username(self, value):
+        queryset = PlatformUser.objects.filter(username=value)
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+        if queryset.exists():
+            raise serializers.ValidationError('username already exists')
+        return value
+
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = PlatformUser(**validated_data)

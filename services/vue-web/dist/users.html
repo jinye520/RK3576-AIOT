@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>用户管理 · RK3576 AIOT</title>
+    <style>
+      :root {
+        --bg: #07101d;
+        --panel: rgba(10, 22, 38, 0.8);
+        --line: rgba(84, 214, 255, 0.14);
+        --text: #e6f2ff;
+        --muted: #8ea7bd;
+        --primary: #54d6ff;
+        --green: #22c55e;
+        --amber: #f59e0b;
+        --red: #ef4444;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--text);
+        font-family: "Segoe UI", "PingFang SC", sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(84,214,255,0.18), transparent 22%),
+          linear-gradient(180deg, #020711 0%, #08111f 100%);
+      }
+      .wrap {
+        max-width: 1380px;
+        margin: 0 auto;
+        padding: 28px 18px 42px;
+      }
+      .topbar, .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: 0 20px 80px rgba(0,0,0,0.34);
+        backdrop-filter: blur(14px);
+      }
+      .topbar {
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 1.3fr 0.9fr;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+      .title { font-size: 34px; font-weight: 800; margin-bottom: 10px; }
+      .desc { color: var(--muted); line-height: 1.8; font-size: 14px; }
+      .session {
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(84,214,255,0.12);
+        background: rgba(255,255,255,0.03);
+      }
+      .session-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+      .row-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 18px;
+      }
+      .panel { padding: 20px; }
+      .panel-title { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+      .panel-subtitle { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+      .filters, .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+      input, select {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(84,214,255,0.14);
+        background: rgba(255,255,255,0.03);
+        color: var(--text);
+        outline: none;
+      }
+      .field { margin-bottom: 12px; }
+      .field label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
+      button {
+        border: 0;
+        border-radius: 12px;
+        padding: 12px 14px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .primary { background: linear-gradient(135deg, #54d6ff, #73e7f9); color: #062133; }
+      .ghost { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid rgba(84,214,255,0.14); }
+      .danger { background: rgba(239,68,68,0.12); color: #ffd5d5; border: 1px solid rgba(239,68,68,0.22); }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+      th, td {
+        padding: 12px 10px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        vertical-align: top;
+      }
+      th { color: var(--muted); font-size: 12px; }
+      .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+      .tag {
+        padding: 6px 9px;
+        border-radius: 999px;
+        font-size: 11px;
+        border: 1px solid rgba(84,214,255,0.12);
+        background: rgba(84,214,255,0.08);
+      }
+      .ok { color: var(--green); }
+      .warn { color: var(--amber); }
+      .bad { color: var(--red); }
+      .result {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(84,214,255,0.12);
+        background: rgba(255,255,255,0.03);
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+      .inline-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+      @media (max-width: 1080px) {
+        .topbar, .row-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="topbar">
+        <div>
+          <div class="title">平台用户管理</div>
+          <div class="desc">该页面用于平台账户列表、创建、编辑角色、启停账户和重置密码。当前仅管理员可访问，后续可继续扩展审计日志与更细粒度权限。</div>
+        </div>
+        <div class="session">
+          <div class="session-title">当前登录态</div>
+          <div id="sessionInfo">正在检查...</div>
+          <div class="actions" style="margin-top:12px;">
+            <button class="ghost" id="backDashboardBtn">返回首页</button>
+            <button class="danger" id="logoutBtn">退出登录</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="row-grid">
+        <section class="panel">
+          <div class="panel-title">账户列表</div>
+          <div class="panel-subtitle">支持按角色和关键字过滤，并对账户执行编辑/重置密码。</div>
+          <div class="filters">
+            <div style="flex:1; min-width: 180px;">
+              <select id="filterRole">
+                <option value="">全部角色</option>
+                <option value="admin">admin</option>
+                <option value="operator">operator</option>
+                <option value="viewer">viewer</option>
+              </select>
+            </div>
+            <div style="flex:1.4; min-width: 220px;">
+              <input id="filterKeyword" placeholder="搜索用户名或显示名称" />
+            </div>
+            <button class="ghost" id="searchBtn">查询</button>
+            <button class="ghost" id="refreshBtn">刷新</button>
+          </div>
+          <div style="overflow:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>账户</th>
+                  <th>角色</th>
+                  <th>菜单</th>
+                  <th>状态</th>
+                  <th>最近登录</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <tr><td colspan="7">加载中...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">账户编辑器</div>
+          <div class="panel-subtitle">可创建新账户，也可对选中账户修改显示名、角色、启用状态。</div>
+          <div class="field">
+            <label>编辑目标 ID</label>
+            <input id="editId" placeholder="新建时留空" />
+          </div>
+          <div class="field">
+            <label>显示名称</label>
+            <input id="editDisplayName" />
+          </div>
+          <div class="field">
+            <label>用户名</label>
+            <input id="editUsername" />
+          </div>
+          <div class="field">
+            <label>角色</label>
+            <select id="editRole">
+              <option value="admin">admin</option>
+              <option value="operator">operator</option>
+              <option value="viewer">viewer</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>状态</label>
+            <select id="editActive">
+              <option value="true">启用</option>
+              <option value="false">停用</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>创建时密码 / 重置密码</label>
+            <input id="editPassword" type="password" placeholder="至少 6 位" />
+          </div>
+          <div class="actions">
+            <button class="primary" id="createBtn">创建账户</button>
+            <button class="ghost" id="updateBtn">保存修改</button>
+            <button class="ghost" id="resetPwdBtn">重置密码</button>
+            <button class="ghost" id="clearFormBtn">清空表单</button>
+          </div>
+          <div class="result" id="resultBox">等待操作。</div>
+        </section>
+      </section>
+    </div>
+
+    <script>
+      let currentSession = null;
+      let userList = [];
+
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return '';
+      }
+
+      async function ensureSessionCookie() {
+        await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+      }
+
+      function setResult(message, level = 'normal') {
+        const box = document.getElementById('resultBox');
+        box.className = 'result';
+        if (level === 'ok') box.classList.add('ok');
+        if (level === 'warn') box.classList.add('warn');
+        if (level === 'bad') box.classList.add('bad');
+        box.textContent = message;
+      }
+
+      function renderSession(session) {
+        currentSession = session;
+        const el = document.getElementById('sessionInfo');
+        if (!session || !session.authenticated || !session.user) {
+          el.innerHTML = '<span class="bad">未登录</span>，请先前往平台登录页。';
+          return false;
+        }
+        el.innerHTML = `当前用户：<strong>${session.user.display_name}</strong>（${session.user.username}）<br/>角色：<strong>${session.user.role}</strong>`;
+        return session.user.role === 'admin';
+      }
+
+      async function loadSession() {
+        const res = await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+        const data = await res.json();
+        const isAdmin = renderSession(data);
+        if (!isAdmin) {
+          setResult('只有管理员可以访问用户管理。请先用 admin 账户登录。', 'bad');
+        }
+        return isAdmin;
+      }
+
+      function fillForm(user) {
+        document.getElementById('editId').value = user.id || '';
+        document.getElementById('editDisplayName').value = user.display_name || '';
+        document.getElementById('editUsername').value = user.username || '';
+        document.getElementById('editRole').value = user.role || 'viewer';
+        document.getElementById('editActive').value = String(user.is_active ?? true);
+        document.getElementById('editPassword').value = '';
+      }
+
+      function clearForm() {
+        fillForm({ id: '', display_name: '', username: '', role: 'viewer', is_active: true });
+      }
+
+      function renderUsers(items) {
+        userList = items || [];
+        const tbody = document.getElementById('usersTableBody');
+        if (!items.length) {
+          tbody.innerHTML = '<tr><td colspan="7">暂无账户</td></tr>';
+          return;
+        }
+        tbody.innerHTML = items.map(user => `
+          <tr>
+            <td>${user.id}</td>
+            <td><strong>${user.display_name}</strong><br/><span style="color:var(--muted)">${user.username}</span></td>
+            <td>${user.role}</td>
+            <td><div class="tag-row">${(user.menus || []).map(menu => `<span class="tag">${menu}</span>`).join('')}</div></td>
+            <td><span class="${user.is_active ? 'ok' : 'warn'}">${user.is_active ? '启用' : '停用'}</span></td>
+            <td>${user.last_login_at ? new Date(user.last_login_at).toLocaleString('zh-CN', { hour12:false }) : '--'}</td>
+            <td>
+              <div class="inline-actions">
+                <button class="ghost" onclick="selectUser(${user.id})">编辑</button>
+                <button class="ghost" onclick="quickToggle(${user.id}, ${user.is_active ? 'false' : 'true'})">${user.is_active ? '停用' : '启用'}</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      async function loadUsers() {
+        const isAdmin = await loadSession();
+        if (!isAdmin) return;
+        const role = document.getElementById('filterRole').value;
+        const keyword = document.getElementById('filterKeyword').value.trim();
+        const params = new URLSearchParams();
+        if (role) params.set('role', role);
+        if (keyword) params.set('keyword', keyword);
+        const res = await fetch(`/api/platform/users/?${params.toString()}`, { cache: 'no-store', credentials: 'same-origin' });
+        const data = await res.json();
+        if (!res.ok) {
+          setResult(data.detail || '加载账户失败', 'bad');
+          return;
+        }
+        renderUsers(data.items || []);
+        setResult(`已加载 ${data.items.length} 个账户。`, 'ok');
+      }
+
+      window.selectUser = function(id) {
+        const user = userList.find(item => item.id === id);
+        if (!user) return;
+        fillForm(user);
+        setResult(`已载入账户 #${id} 到编辑器。`, 'ok');
+      }
+
+      window.quickToggle = async function(id, nextState) {
+        await ensureSessionCookie();
+        const user = userList.find(item => item.id === id);
+        if (!user) return;
+        const res = await fetch(`/api/platform/users/${id}/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify({ is_active: nextState === 'true' }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setResult(data.detail || '更新失败', 'bad');
+          return;
+        }
+        setResult(`账户 ${data.username} 已${data.is_active ? '启用' : '停用'}。`, 'ok');
+        loadUsers();
+      }
+
+      async function createUser() {
+        await ensureSessionCookie();
+        const payload = {
+          display_name: document.getElementById('editDisplayName').value.trim(),
+          username: document.getElementById('editUsername').value.trim(),
+          role: document.getElementById('editRole').value,
+          is_active: document.getElementById('editActive').value === 'true',
+          password: document.getElementById('editPassword').value,
+        };
+        const res = await fetch('/api/platform/users/create/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setResult(data.detail || JSON.stringify(data), 'bad');
+          return;
+        }
+        fillForm(data);
+        setResult(`账户 ${data.username} 创建成功。`, 'ok');
+        loadUsers();
+      }
+
+      async function updateUser() {
+        const id = document.getElementById('editId').value.trim();
+        if (!id) {
+          setResult('请先选择要编辑的账户。', 'warn');
+          return;
+        }
+        await ensureSessionCookie();
+        const payload = {
+          display_name: document.getElementById('editDisplayName').value.trim(),
+          username: document.getElementById('editUsername').value.trim(),
+          role: document.getElementById('editRole').value,
+          is_active: document.getElementById('editActive').value === 'true',
+        };
+        const res = await fetch(`/api/platform/users/${id}/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setResult(data.detail || JSON.stringify(data), 'bad');
+          return;
+        }
+        fillForm(data);
+        setResult(`账户 ${data.username} 已更新。`, 'ok');
+        loadUsers();
+      }
+
+      async function resetPassword() {
+        const id = document.getElementById('editId').value.trim();
+        const password = document.getElementById('editPassword').value;
+        if (!id) {
+          setResult('请先选择要重置密码的账户。', 'warn');
+          return;
+        }
+        if (!password || password.length < 6) {
+          setResult('请输入至少 6 位的新密码。', 'warn');
+          return;
+        }
+        await ensureSessionCookie();
+        const res = await fetch(`/api/platform/users/${id}/reset-password/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify({ password }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setResult(data.detail || JSON.stringify(data), 'bad');
+          return;
+        }
+        setResult(`账户 ${data.user.username} 密码已重置。`, 'ok');
+        document.getElementById('editPassword').value = '';
+      }
+
+      async function logout() {
+        await ensureSessionCookie();
+        await fetch('/api/platform/logout/', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCookie('csrftoken') },
+          credentials: 'same-origin',
+        });
+        window.location.href = '/login.html';
+      }
+
+      document.getElementById('searchBtn').addEventListener('click', loadUsers);
+      document.getElementById('refreshBtn').addEventListener('click', loadUsers);
+      document.getElementById('createBtn').addEventListener('click', createUser);
+      document.getElementById('updateBtn').addEventListener('click', updateUser);
+      document.getElementById('resetPwdBtn').addEventListener('click', resetPassword);
+      document.getElementById('clearFormBtn').addEventListener('click', clearForm);
+      document.getElementById('backDashboardBtn').addEventListener('click', () => window.location.href = '/');
+      document.getElementById('logoutBtn').addEventListener('click', logout);
+
+      clearForm();
+      ensureSessionCookie().then(loadUsers);
+    </script>
+  </body>
+</html>

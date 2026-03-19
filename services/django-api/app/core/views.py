@@ -367,21 +367,102 @@ def platform_logout(request):
     return Response({'authenticated': False})
 
 
+def _platform_user_permission_denied():
+    return Response({'detail': 'admin role required'}, status=status.HTTP_403_FORBIDDEN)
+
+
+def _current_platform_user(request):
+    username = request.session.get('platform_username')
+    if not username:
+        return None
+    try:
+        return PlatformUser.objects.get(username=username, is_active=True)
+    except PlatformUser.DoesNotExist:
+        return None
+
+
+def _require_admin_user(request):
+    user = _current_platform_user(request)
+    if not user:
+        return None, Response({'detail': 'authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+    if user.role != PlatformUser.ROLE_ADMIN:
+        return None, _platform_user_permission_denied()
+    return user, None
+
+
 @api_view(['GET'])
 def platform_users(request):
     _seed_platform_users()
+    current_user, error_response = _require_admin_user(request)
+    if error_response:
+        return error_response
+
+    role = request.GET.get('role', '').strip()
+    keyword = request.GET.get('keyword', '').strip()
+    queryset = PlatformUser.objects.order_by('id')
+    if role:
+        queryset = queryset.filter(role=role)
+    if keyword:
+        queryset = queryset.filter(username__icontains=keyword) | PlatformUser.objects.filter(display_name__icontains=keyword)
+        queryset = queryset.distinct()
     return Response({
-        'items': PlatformUserSerializer(PlatformUser.objects.order_by('id'), many=True).data,
+        'items': PlatformUserSerializer(queryset.order_by('id'), many=True).data,
+        'current_user': PlatformUserSerializer(current_user).data,
     })
 
 
 @api_view(['POST'])
 def platform_user_create(request):
     _seed_platform_users()
+    _, error_response = _require_admin_user(request)
+    if error_response:
+        return error_response
     serializer = PlatformUserCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     user = serializer.save()
     return Response(PlatformUserSerializer(user).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET', 'PATCH'])
+def platform_user_detail(request, pk):
+    _seed_platform_users()
+    _, error_response = _require_admin_user(request)
+    if error_response:
+        return error_response
+
+    try:
+        user = PlatformUser.objects.get(pk=pk)
+    except PlatformUser.DoesNotExist:
+        return Response({'detail': 'user not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        return Response(PlatformUserSerializer(user).data)
+
+    serializer = PlatformUserCreateSerializer(user, data=request.data, partial=True)
+    serializer.is_valid(raise_exception=True)
+    updated_user = serializer.save()
+    return Response(PlatformUserSerializer(updated_user).data)
+
+
+@api_view(['POST'])
+def platform_user_reset_password(request, pk):
+    _seed_platform_users()
+    _, error_response = _require_admin_user(request)
+    if error_response:
+        return error_response
+
+    password = request.data.get('password', '')
+    if not password or len(password) < 6:
+        return Response({'detail': 'password must be at least 6 characters'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = PlatformUser.objects.get(pk=pk)
+    except PlatformUser.DoesNotExist:
+        return Response({'detail': 'user not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    user.set_password(password)
+    user.save(update_fields=['password_hash', 'updated_at'])
+    return Response({'detail': 'password reset success', 'user': PlatformUserSerializer(user).data})
 
 
 @api_view(['GET'])
