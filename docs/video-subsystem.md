@@ -46,9 +46,9 @@
 | ZLM RTMP | 1935 | 19350 |
 | ZLM RTSP | 554 | 15540 |
 | ZLM RTC | 10000 | 11000 |
-| WVP HTTP | 18080 | 28080 |
-| WVP SIP TCP | 5060 | 25060 |
-| WVP SIP UDP | 5060 | 25060/udp |
+| WVP HTTP | 18978 | 28080 |
+| WVP SIP TCP | 8116 | 28116 |
+| WVP SIP UDP | 8116 | 28116/udp |
 | WVP RTP UDP | 30000-30100 | 13000-13100/udp |
 
 ## 启动方式
@@ -63,6 +63,14 @@ docker compose --env-file .env -f docker-compose.base.yml up -d --build
 
 ```bash
 docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.video.yml up -d
+```
+
+视频入口验证：
+
+```bash
+curl http://localhost:28080/doc.html
+curl http://localhost:28080/swagger-ui/index.html
+curl http://localhost:28080/v3/api-docs
 ```
 
 ## 后续待实现

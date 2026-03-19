@@ -22,7 +22,9 @@
 - 已修复 ZLM secret 不一致导致的节点连接失败问题
 - 已验证 WVP 登录 API 可用，媒体节点列表可返回在线节点
 - Django `/api/video/status/` 已升级为主动探测，当前可返回 `wvp=running`、`zlm=running`
-- 当前剩余问题集中在数据库初始化固化与前端静态资源/管理页面收口
+- 已验证 WVP 对外可访问的管理/文档入口为 `http://localhost:28080/doc.html` 与 `http://localhost:28080/swagger-ui/index.html`
+- 已验证 `http://localhost:28080/v3/api-docs` 可正常返回 OpenAPI 文档
+- 当前剩余问题集中在数据库初始化固化与平台首页的视频入口收口
 
 ## 仍需人工确认的关键点
 
