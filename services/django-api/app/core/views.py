@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from hashlib import md5
+
 import requests
 from django.db.models import Count
 from django.http import JsonResponse
@@ -26,6 +28,25 @@ def _parse_int(value, default=None, minimum=None, maximum=None):
     if maximum is not None and parsed > maximum:
         parsed = maximum
     return parsed
+
+
+def _wvp_login_token():
+    try:
+        login_response = requests.get(
+            'http://edge-wvp:18978/api/user/login',
+            params={
+                'username': 'admin',
+                'password': md5('admin'.encode('utf-8')).hexdigest(),
+            },
+            timeout=3,
+        )
+        if login_response.ok:
+            login_payload = login_response.json()
+            token = login_payload.get('data', {}).get('accessToken')
+            return token, login_payload.get('data', {})
+    except (requests.RequestException, ValueError):
+        pass
+    return None, {}
 
 
 def _video_status_payload():
@@ -67,33 +88,23 @@ def _video_status_payload():
         except (requests.RequestException, ValueError):
             pass
 
-        try:
-            login_response = requests.get(
-                'http://edge-wvp:18978/api/user/login',
-                params={
-                    'username': 'admin',
-                    'password': '21232f297a57a5a743894a0e4a801fc3',
-                },
-                timeout=3,
-            )
-            if login_response.ok:
-                login_payload = login_response.json()
-                token = login_payload.get('data', {}).get('accessToken')
-                wvp_runtime['login_ready'] = bool(token)
-                wvp_runtime['admin_user_present'] = login_payload.get('data', {}).get('username') == 'admin'
-                wvp_runtime['server_id'] = login_payload.get('data', {}).get('serverId')
-                if token:
-                    media_response = requests.get(
-                        'http://edge-wvp:18978/api/server/media_server/list',
-                        headers={'access-token': token},
-                        timeout=3,
-                    )
-                    if media_response.ok:
-                        media_payload = media_response.json().get('data') or []
-                        wvp_runtime['media_server_count'] = len(media_payload)
-                        wvp_runtime['media_server_online'] = sum(1 for item in media_payload if item.get('status'))
-        except (requests.RequestException, ValueError):
-            pass
+        token, login_data = _wvp_login_token()
+        wvp_runtime['login_ready'] = bool(token)
+        wvp_runtime['admin_user_present'] = login_data.get('username') == 'admin'
+        wvp_runtime['server_id'] = login_data.get('serverId')
+        if token:
+            try:
+                media_response = requests.get(
+                    'http://edge-wvp:18978/api/server/media_server/list',
+                    headers={'access-token': token},
+                    timeout=3,
+                )
+                if media_response.ok:
+                    media_payload = media_response.json().get('data') or []
+                    wvp_runtime['media_server_count'] = len(media_payload)
+                    wvp_runtime['media_server_online'] = sum(1 for item in media_payload if item.get('status'))
+            except (requests.RequestException, ValueError):
+                pass
 
         try:
             api_doc_response = requests.get('http://edge-wvp:18978/v3/api-docs', timeout=3)
@@ -182,6 +193,65 @@ def video_runtime(request):
         'wvp': video.get('wvp', {}),
         'zlm': video.get('zlm', {}),
     })
+
+
+@api_view(['GET'])
+def video_inventory(request):
+    token, login_data = _wvp_login_token()
+    inventory = {
+        'login_ready': bool(token),
+        'admin_user_present': login_data.get('username') == 'admin',
+        'device_total': 0,
+        'device_pages': 0,
+        'channel_total': 0,
+        'platform_total': 0,
+        'media_server_total': 0,
+        'media_server_online': 0,
+    }
+
+    if token:
+        headers = {'access-token': token}
+        try:
+            devices_response = requests.get(
+                'http://edge-wvp:18978/api/device/query/devices',
+                params={'page': 1, 'count': 1},
+                headers=headers,
+                timeout=3,
+            )
+            if devices_response.ok:
+                devices_data = devices_response.json().get('data') or {}
+                inventory['device_total'] = devices_data.get('total') or 0
+                inventory['device_pages'] = devices_data.get('pages') or 0
+        except (requests.RequestException, ValueError):
+            pass
+
+        try:
+            platform_response = requests.get(
+                'http://edge-wvp:18978/api/platform/query',
+                params={'page': 1, 'count': 1},
+                headers=headers,
+                timeout=3,
+            )
+            if platform_response.ok:
+                platform_data = platform_response.json().get('data') or {}
+                inventory['platform_total'] = platform_data.get('total') or 0
+        except (requests.RequestException, ValueError):
+            pass
+
+        try:
+            media_response = requests.get(
+                'http://edge-wvp:18978/api/server/media_server/list',
+                headers=headers,
+                timeout=3,
+            )
+            if media_response.ok:
+                media_payload = media_response.json().get('data') or []
+                inventory['media_server_total'] = len(media_payload)
+                inventory['media_server_online'] = sum(1 for item in media_payload if item.get('status'))
+        except (requests.RequestException, ValueError):
+            pass
+
+    return Response(inventory)
 
 
 @api_view(['GET'])

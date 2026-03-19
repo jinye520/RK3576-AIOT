@@ -773,6 +773,17 @@
         `).join('');
       }
 
+      async function loadVideoInventory() {
+        try {
+          const res = await fetch('/api/video/inventory/', { cache: 'no-store' });
+          if (!res.ok) throw new Error('video inventory request failed');
+          const data = await res.json();
+          setText('gatewayOnlineCount', `${data.media_server_online ?? 0} / ${data.media_server_total ?? 0}`);
+        } catch (err) {
+          setText('gatewayOnlineCount', '--');
+        }
+      }
+
       async function loadOverview() {
         try {
           const res = await fetch(overviewUrl, { cache: 'no-store' });
@@ -815,7 +826,7 @@
       }
 
       async function refreshAll() {
-        await Promise.all([loadHealth(), loadOverview(), loadPorts(), loadSystemStatus()]);
+        await Promise.all([loadHealth(), loadOverview(), loadPorts(), loadSystemStatus(), loadVideoInventory()]);
       }
 
       function startAutoRefresh() {

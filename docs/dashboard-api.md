@@ -23,5 +23,6 @@
 
 - `/api/video/status/`
 - `/api/video/runtime/`
+- `/api/video/inventory/`
 - `/api/system/status/`
 - `/api/home/dashboard/`
