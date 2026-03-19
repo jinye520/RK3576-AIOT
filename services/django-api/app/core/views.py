@@ -3,6 +3,7 @@ from pathlib import Path
 from hashlib import md5
 
 import requests
+from django.contrib.auth.hashers import check_password
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils import timezone
@@ -11,8 +12,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .demo_data import PORTS_PAYLOAD
-from .models import Device, Gateway, Telemetry
-from .serializers import DeviceSerializer, GatewaySerializer, TelemetrySerializer
+from .models import Device, Gateway, PlatformUser, Telemetry
+from .serializers import (
+    DeviceSerializer,
+    GatewaySerializer,
+    PlatformUserCreateSerializer,
+    PlatformUserSerializer,
+    TelemetrySerializer,
+)
 
 BIGSCREEN_VIDEO_SLOTS = [
     {
@@ -263,6 +270,7 @@ def _stats_payload():
 
 @api_view(['GET'])
 def health(request):
+    _seed_platform_users()
     return Response({
         'status': 'ok',
         'service': 'django-api',
@@ -301,6 +309,47 @@ def video_runtime(request):
         'wvp': video.get('wvp', {}),
         'zlm': video.get('zlm', {}),
     })
+
+
+@api_view(['POST'])
+def platform_login(request):
+    _seed_platform_users()
+    username = request.data.get('username', '').strip()
+    password = request.data.get('password', '')
+    if not username or not password:
+        return Response({'detail': 'username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = PlatformUser.objects.get(username=username, is_active=True)
+    except PlatformUser.DoesNotExist:
+        return Response({'detail': 'invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    if not check_password(password, user.password_hash):
+        return Response({'detail': 'invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    user.last_login_at = timezone.now()
+    user.save(update_fields=['last_login_at', 'updated_at'])
+    return Response({
+        'token': f'local-role::{user.username}',
+        'user': PlatformUserSerializer(user).data,
+    })
+
+
+@api_view(['GET'])
+def platform_users(request):
+    _seed_platform_users()
+    return Response({
+        'items': PlatformUserSerializer(PlatformUser.objects.order_by('id'), many=True).data,
+    })
+
+
+@api_view(['POST'])
+def platform_user_create(request):
+    _seed_platform_users()
+    serializer = PlatformUserCreateSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    user = serializer.save()
+    return Response(PlatformUserSerializer(user).data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET'])
@@ -430,7 +479,23 @@ def telemetry_summary(request):
     })
 
 
+def _seed_platform_users():
+    if PlatformUser.objects.exists():
+        return
+
+    seeds = [
+        ('admin', '平台管理员', PlatformUser.ROLE_ADMIN, 'admin123456'),
+        ('operator', '运维值班员', PlatformUser.ROLE_OPERATOR, 'operator123'),
+        ('viewer', '访客观察员', PlatformUser.ROLE_VIEWER, 'viewer123'),
+    ]
+    for username, display_name, role, password in seeds:
+        user = PlatformUser(username=username, display_name=display_name, role=role, is_active=True)
+        user.set_password(password)
+        user.save()
+
+
 def index(request):
+    _seed_platform_users()
     return JsonResponse({
         'message': 'RK3576 Edge Platform Django API is running',
         'api_health': '/api/health/',

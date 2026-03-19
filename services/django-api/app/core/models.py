@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.db import models
 
 
@@ -53,3 +54,61 @@ class Telemetry(TimestampedModel):
 
     def __str__(self):
         return f"Telemetry<{self.device.device_id}@{self.collected_at}>"
+
+
+class PlatformUser(TimestampedModel):
+    ROLE_ADMIN = 'admin'
+    ROLE_OPERATOR = 'operator'
+    ROLE_VIEWER = 'viewer'
+
+    ROLE_CHOICES = [
+        (ROLE_ADMIN, '管理员'),
+        (ROLE_OPERATOR, '运维员'),
+        (ROLE_VIEWER, '观察员'),
+    ]
+
+    username = models.CharField(max_length=64, unique=True)
+    password_hash = models.CharField(max_length=255)
+    display_name = models.CharField(max_length=100)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ROLE_VIEWER)
+    is_active = models.BooleanField(default=True)
+    last_login_at = models.DateTimeField(blank=True, null=True)
+
+    MENU_MAP = {
+        ROLE_ADMIN: [
+            'dashboard',
+            'bigscreen',
+            'telemetry',
+            'devices',
+            'gateways',
+            'video',
+            'nodered',
+            'users',
+            'system',
+        ],
+        ROLE_OPERATOR: [
+            'dashboard',
+            'bigscreen',
+            'telemetry',
+            'devices',
+            'gateways',
+            'video',
+            'nodered',
+        ],
+        ROLE_VIEWER: [
+            'dashboard',
+            'bigscreen',
+            'telemetry',
+            'video',
+        ],
+    }
+
+    def __str__(self):
+        return f"{self.display_name}<{self.username}>"
+
+    @property
+    def menus(self):
+        return self.MENU_MAP.get(self.role, self.MENU_MAP[self.ROLE_VIEWER])
+
+    def set_password(self, raw_password):
+        self.password_hash = make_password(raw_password)
