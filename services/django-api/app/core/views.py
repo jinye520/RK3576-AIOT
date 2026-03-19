@@ -14,6 +14,41 @@ from .demo_data import PORTS_PAYLOAD
 from .models import Device, Gateway, Telemetry
 from .serializers import DeviceSerializer, GatewaySerializer, TelemetrySerializer
 
+BIGSCREEN_VIDEO_SLOTS = [
+    {
+        'name': '东门人行通道',
+        'channel': 'CH-01',
+        'stream_url': 'http://localhost:28082/live/demo-01.flv',
+        'player_url': 'http://localhost:28080/#/login',
+        'status': 'standby',
+        'tag': '1080P',
+    },
+    {
+        'name': '仓储区广角位',
+        'channel': 'CH-02',
+        'stream_url': 'http://localhost:28082/live/demo-02.flv',
+        'player_url': 'http://localhost:28080/#/login',
+        'status': 'standby',
+        'tag': '夜视',
+    },
+    {
+        'name': '产线顶部吊装位',
+        'channel': 'CH-03',
+        'stream_url': 'http://localhost:28082/live/demo-03.flv',
+        'player_url': 'http://localhost:28080/#/login',
+        'status': 'standby',
+        'tag': '巡检',
+    },
+    {
+        'name': '主控大厅总览',
+        'channel': 'CH-04',
+        'stream_url': 'http://localhost:28082/live/demo-04.flv',
+        'player_url': 'http://localhost:28080/#/login',
+        'status': 'standby',
+        'tag': '全景',
+    },
+]
+
 PROJECT_ROOT = Path('/app')
 
 
@@ -271,6 +306,26 @@ def video_runtime(request):
 @api_view(['GET'])
 def video_inventory(request):
     return Response(_video_inventory_payload())
+
+
+@api_view(['GET'])
+def bigscreen_payload(request):
+    latest_telemetry = Telemetry.objects.select_related('gateway', 'device').order_by('-collected_at', '-created_at')[:12]
+    latest_data = TelemetrySerializer(latest_telemetry, many=True).data
+    video = _video_status_payload()
+    return Response({
+        'status': 'ok',
+        'timestamp': timezone.now().isoformat(),
+        'stats': _stats_payload(),
+        'video': video,
+        'video_runtime': {
+            'wvp': video.get('wvp', {}).get('runtime', {}),
+            'zlm': video.get('zlm', {}).get('probe', {}),
+        },
+        'video_inventory': _video_inventory_payload(),
+        'video_slots': BIGSCREEN_VIDEO_SLOTS,
+        'latest_telemetry': latest_data,
+    })
 
 
 @api_view(['GET'])

@@ -24,5 +24,6 @@
 - `/api/video/status/`
 - `/api/video/runtime/`
 - `/api/video/inventory/`
+- `/api/video/bigscreen/`
 - `/api/system/status/`
 - `/api/home/dashboard/`

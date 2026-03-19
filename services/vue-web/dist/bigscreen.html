@@ -535,7 +535,7 @@
     </div>
 
     <script>
-      const dashboardUrl = '/api/home/dashboard/';
+      const dashboardUrl = '/api/video/bigscreen/';
       const chartCanvas = document.getElementById('sensorChart');
       const chartCtx = chartCanvas.getContext('2d');
       let latestSeries = [];
@@ -682,6 +682,27 @@
         }).join('');
       }
 
+      function renderVideoGrid(slots) {
+        const container = document.getElementById('videoGrid');
+        if (!container) return;
+        if (!slots || slots.length === 0) {
+          container.innerHTML = '<div class="empty">暂无视频槽位数据</div>';
+          return;
+        }
+        container.innerHTML = slots.map(slot => `
+          <a class="video-card" href="${slot.player_url || '#'}" target="_blank" rel="noreferrer">
+            <div class="scan"></div>
+            <div class="video-meta">
+              <div>
+                <div class="video-name">${slot.name}</div>
+                <div class="video-desc">${slot.channel} · ${slot.status}</div>
+              </div>
+              <div class="video-tag">${slot.tag || '--'}</div>
+            </div>
+          </a>
+        `).join('');
+      }
+
       function renderVideoSummaryStrip(inventory) {
         const items = [
           ['视频设备', inventory.device_total ?? 0],
@@ -715,11 +736,13 @@
 
           renderStatusGrid(data);
           renderTelemetryFeed(latestSeries);
+          renderVideoGrid(data.video_slots || []);
           renderVideoSummaryStrip(inventory);
           drawSensorChart(latestSeries);
         } catch (err) {
           document.getElementById('statusGrid').innerHTML = '<div class="empty">大屏数据加载失败</div>';
           document.getElementById('telemetryFeed').innerHTML = '<div class="empty">遥测数据加载失败</div>';
+          document.getElementById('videoGrid').innerHTML = '<div class="empty">视频矩阵加载失败</div>';
           document.getElementById('videoSummaryStrip').innerHTML = '<div class="empty">视频摘要加载失败</div>';
           drawSensorChart([]);
         }
