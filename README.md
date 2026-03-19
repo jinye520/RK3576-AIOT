@@ -155,7 +155,7 @@ docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.vide
 ### 7. 启动开发工具骨架
 
 ```bash
-docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.devtools.yml up -d
+docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.devtools.yml up -d --build
 ```
 
 也可以使用脚本：
@@ -165,6 +165,20 @@ chmod +x scripts/*.sh
 ./scripts/start-base.sh
 ./scripts/start-video.sh
 ./scripts/start-all.sh
+./scripts/status.sh
+./scripts/logs-base.sh
+./scripts/logs-all.sh
+```
+
+也可使用 Makefile：
+
+```bash
+make base-up
+make video-up
+make devtools-up
+make all-up
+make ps
+make down
 ```
 
 ---
@@ -179,6 +193,7 @@ chmod +x scripts/*.sh
 - `GET /api/video/status/`
 - `GET /api/system/ports/`
 - `GET /api/system/status/`
+- `GET /api/home/dashboard/`
 - `GET /api/gateways/summary/`
 - `GET /api/devices/summary/`
 - `GET /api/telemetry/summary/`
@@ -383,6 +398,10 @@ GitHub：
 ## 十四、Node-RED 演示流文件
 
 - `flows/node-red-mqtt-demo.json`
+
+推荐导入后用于验证：
+
+- Node-RED → MQTT → Django → MySQL → 首页总览
 
 ## 十五、系统与开发骨架文档
 

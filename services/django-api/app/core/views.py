@@ -110,6 +110,42 @@ def system_status(request):
 
 
 @api_view(['GET'])
+def home_dashboard(request):
+    latest_telemetry = Telemetry.objects.select_related('gateway', 'device').order_by('-collected_at', '-created_at')[:10]
+    latest_data = TelemetrySerializer(latest_telemetry, many=True).data
+
+    gateway_summary = {
+        'total': Gateway.objects.count(),
+        'online': Gateway.objects.filter(status='online').count(),
+        'by_status': list(Gateway.objects.values('status').annotate(count=Count('id')).order_by('status')),
+    }
+
+    device_summary = {
+        'total': Device.objects.count(),
+        'by_protocol': list(Device.objects.values('protocol').annotate(count=Count('id')).order_by('protocol')),
+        'by_status': list(Device.objects.values('status').annotate(count=Count('id')).order_by('status')),
+        'by_type': list(Device.objects.values('device_type').annotate(count=Count('id')).order_by('device_type')),
+    }
+
+    telemetry_summary_payload = {
+        'total': Telemetry.objects.count(),
+        'latest_count': len(latest_data),
+    }
+
+    return Response({
+        'status': 'ok',
+        'timestamp': timezone.now().isoformat(),
+        'stats': _stats_payload(),
+        'video': _video_status_payload(),
+        'ports': PORTS_PAYLOAD,
+        'gateway_summary': gateway_summary,
+        'device_summary': device_summary,
+        'telemetry_summary': telemetry_summary_payload,
+        'latest_telemetry': latest_data,
+    })
+
+
+@api_view(['GET'])
 def gateways_summary(request):
     by_status = list(Gateway.objects.values('status').annotate(count=Count('id')).order_by('status'))
     return Response({
@@ -153,6 +189,7 @@ def index(request):
         'video_status': '/api/video/status/',
         'system_ports': '/api/system/ports/',
         'system_status': '/api/system/status/',
+        'home_dashboard': '/api/home/dashboard/',
         'gateways_summary': '/api/gateways/summary/',
         'devices_summary': '/api/devices/summary/',
         'telemetry_summary': '/api/telemetry/summary/',
