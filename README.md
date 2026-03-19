@@ -5,7 +5,7 @@
 当前基础能力包括：
 
 - Django 后端 API
-- Vue 前端占位页
+- Vue 前端实时总览页
 - MQTT Broker（Mosquitto）
 - Node-RED 在线编程
 - MySQL
@@ -170,6 +170,7 @@ chmod +x scripts/*.sh
 - `GET /api/health/`
 - `GET /api/overview/`
 - `GET /api/video/status/`
+- `GET /api/system/ports/`
 
 ### Gateway
 
@@ -301,6 +302,7 @@ edge/RK3576-0001/sensor/sensor-demo-001/up
 - 显示网关数、设备数、遥测数
 - 显示最新遥测列表
 - 显示视频子系统状态
+- 显示系统端口与访问入口
 
 ### 第三阶段：串口采集接入
 
@@ -364,3 +366,8 @@ GitHub：
 
 - `docs/video-subsystem.md`
 - `docs/wvp-integration-next-steps.md`
+- `docs/node-red-demo.md`
+
+## 十四、Node-RED 演示流文件
+
+- `flows/node-red-mqtt-demo.json`

@@ -1,0 +1,22 @@
+services:
+  gateway-core:
+    build:
+      context: ./services/gateway-core
+      dockerfile: Dockerfile
+    container_name: edge-gateway-core
+    environment:
+      MQTT_HOST: mqtt
+      MQTT_PORT: 1883
+      TZ: ${TZ}
+    volumes:
+      - ./services/gateway-core:/app
+      - /dev:/dev
+    privileged: true
+    restart: unless-stopped
+    networks:
+      - edge-net
+
+networks:
+  edge-net:
+    external: true
+    name: rk3576-aiot_edge-net

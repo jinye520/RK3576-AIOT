@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from .demo_data import PORTS_PAYLOAD
 from .models import Device, Gateway, Telemetry
 from .serializers import DeviceSerializer, GatewaySerializer, TelemetrySerializer
 
@@ -92,12 +93,18 @@ def video_status(request):
     return Response(_video_status_payload())
 
 
+@api_view(['GET'])
+def system_ports(request):
+    return Response(PORTS_PAYLOAD)
+
+
 def index(request):
     return JsonResponse({
         'message': 'RK3576 Edge Platform Django API is running',
         'api_health': '/api/health/',
         'overview': '/api/overview/',
         'video_status': '/api/video/status/',
+        'system_ports': '/api/system/ports/',
         'gateways': '/api/gateways/',
         'devices': '/api/devices/',
         'telemetry': '/api/telemetry/',
