@@ -743,7 +743,7 @@
 
       function renderVideoRuntime(video) {
         const container = document.getElementById('videoRuntimeList');
-        const runtime = video?.wvp?.runtime;
+        const runtime = video?.wvp?.runtime || video?.runtime?.wvp;
         if (!container) return;
         if (!runtime) {
           container.innerHTML = '<div class="empty">暂无视频运行态数据</div>';
@@ -779,7 +779,10 @@
           if (!res.ok) throw new Error('overview request failed');
           const data = await res.json();
           const stats = data.stats || {};
-          const video = data.video || {};
+          const video = {
+            ...(data.video || {}),
+            runtime: data.video_runtime || {},
+          };
 
           setText('gatewayCount', stats.gateway_count ?? 0);
           setText('deviceCount', stats.device_count ?? 0);

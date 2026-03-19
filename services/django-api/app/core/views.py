@@ -157,10 +157,15 @@ def overview(request):
     latest_telemetry = Telemetry.objects.select_related('gateway', 'device').order_by('-collected_at', '-created_at')[:10]
     latest_data = TelemetrySerializer(latest_telemetry, many=True).data
 
+    video = _video_status_payload()
     return Response({
         'stats': _stats_payload(),
         'latest_telemetry': latest_data,
-        'video': _video_status_payload(),
+        'video': video,
+        'video_runtime': {
+            'wvp': video.get('wvp', {}).get('runtime', {}),
+            'zlm': video.get('zlm', {}).get('probe', {}),
+        },
     })
 
 
@@ -187,11 +192,16 @@ def system_ports(request):
 @api_view(['GET'])
 def system_status(request):
     latest_telemetry = Telemetry.objects.select_related('gateway', 'device').order_by('-collected_at', '-created_at')[:5]
+    video = _video_status_payload()
     return Response({
         'status': 'ok',
         'timestamp': timezone.now().isoformat(),
         'stats': _stats_payload(),
-        'video': _video_status_payload(),
+        'video': video,
+        'video_runtime': {
+            'wvp': video.get('wvp', {}).get('runtime', {}),
+            'zlm': video.get('zlm', {}).get('probe', {}),
+        },
         'ports': PORTS_PAYLOAD,
         'latest_telemetry': TelemetrySerializer(latest_telemetry, many=True).data,
     })
@@ -220,11 +230,16 @@ def home_dashboard(request):
         'latest_count': len(latest_data),
     }
 
+    video = _video_status_payload()
     return Response({
         'status': 'ok',
         'timestamp': timezone.now().isoformat(),
         'stats': _stats_payload(),
-        'video': _video_status_payload(),
+        'video': video,
+        'video_runtime': {
+            'wvp': video.get('wvp', {}).get('runtime', {}),
+            'zlm': video.get('zlm', {}).get('probe', {}),
+        },
         'ports': PORTS_PAYLOAD,
         'gateway_summary': gateway_summary,
         'device_summary': device_summary,
