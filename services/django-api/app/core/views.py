@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils import timezone
@@ -7,6 +9,8 @@ from rest_framework.response import Response
 
 from .models import Device, Gateway, Telemetry
 from .serializers import DeviceSerializer, GatewaySerializer, TelemetrySerializer
+
+PROJECT_ROOT = Path('/app')
 
 
 def _parse_int(value, default=None, minimum=None, maximum=None):
@@ -20,6 +24,38 @@ def _parse_int(value, default=None, minimum=None, maximum=None):
     if maximum is not None and parsed > maximum:
         parsed = maximum
     return parsed
+
+
+def _service_running(service_name):
+    return Path(f'/var/run/{service_name}.pid').exists() or False
+
+
+def _video_status_payload():
+    wvp_jar_path = Path('/app/project-data/wvp/wvp-pro.jar')
+    zlm_config_path = Path('/app/docker/zlm/config.ini')
+    wvp_config_path = Path('/app/docker/wvp/application-docker.yml')
+
+    return {
+        'enabled': True,
+        'zlm': {
+            'status': 'configured',
+            'http_url': 'http://localhost:28082',
+            'rtmp_port': 19350,
+            'rtsp_port': 15540,
+            'rtc_port': 11000,
+            'config_exists': zlm_config_path.exists(),
+        },
+        'wvp': {
+            'status': 'placeholder' if not wvp_jar_path.exists() else 'package-ready',
+            'http_url': 'http://localhost:28080',
+            'sip_tcp_port': 25060,
+            'sip_udp_port': 15060,
+            'rtp_udp_range': '13000-13100',
+            'config_exists': wvp_config_path.exists(),
+            'jar_exists': wvp_jar_path.exists(),
+            'jar_path': str(wvp_jar_path),
+        },
+    }
 
 
 @api_view(['GET'])
@@ -47,7 +83,13 @@ def overview(request):
     return Response({
         'stats': stats,
         'latest_telemetry': latest_data,
+        'video': _video_status_payload(),
     })
+
+
+@api_view(['GET'])
+def video_status(request):
+    return Response(_video_status_payload())
 
 
 def index(request):
@@ -55,6 +97,7 @@ def index(request):
         'message': 'RK3576 Edge Platform Django API is running',
         'api_health': '/api/health/',
         'overview': '/api/overview/',
+        'video_status': '/api/video/status/',
         'gateways': '/api/gateways/',
         'devices': '/api/devices/',
         'telemetry': '/api/telemetry/',

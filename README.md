@@ -169,6 +169,7 @@ chmod +x scripts/*.sh
 - `GET /api/`
 - `GET /api/health/`
 - `GET /api/overview/`
+- `GET /api/video/status/`
 
 ### Gateway
 
@@ -294,11 +295,12 @@ edge/RK3576-0001/sensor/sensor-demo-001/up
 
 ### 第二阶段：前端真实数据面板
 
-待完成：
+已完成：
 
 - 首页读取 `/api/overview/`
 - 显示网关数、设备数、遥测数
 - 显示最新遥测列表
+- 显示视频子系统状态
 
 ### 第三阶段：串口采集接入
 
@@ -361,3 +363,4 @@ GitHub：
 ## 十三、视频子系统文档
 
 - `docs/video-subsystem.md`
+- `docs/wvp-integration-next-steps.md`

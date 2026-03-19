@@ -27,7 +27,7 @@ services:
       - mysql
       - redis
       - zlm
-    command: ["sh", "-c", "echo 'WVP placeholder container started. Mount real WVP package and replace command in next step.' && tail -f /dev/null"]
+    command: ["sh", "/opt/wvp/start-wvp.sh"]
     environment:
       TZ: ${TZ}
       DB_HOST: mysql
@@ -50,6 +50,7 @@ services:
       - ./data/wvp:/opt/wvp
       - ./docker/wvp/application-docker.yml:/opt/wvp/application-docker.yml:ro
       - ./docker/wvp/README.md:/opt/wvp/README.md:ro
+      - ./docker/wvp/start-wvp.sh:/opt/wvp/start-wvp.sh:ro
     restart: unless-stopped
     networks:
       - edge-net

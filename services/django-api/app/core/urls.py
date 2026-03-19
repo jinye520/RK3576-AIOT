@@ -10,12 +10,14 @@ from .views import (
     overview,
     telemetry_detail,
     telemetry_list_create,
+    video_status,
 )
 
 urlpatterns = [
     path('', index, name='index'),
     path('health/', health, name='health'),
     path('overview/', overview, name='overview'),
+    path('video/status/', video_status, name='video-status'),
     path('gateways/', gateway_list_create, name='gateway-list-create'),
     path('gateways/<int:pk>/', gateway_detail, name='gateway-detail'),
     path('devices/', device_list_create, name='device-list-create'),

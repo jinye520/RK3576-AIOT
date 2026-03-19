@@ -416,6 +416,13 @@
             </div>
             <div class="status-label">已打通</div>
           </div>
+          <div class="status-row">
+            <div>
+              <div class="status-label">视频子系统</div>
+              <div class="status-value" id="videoStatus">检查中...</div>
+            </div>
+            <div class="status-label" id="videoStatusHint">WVP / ZLM</div>
+          </div>
           <div class="toolbar">
             <button id="refreshBtn">立即刷新</button>
             <button id="toggleAutoBtn">关闭自动刷新</button>
@@ -488,6 +495,10 @@
             <a class="link-card" href="/api/telemetry/" target="_blank" rel="noreferrer">
               <div class="link-title">遥测数据 API</div>
               <div class="link-desc">查看最新采集数据，后续可扩展图表、时间范围查询和报表导出。</div>
+            </a>
+            <a class="link-card" href="/api/video/status/" target="_blank" rel="noreferrer">
+              <div class="link-title">视频子系统状态 API</div>
+              <div class="link-desc">查看当前 ZLMediaKit 与 WVP 骨架状态，以及 WVP 包是否已就绪。</div>
             </a>
           </div>
         </div>
@@ -567,6 +578,7 @@
           if (!res.ok) throw new Error('overview request failed');
           const data = await res.json();
           const stats = data.stats || {};
+          const video = data.video || {};
 
           setText('gatewayCount', stats.gateway_count ?? 0);
           setText('deviceCount', stats.device_count ?? 0);
@@ -575,10 +587,24 @@
           setText('onlineDeviceCount', stats.online_device_count ?? 0);
           setText('lastRefresh', formatTime(new Date().toISOString()));
 
+          const videoStatusEl = document.getElementById('videoStatus');
+          const videoStatusHintEl = document.getElementById('videoStatusHint');
+          const wvpStatus = video.wvp?.status || 'unknown';
+          const zlmStatus = video.zlm?.status || 'unknown';
+          const text = `${zlmStatus.toUpperCase()} / ${wvpStatus.toUpperCase()}`;
+          videoStatusEl.textContent = text;
+          videoStatusHintEl.textContent = video.wvp?.jar_exists ? 'WVP 包已就绪' : 'WVP 仍为占位模式';
+          videoStatusEl.className = wvpStatus === 'package-ready' ? 'status-value status-ok' : 'status-value status-warn';
+
           renderTelemetry(data.latest_telemetry || []);
         } catch (err) {
           renderTelemetry([]);
           setText('lastRefresh', '刷新失败');
+          const videoStatusEl = document.getElementById('videoStatus');
+          if (videoStatusEl) {
+            videoStatusEl.textContent = '不可用';
+            videoStatusEl.className = 'status-value status-warn';
+          }
         }
       }
 
