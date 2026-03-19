@@ -1,0 +1,32 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+*.log
+staticfiles/
+
+# Django media/runtime
+media/
+
+# Node
+node_modules/
+
+# Build artifacts
+dist/
+build/
+
+# Docker/runtime data
+data/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Pi / local tooling
+.bg-shell/
