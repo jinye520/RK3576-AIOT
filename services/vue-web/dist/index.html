@@ -470,24 +470,24 @@
           <div class="stat-foot">平台整体运行摘要</div>
         </div>
         <div class="panel stat-card">
-          <div class="stat-label">网关在线数</div>
-          <div class="stat-value" id="gatewayOnlineCount">--</div>
-          <div class="stat-foot">在线网关 / 网关总数</div>
+          <div class="stat-label">在线媒体节点</div>
+          <div class="stat-value" id="mediaServerOnlineCount">--</div>
+          <div class="stat-foot">在线媒体节点 / 媒体节点总数</div>
         </div>
         <div class="panel stat-card">
-          <div class="stat-label">设备协议数</div>
-          <div class="stat-value" id="protocolKinds">--</div>
-          <div class="stat-foot">当前识别到的协议类型数</div>
+          <div class="stat-label">视频设备总数</div>
+          <div class="stat-value" id="videoDeviceTotal">--</div>
+          <div class="stat-foot">WVP 侧已接入国标设备数量</div>
         </div>
         <div class="panel stat-card">
-          <div class="stat-label">设备类型数</div>
-          <div class="stat-value" id="deviceTypeKinds">--</div>
-          <div class="stat-foot">当前识别到的设备类型数</div>
+          <div class="stat-label">级联平台总数</div>
+          <div class="stat-value" id="videoPlatformTotal">--</div>
+          <div class="stat-foot">WVP 侧上级/下级平台数量</div>
         </div>
         <div class="panel stat-card">
-          <div class="stat-label">最近遥测数</div>
-          <div class="stat-value" id="latestTelemetryCount">--</div>
-          <div class="stat-foot">摘要接口返回的最新条数</div>
+          <div class="stat-label">WVP 登录状态</div>
+          <div class="stat-value" id="wvpLoginReady">--</div>
+          <div class="stat-foot">后台登录能力与 admin 账户可用性</div>
         </div>
       </section>
 
@@ -715,16 +715,17 @@
           const telemetryData = await telemetryRes.json();
 
           setText('systemStatus', statusData.status === 'ok' ? '正常' : '异常');
-          setText('gatewayOnlineCount', `${gatewaysData.online ?? 0} / ${gatewaysData.total ?? 0}`);
-          setText('protocolKinds', (devicesData.by_protocol || []).length);
-          setText('deviceTypeKinds', (devicesData.by_type || []).length);
-          setText('latestTelemetryCount', telemetryData.latest_count ?? 0);
+          const videoInventory = statusData.video_inventory || {};
+          setText('mediaServerOnlineCount', `${videoInventory.media_server_online ?? 0} / ${videoInventory.media_server_total ?? 0}`);
+          setText('videoDeviceTotal', videoInventory.device_total ?? 0);
+          setText('videoPlatformTotal', videoInventory.platform_total ?? 0);
+          setText('wvpLoginReady', videoInventory.login_ready ? '已就绪' : '未就绪');
         } catch (err) {
           setText('systemStatus', '异常');
-          setText('gatewayOnlineCount', '--');
-          setText('protocolKinds', '--');
-          setText('deviceTypeKinds', '--');
-          setText('latestTelemetryCount', '--');
+          setText('mediaServerOnlineCount', '--');
+          setText('videoDeviceTotal', '--');
+          setText('videoPlatformTotal', '--');
+          setText('wvpLoginReady', '--');
         }
       }
 
