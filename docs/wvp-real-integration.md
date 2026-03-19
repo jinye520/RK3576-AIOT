@@ -28,6 +28,7 @@
 - 已将前端恢复方案固化到 `start-wvp.sh` 运行时覆盖机制，并补充 `wvp-builder` 自动构建 runtime static 的路径
 - 已完成冷启动验证：清理后重启可自动建表、生成 admin 账户，并恢复 WVP/ZLM 联通与登录能力
 - 当前剩余问题集中在宿主机目录权限修复与真实设备联调
+- 已补充 `scripts/fix-data-permissions.sh` 与 `docs/permissions-recovery.md` 用于宿主机侧收口处理
 
 ## 仍需人工确认的关键点
 

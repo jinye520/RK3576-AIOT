@@ -397,6 +397,7 @@ GitHub：
 - `docs/video-subsystem.md`
 - `docs/wvp-integration-next-steps.md`
 - `docs/wvp-real-integration.md`
+- `docs/permissions-recovery.md`
 - `docs/node-red-demo.md`
 
 ## 十四、Node-RED 演示流文件
