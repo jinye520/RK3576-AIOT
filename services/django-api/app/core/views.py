@@ -27,10 +27,6 @@ def _parse_int(value, default=None, minimum=None, maximum=None):
     return parsed
 
 
-def _service_running(service_name):
-    return Path(f'/var/run/{service_name}.pid').exists() or False
-
-
 def _video_status_payload():
     wvp_jar_path = Path('/app/project-data/wvp/wvp-pro.jar')
     zlm_config_path = Path('/app/docker/zlm/config.ini')
@@ -59,6 +55,16 @@ def _video_status_payload():
     }
 
 
+def _stats_payload():
+    return {
+        'gateway_count': Gateway.objects.count(),
+        'device_count': Device.objects.count(),
+        'telemetry_count': Telemetry.objects.count(),
+        'online_gateway_count': Gateway.objects.filter(status='online').count(),
+        'online_device_count': Device.objects.filter(status='online').count(),
+    }
+
+
 @api_view(['GET'])
 def health(request):
     return Response({
@@ -73,16 +79,8 @@ def overview(request):
     latest_telemetry = Telemetry.objects.select_related('gateway', 'device').order_by('-collected_at', '-created_at')[:10]
     latest_data = TelemetrySerializer(latest_telemetry, many=True).data
 
-    stats = {
-        'gateway_count': Gateway.objects.count(),
-        'device_count': Device.objects.count(),
-        'telemetry_count': Telemetry.objects.count(),
-        'online_gateway_count': Gateway.objects.filter(status='online').count(),
-        'online_device_count': Device.objects.filter(status='online').count(),
-    }
-
     return Response({
-        'stats': stats,
+        'stats': _stats_payload(),
         'latest_telemetry': latest_data,
         'video': _video_status_payload(),
     })
@@ -98,6 +96,45 @@ def system_ports(request):
     return Response(PORTS_PAYLOAD)
 
 
+@api_view(['GET'])
+def system_status(request):
+    latest_telemetry = Telemetry.objects.select_related('gateway', 'device').order_by('-collected_at', '-created_at')[:5]
+    return Response({
+        'status': 'ok',
+        'timestamp': timezone.now().isoformat(),
+        'stats': _stats_payload(),
+        'video': _video_status_payload(),
+        'ports': PORTS_PAYLOAD,
+        'latest_telemetry': TelemetrySerializer(latest_telemetry, many=True).data,
+    })
+
+
+@api_view(['GET'])
+def devices_summary(request):
+    by_protocol = list(Device.objects.values('protocol').annotate(count=Count('id')).order_by('protocol'))
+    by_status = list(Device.objects.values('status').annotate(count=Count('id')).order_by('status'))
+    by_type = list(Device.objects.values('device_type').annotate(count=Count('id')).order_by('device_type'))
+
+    return Response({
+        'total': Device.objects.count(),
+        'by_protocol': by_protocol,
+        'by_status': by_status,
+        'by_type': by_type,
+    })
+
+
+@api_view(['GET'])
+def telemetry_summary(request):
+    latest_telemetry = Telemetry.objects.select_related('gateway', 'device').order_by('-collected_at', '-created_at')[:10]
+    latest_data = TelemetrySerializer(latest_telemetry, many=True).data
+
+    return Response({
+        'total': Telemetry.objects.count(),
+        'latest_count': len(latest_data),
+        'latest': latest_data,
+    })
+
+
 def index(request):
     return JsonResponse({
         'message': 'RK3576 Edge Platform Django API is running',
@@ -105,6 +142,9 @@ def index(request):
         'overview': '/api/overview/',
         'video_status': '/api/video/status/',
         'system_ports': '/api/system/ports/',
+        'system_status': '/api/system/status/',
+        'devices_summary': '/api/devices/summary/',
+        'telemetry_summary': '/api/telemetry/summary/',
         'gateways': '/api/gateways/',
         'devices': '/api/devices/',
         'telemetry': '/api/telemetry/',

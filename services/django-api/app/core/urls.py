@@ -3,14 +3,17 @@ from django.urls import path
 from .views import (
     device_detail,
     device_list_create,
+    devices_summary,
     gateway_detail,
     gateway_list_create,
     health,
     index,
     overview,
     system_ports,
+    system_status,
     telemetry_detail,
     telemetry_list_create,
+    telemetry_summary,
     video_status,
 )
 
@@ -20,10 +23,13 @@ urlpatterns = [
     path('overview/', overview, name='overview'),
     path('video/status/', video_status, name='video-status'),
     path('system/ports/', system_ports, name='system-ports'),
+    path('system/status/', system_status, name='system-status'),
     path('gateways/', gateway_list_create, name='gateway-list-create'),
     path('gateways/<int:pk>/', gateway_detail, name='gateway-detail'),
     path('devices/', device_list_create, name='device-list-create'),
+    path('devices/summary/', devices_summary, name='devices-summary'),
     path('devices/<int:pk>/', device_detail, name='device-detail'),
     path('telemetry/', telemetry_list_create, name='telemetry-list-create'),
+    path('telemetry/summary/', telemetry_summary, name='telemetry-summary'),
     path('telemetry/<int:pk>/', telemetry_detail, name='telemetry-detail'),
 ]

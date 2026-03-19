@@ -1,0 +1,19 @@
+{
+  "gateway_sn": "RK3576-0001",
+  "gateway_name": "RK3576 Gateway",
+  "publish_interval_seconds": 30,
+  "mqtt": {
+    "host": "mqtt",
+    "port": 1883
+  },
+  "serial": {
+    "enabled": false,
+    "port": "/dev/ttyUSB0",
+    "baudrate": 9600,
+    "protocol": "modbus_rtu"
+  },
+  "demo": {
+    "enabled": true,
+    "topic": "edge/RK3576-0001/sensor/gateway-core-demo/up"
+  }
+}

@@ -162,6 +162,13 @@
         margin-bottom: 20px;
       }
 
+      .system-overview-bar {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
       .stat-card {
         padding: 22px;
       }
@@ -456,6 +463,29 @@
         </div>
       </section>
 
+      <section class="system-overview-bar">
+        <div class="panel stat-card">
+          <div class="stat-label">系统状态</div>
+          <div class="stat-value" id="systemStatus">--</div>
+          <div class="stat-foot">平台整体运行摘要</div>
+        </div>
+        <div class="panel stat-card">
+          <div class="stat-label">设备协议数</div>
+          <div class="stat-value" id="protocolKinds">--</div>
+          <div class="stat-foot">当前识别到的协议类型数</div>
+        </div>
+        <div class="panel stat-card">
+          <div class="stat-label">设备类型数</div>
+          <div class="stat-value" id="deviceTypeKinds">--</div>
+          <div class="stat-foot">当前识别到的设备类型数</div>
+        </div>
+        <div class="panel stat-card">
+          <div class="stat-label">最近遥测数</div>
+          <div class="stat-value" id="latestTelemetryCount">--</div>
+          <div class="stat-foot">摘要接口返回的最新条数</div>
+        </div>
+      </section>
+
       <section class="grid-stats" id="statsGrid">
         <div class="panel stat-card">
           <div class="stat-label">网关总数</div>
@@ -633,6 +663,34 @@
         }
       }
 
+      async function loadSystemStatus() {
+        try {
+          const [statusRes, devicesRes, telemetryRes] = await Promise.all([
+            fetch('/api/system/status/', { cache: 'no-store' }),
+            fetch('/api/devices/summary/', { cache: 'no-store' }),
+            fetch('/api/telemetry/summary/', { cache: 'no-store' }),
+          ]);
+
+          if (!statusRes.ok || !devicesRes.ok || !telemetryRes.ok) {
+            throw new Error('summary request failed');
+          }
+
+          const statusData = await statusRes.json();
+          const devicesData = await devicesRes.json();
+          const telemetryData = await telemetryRes.json();
+
+          setText('systemStatus', statusData.status === 'ok' ? '正常' : '异常');
+          setText('protocolKinds', (devicesData.by_protocol || []).length);
+          setText('deviceTypeKinds', (devicesData.by_type || []).length);
+          setText('latestTelemetryCount', telemetryData.latest_count ?? 0);
+        } catch (err) {
+          setText('systemStatus', '异常');
+          setText('protocolKinds', '--');
+          setText('deviceTypeKinds', '--');
+          setText('latestTelemetryCount', '--');
+        }
+      }
+
       async function loadHealth() {
         try {
           const res = await fetch(healthUrl, { cache: 'no-store' });
@@ -683,7 +741,7 @@
       }
 
       async function refreshAll() {
-        await Promise.all([loadHealth(), loadOverview(), loadPorts()]);
+        await Promise.all([loadHealth(), loadOverview(), loadPorts(), loadSystemStatus()]);
       }
 
       function startAutoRefresh() {

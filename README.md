@@ -152,12 +152,19 @@ docker compose -f docker-compose.base.yml logs -f
 docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.video.yml up -d
 ```
 
+### 7. 启动开发工具骨架
+
+```bash
+docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.devtools.yml up -d
+```
+
 也可以使用脚本：
 
 ```bash
 chmod +x scripts/*.sh
 ./scripts/start-base.sh
 ./scripts/start-video.sh
+./scripts/start-all.sh
 ```
 
 ---
@@ -171,6 +178,9 @@ chmod +x scripts/*.sh
 - `GET /api/overview/`
 - `GET /api/video/status/`
 - `GET /api/system/ports/`
+- `GET /api/system/status/`
+- `GET /api/devices/summary/`
+- `GET /api/telemetry/summary/`
 
 ### Gateway
 
@@ -371,3 +381,8 @@ GitHub：
 ## 十四、Node-RED 演示流文件
 
 - `flows/node-red-mqtt-demo.json`
+
+## 十五、系统与开发骨架文档
+
+- `docs/system-api.md`
+- `docs/gateway-core.md`
