@@ -118,6 +118,31 @@
         line-height: 1.7;
       }
       .inline-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+      .stats-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin: 0 0 18px;
+      }
+      .stat-mini {
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.24);
+      }
+      .stat-mini .label { color: var(--muted); font-size: 12px; }
+      .stat-mini .value { margin-top: 8px; font-size: 26px; font-weight: 800; }
+      .confirm-box {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(239,68,68,0.2);
+        background: rgba(239,68,68,0.08);
+        color: #ffd7d7;
+        font-size: 13px;
+        display: none;
+      }
       @media (max-width: 1080px) {
         .topbar, .row-grid { grid-template-columns: 1fr; }
       }
@@ -137,6 +162,25 @@
             <button class="ghost" id="backDashboardBtn">返回首页</button>
             <button class="danger" id="logoutBtn">退出登录</button>
           </div>
+        </div>
+      </section>
+
+      <section class="stats-strip">
+        <div class="stat-mini">
+          <div class="label">账户总数</div>
+          <div class="value" id="statTotal">--</div>
+        </div>
+        <div class="stat-mini">
+          <div class="label">管理员</div>
+          <div class="value" id="statAdmin">--</div>
+        </div>
+        <div class="stat-mini">
+          <div class="label">运维员</div>
+          <div class="value" id="statOperator">--</div>
+        </div>
+        <div class="stat-mini">
+          <div class="label">观察员</div>
+          <div class="value" id="statViewer">--</div>
         </div>
       </section>
 
@@ -181,7 +225,7 @@
 
         <section class="panel">
           <div class="panel-title">账户编辑器</div>
-          <div class="panel-subtitle">可创建新账户，也可对选中账户修改显示名、角色、启用状态。</div>
+          <div class="panel-subtitle">可创建新账户，也可对选中账户修改显示名、角色、启用状态，或执行删除。</div>
           <div class="field">
             <label>编辑目标 ID</label>
             <input id="editId" placeholder="新建时留空" />
@@ -217,7 +261,15 @@
             <button class="primary" id="createBtn">创建账户</button>
             <button class="ghost" id="updateBtn">保存修改</button>
             <button class="ghost" id="resetPwdBtn">重置密码</button>
+            <button class="danger" id="deleteBtn">删除账户</button>
             <button class="ghost" id="clearFormBtn">清空表单</button>
+          </div>
+          <div class="confirm-box" id="confirmDeleteBox">
+            将删除当前选中的账户。该操作不可撤销，且不能删除当前登录管理员自己。
+            <div class="actions" style="margin-top:10px; margin-bottom:0;">
+              <button class="danger" id="confirmDeleteBtn">确认删除</button>
+              <button class="ghost" id="cancelDeleteBtn">取消</button>
+            </div>
           </div>
           <div class="result" id="resultBox">等待操作。</div>
         </section>
@@ -276,15 +328,35 @@
         document.getElementById('editRole').value = user.role || 'viewer';
         document.getElementById('editActive').value = String(user.is_active ?? true);
         document.getElementById('editPassword').value = '';
+        hideDeleteConfirm();
       }
 
       function clearForm() {
         fillForm({ id: '', display_name: '', username: '', role: 'viewer', is_active: true });
       }
 
+      function hideDeleteConfirm() {
+        document.getElementById('confirmDeleteBox').style.display = 'none';
+      }
+
+      function showDeleteConfirm() {
+        document.getElementById('confirmDeleteBox').style.display = 'block';
+      }
+
+      function renderStats(items) {
+        const adminCount = items.filter(item => item.role === 'admin').length;
+        const operatorCount = items.filter(item => item.role === 'operator').length;
+        const viewerCount = items.filter(item => item.role === 'viewer').length;
+        document.getElementById('statTotal').textContent = items.length;
+        document.getElementById('statAdmin').textContent = adminCount;
+        document.getElementById('statOperator').textContent = operatorCount;
+        document.getElementById('statViewer').textContent = viewerCount;
+      }
+
       function renderUsers(items) {
         userList = items || [];
         const tbody = document.getElementById('usersTableBody');
+        renderStats(items);
         if (!items.length) {
           tbody.innerHTML = '<tr><td colspan="7">暂无账户</td></tr>';
           return;
@@ -301,6 +373,7 @@
               <div class="inline-actions">
                 <button class="ghost" onclick="selectUser(${user.id})">编辑</button>
                 <button class="ghost" onclick="quickToggle(${user.id}, ${user.is_active ? 'false' : 'true'})">${user.is_active ? '停用' : '启用'}</button>
+                <button class="danger" onclick="prepareDelete(${user.id})">删除</button>
               </div>
             </td>
           </tr>
@@ -330,6 +403,14 @@
         if (!user) return;
         fillForm(user);
         setResult(`已载入账户 #${id} 到编辑器。`, 'ok');
+      }
+
+      window.prepareDelete = function(id) {
+        const user = userList.find(item => item.id === id);
+        if (!user) return;
+        fillForm(user);
+        showDeleteConfirm();
+        setResult(`准备删除账户 ${user.username}，请再次确认。`, 'warn');
       }
 
       window.quickToggle = async function(id, nextState) {
@@ -444,6 +525,31 @@
         document.getElementById('editPassword').value = '';
       }
 
+      async function deleteUser() {
+        const id = document.getElementById('editId').value.trim();
+        if (!id) {
+          setResult('请先选择要删除的账户。', 'warn');
+          return;
+        }
+        await ensureSessionCookie();
+        const res = await fetch(`/api/platform/users/${id}/`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          credentials: 'same-origin',
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setResult(data.detail || JSON.stringify(data), 'bad');
+          return;
+        }
+        hideDeleteConfirm();
+        clearForm();
+        setResult(`账户 ${data.username} 已删除。`, 'ok');
+        loadUsers();
+      }
+
       async function logout() {
         await ensureSessionCookie();
         await fetch('/api/platform/logout/', {
@@ -459,6 +565,16 @@
       document.getElementById('createBtn').addEventListener('click', createUser);
       document.getElementById('updateBtn').addEventListener('click', updateUser);
       document.getElementById('resetPwdBtn').addEventListener('click', resetPassword);
+      document.getElementById('deleteBtn').addEventListener('click', () => {
+        const id = document.getElementById('editId').value.trim();
+        if (!id) {
+          setResult('请先选择要删除的账户。', 'warn');
+          return;
+        }
+        showDeleteConfirm();
+      });
+      document.getElementById('confirmDeleteBtn').addEventListener('click', deleteUser);
+      document.getElementById('cancelDeleteBtn').addEventListener('click', hideDeleteConfirm);
       document.getElementById('clearFormBtn').addEventListener('click', clearForm);
       document.getElementById('backDashboardBtn').addEventListener('click', () => window.location.href = '/');
       document.getElementById('logoutBtn').addEventListener('click', logout);

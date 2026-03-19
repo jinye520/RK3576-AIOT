@@ -423,10 +423,10 @@ def platform_user_create(request):
     return Response(PlatformUserSerializer(user).data, status=status.HTTP_201_CREATED)
 
 
-@api_view(['GET', 'PATCH'])
+@api_view(['GET', 'PATCH', 'DELETE'])
 def platform_user_detail(request, pk):
     _seed_platform_users()
-    _, error_response = _require_admin_user(request)
+    current_user, error_response = _require_admin_user(request)
     if error_response:
         return error_response
 
@@ -437,6 +437,13 @@ def platform_user_detail(request, pk):
 
     if request.method == 'GET':
         return Response(PlatformUserSerializer(user).data)
+
+    if request.method == 'DELETE':
+        if user.pk == current_user.pk:
+            return Response({'detail': 'cannot delete current admin user'}, status=status.HTTP_400_BAD_REQUEST)
+        username = user.username
+        user.delete()
+        return Response({'detail': 'user deleted', 'username': username})
 
     serializer = PlatformUserCreateSerializer(user, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
