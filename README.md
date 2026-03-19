@@ -79,6 +79,11 @@ RK3576-AIOT/
 - `mqtt`
 - `node-red`
 
+通过 `docker-compose.video.yml` 可追加启动视频子系统：
+
+- `zlm`
+- `wvp`（当前为占位容器，后续替换为真实 WVP-GB28181-pro）
+
 ---
 
 ## 四、端口说明
@@ -117,7 +122,10 @@ mkdir -p \
   data/mosquitto \
   data/mosquitto-log \
   data/nodered \
-  data/django-media
+  data/django-media \
+  data/zlm/www \
+  data/record \
+  data/wvp
 ```
 
 ### 3. 启动基础服务
@@ -136,6 +144,20 @@ docker compose -f docker-compose.base.yml ps
 
 ```bash
 docker compose -f docker-compose.base.yml logs -f
+```
+
+### 6. 启动视频子系统
+
+```bash
+docker compose --env-file .env -f docker-compose.base.yml -f docker-compose.video.yml up -d
+```
+
+也可以使用脚本：
+
+```bash
+chmod +x scripts/*.sh
+./scripts/start-base.sh
+./scripts/start-video.sh
 ```
 
 ---
@@ -288,10 +310,17 @@ edge/RK3576-0001/sensor/sensor-demo-001/up
 
 ### 第四阶段：视频能力接入
 
-计划：
+当前已完成视频子系统骨架：
 
-- 接入 WVP-GB28181-pro
-- 接入 ZLMediaKit
+- `docker-compose.video.yml`
+- `zlm` 服务编排
+- `wvp` 占位容器
+- ZLM 与 WVP 配置文件结构
+
+后续计划：
+
+- 替换为真实 WVP-GB28181-pro 服务
+- 接入 ZLMediaKit 完整媒体链路
 - 实现摄像机预览、录像、回放
 
 ---
@@ -309,6 +338,8 @@ edge/RK3576-0001/sensor/sensor-demo-001/up
 - 串口采集服务
 - 多架构镜像（amd64 / arm64）
 - RK3576 真机部署方案
+- Django 对视频子系统的管理接口
+- Vue 视频管理与预览页面
 
 ---
 
@@ -326,3 +357,7 @@ edge/RK3576-0001/sensor/sensor-demo-001/up
 GitHub：
 
 - https://github.com/jinye520/RK3576-AIOT
+
+## 十三、视频子系统文档
+
+- `docs/video-subsystem.md`

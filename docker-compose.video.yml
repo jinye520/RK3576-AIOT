@@ -1,0 +1,60 @@
+services:
+  zlm:
+    image: zlmediakit/zlmediakit:master
+    container_name: edge-zlm
+    environment:
+      TZ: ${TZ}
+    ports:
+      - "19350:1935"
+      - "15540:554"
+      - "28082:80"
+      - "28443:443"
+      - "11000:10000"
+      - "11000:10000/udp"
+      - "11001-11010:10001-10010/udp"
+    volumes:
+      - ./data/zlm/www:/opt/media/www
+      - ./data/record:/opt/media/record
+      - ./docker/zlm/config.ini:/opt/media/conf/config.ini:ro
+    restart: unless-stopped
+    networks:
+      - edge-net
+
+  wvp:
+    image: eclipse-temurin:17-jdk-jammy
+    container_name: edge-wvp
+    depends_on:
+      - mysql
+      - redis
+      - zlm
+    command: ["sh", "-c", "echo 'WVP placeholder container started. Mount real WVP package and replace command in next step.' && tail -f /dev/null"]
+    environment:
+      TZ: ${TZ}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${WVP_DB_NAME}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      ZLM_HOST: zlm
+      ZLM_HTTP_PORT: 80
+      SIP_PORT: 5060
+      MEDIA_PORT: 11000
+    ports:
+      - "28080:18080"
+      - "25060:5060"
+      - "15060:5060/udp"
+      - "13000-13100:30000-30100/udp"
+    volumes:
+      - ./data/wvp:/opt/wvp
+      - ./docker/wvp/application-docker.yml:/opt/wvp/application-docker.yml:ro
+      - ./docker/wvp/README.md:/opt/wvp/README.md:ro
+    restart: unless-stopped
+    networks:
+      - edge-net
+
+networks:
+  edge-net:
+    external: true
+    name: rk3576-aiot_edge-net
