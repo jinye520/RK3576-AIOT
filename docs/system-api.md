@@ -15,8 +15,11 @@
 - 视频子系统
 - 数据统计
 
+### `/api/gateways/summary/`
+返回网关总数、在线数与按状态统计。
+
 ### `/api/devices/summary/`
-返回设备按协议、状态的统计。
+返回设备按协议、状态、类型的统计。
 
 ### `/api/telemetry/summary/`
 返回遥测总数与最近数据。

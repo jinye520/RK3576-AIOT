@@ -110,6 +110,16 @@ def system_status(request):
 
 
 @api_view(['GET'])
+def gateways_summary(request):
+    by_status = list(Gateway.objects.values('status').annotate(count=Count('id')).order_by('status'))
+    return Response({
+        'total': Gateway.objects.count(),
+        'online': Gateway.objects.filter(status='online').count(),
+        'by_status': by_status,
+    })
+
+
+@api_view(['GET'])
 def devices_summary(request):
     by_protocol = list(Device.objects.values('protocol').annotate(count=Count('id')).order_by('protocol'))
     by_status = list(Device.objects.values('status').annotate(count=Count('id')).order_by('status'))
@@ -143,6 +153,7 @@ def index(request):
         'video_status': '/api/video/status/',
         'system_ports': '/api/system/ports/',
         'system_status': '/api/system/status/',
+        'gateways_summary': '/api/gateways/summary/',
         'devices_summary': '/api/devices/summary/',
         'telemetry_summary': '/api/telemetry/summary/',
         'gateways': '/api/gateways/',

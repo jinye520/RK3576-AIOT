@@ -470,6 +470,11 @@
           <div class="stat-foot">平台整体运行摘要</div>
         </div>
         <div class="panel stat-card">
+          <div class="stat-label">网关在线数</div>
+          <div class="stat-value" id="gatewayOnlineCount">--</div>
+          <div class="stat-foot">在线网关 / 网关总数</div>
+        </div>
+        <div class="panel stat-card">
           <div class="stat-label">设备协议数</div>
           <div class="stat-value" id="protocolKinds">--</div>
           <div class="stat-foot">当前识别到的协议类型数</div>
@@ -665,26 +670,30 @@
 
       async function loadSystemStatus() {
         try {
-          const [statusRes, devicesRes, telemetryRes] = await Promise.all([
+          const [statusRes, gatewaysRes, devicesRes, telemetryRes] = await Promise.all([
             fetch('/api/system/status/', { cache: 'no-store' }),
+            fetch('/api/gateways/summary/', { cache: 'no-store' }),
             fetch('/api/devices/summary/', { cache: 'no-store' }),
             fetch('/api/telemetry/summary/', { cache: 'no-store' }),
           ]);
 
-          if (!statusRes.ok || !devicesRes.ok || !telemetryRes.ok) {
+          if (!statusRes.ok || !gatewaysRes.ok || !devicesRes.ok || !telemetryRes.ok) {
             throw new Error('summary request failed');
           }
 
           const statusData = await statusRes.json();
+          const gatewaysData = await gatewaysRes.json();
           const devicesData = await devicesRes.json();
           const telemetryData = await telemetryRes.json();
 
           setText('systemStatus', statusData.status === 'ok' ? '正常' : '异常');
+          setText('gatewayOnlineCount', `${gatewaysData.online ?? 0} / ${gatewaysData.total ?? 0}`);
           setText('protocolKinds', (devicesData.by_protocol || []).length);
           setText('deviceTypeKinds', (devicesData.by_type || []).length);
           setText('latestTelemetryCount', telemetryData.latest_count ?? 0);
         } catch (err) {
           setText('systemStatus', '异常');
+          setText('gatewayOnlineCount', '--');
           setText('protocolKinds', '--');
           setText('deviceTypeKinds', '--');
           setText('latestTelemetryCount', '--');

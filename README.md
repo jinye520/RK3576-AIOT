@@ -179,6 +179,7 @@ chmod +x scripts/*.sh
 - `GET /api/video/status/`
 - `GET /api/system/ports/`
 - `GET /api/system/status/`
+- `GET /api/gateways/summary/`
 - `GET /api/devices/summary/`
 - `GET /api/telemetry/summary/`
 
@@ -187,6 +188,7 @@ chmod +x scripts/*.sh
 - `GET /api/gateways/`
 - `POST /api/gateways/`
 - `GET /api/gateways/<id>/`
+- `GET /api/gateways/summary/`
 
 支持筛选参数：
 
@@ -386,3 +388,5 @@ GitHub：
 
 - `docs/system-api.md`
 - `docs/gateway-core.md`
+- `docs/startup-matrix.md`
+- `docs/homepage-roadmap.md`
