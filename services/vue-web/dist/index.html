@@ -735,7 +735,7 @@
           const text = `${zlmStatus.toUpperCase()} / ${wvpStatus.toUpperCase()}`;
           videoStatusEl.textContent = text;
           videoStatusHintEl.textContent = video.wvp?.jar_exists ? 'WVP 包已就绪' : 'WVP 仍为占位模式';
-          videoStatusEl.className = wvpStatus === 'package-ready' ? 'status-value status-ok' : 'status-value status-warn';
+          videoStatusEl.className = (wvpStatus === 'package-ready' || wvpStatus === 'running-candidate') ? 'status-value status-ok' : 'status-value status-warn';
 
           renderTelemetry(data.latest_telemetry || []);
         } catch (err) {

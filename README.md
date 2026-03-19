@@ -341,16 +341,19 @@ edge/RK3576-0001/sensor/sensor-demo-001/up
 
 ### 第四阶段：视频能力接入
 
-当前已完成视频子系统骨架：
+当前已完成视频子系统骨架，并已推进到真实 WVP 接入阶段：
 
 - `docker-compose.video.yml`
 - `zlm` 服务编排
-- `wvp` 占位容器
+- `wvp-builder` 自动构建骨架
+- `wvp` 真实 JAR 启动骨架
 - ZLM 与 WVP 配置文件结构
+- WVP 2.7.4 JAR 已验证可启动到服务初始化阶段
 
 后续计划：
 
-- 替换为真实 WVP-GB28181-pro 服务
+- 完成官方 SQL 持久化落地
+- 修复 ZLM 节点在线联通问题
 - 接入 ZLMediaKit 完整媒体链路
 - 实现摄像机预览、录像、回放
 
@@ -393,6 +396,7 @@ GitHub：
 
 - `docs/video-subsystem.md`
 - `docs/wvp-integration-next-steps.md`
+- `docs/wvp-real-integration.md`
 - `docs/node-red-demo.md`
 
 ## 十四、Node-RED 演示流文件

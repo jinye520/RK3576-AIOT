@@ -13,4 +13,4 @@ if [ ! -f "$WVP_JAR" ]; then
 fi
 
 echo "[WVP] Starting real package: $WVP_JAR"
-exec java -jar "$WVP_JAR" --spring.config.location="$WVP_CONFIG"
+exec java -Xms512m -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/wvp/ -jar "$WVP_JAR" --spring.config.location="$WVP_CONFIG"

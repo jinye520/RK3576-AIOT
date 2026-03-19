@@ -43,7 +43,7 @@ def _video_status_payload():
             'config_exists': zlm_config_path.exists(),
         },
         'wvp': {
-            'status': 'placeholder' if not wvp_jar_path.exists() else 'package-ready',
+            'status': 'placeholder' if not wvp_jar_path.exists() else 'running-candidate',
             'http_url': 'http://localhost:28080',
             'sip_tcp_port': 25060,
             'sip_udp_port': 15060,

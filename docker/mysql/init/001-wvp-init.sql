@@ -1,0 +1,2 @@
+-- Replace this file with the official WVP MySQL init SQL before rebuilding on a fresh host.
+-- The current development environment imported the official SQL directly into the running MySQL container.
