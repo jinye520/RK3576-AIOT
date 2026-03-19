@@ -17,7 +17,7 @@
 - 设备汇总
 - 遥测汇总
 
-目前 `/api/overview/`、`/api/system/status/`、`/api/home/dashboard/` 都已内嵌 `video_runtime` 字段，首页可直接通过聚合接口读取视频运行态，无需额外发起 `/api/video/runtime/` 请求。
+目前 `/api/overview/`、`/api/system/status/`、`/api/home/dashboard/` 都已内嵌 `video_runtime` 与 `video_inventory` 字段，首页可直接通过聚合接口读取视频运行态与视频资源概况，无需额外发起单独请求。
 
 ## 相关接口
 

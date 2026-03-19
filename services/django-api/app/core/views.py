@@ -144,59 +144,7 @@ def _video_status_payload():
     }
 
 
-def _stats_payload():
-    return {
-        'gateway_count': Gateway.objects.count(),
-        'device_count': Device.objects.count(),
-        'telemetry_count': Telemetry.objects.count(),
-        'online_gateway_count': Gateway.objects.filter(status='online').count(),
-        'online_device_count': Device.objects.filter(status='online').count(),
-    }
-
-
-@api_view(['GET'])
-def health(request):
-    return Response({
-        'status': 'ok',
-        'service': 'django-api',
-        'timestamp': timezone.now().isoformat(),
-    })
-
-
-@api_view(['GET'])
-def overview(request):
-    latest_telemetry = Telemetry.objects.select_related('gateway', 'device').order_by('-collected_at', '-created_at')[:10]
-    latest_data = TelemetrySerializer(latest_telemetry, many=True).data
-
-    video = _video_status_payload()
-    return Response({
-        'stats': _stats_payload(),
-        'latest_telemetry': latest_data,
-        'video': video,
-        'video_runtime': {
-            'wvp': video.get('wvp', {}).get('runtime', {}),
-            'zlm': video.get('zlm', {}).get('probe', {}),
-        },
-    })
-
-
-@api_view(['GET'])
-def video_status(request):
-    return Response(_video_status_payload())
-
-
-@api_view(['GET'])
-def video_runtime(request):
-    video = _video_status_payload()
-    return Response({
-        'status': video.get('wvp', {}).get('status'),
-        'wvp': video.get('wvp', {}),
-        'zlm': video.get('zlm', {}),
-    })
-
-
-@api_view(['GET'])
-def video_inventory(request):
+def _video_inventory_payload():
     token, login_data = _wvp_login_token()
     inventory = {
         'login_ready': bool(token),
@@ -251,7 +199,64 @@ def video_inventory(request):
         except (requests.RequestException, ValueError):
             pass
 
-    return Response(inventory)
+    return inventory
+
+
+def _stats_payload():
+    return {
+        'gateway_count': Gateway.objects.count(),
+        'device_count': Device.objects.count(),
+        'telemetry_count': Telemetry.objects.count(),
+        'online_gateway_count': Gateway.objects.filter(status='online').count(),
+        'online_device_count': Device.objects.filter(status='online').count(),
+    }
+
+
+@api_view(['GET'])
+def health(request):
+    return Response({
+        'status': 'ok',
+        'service': 'django-api',
+        'timestamp': timezone.now().isoformat(),
+    })
+
+
+@api_view(['GET'])
+def overview(request):
+    latest_telemetry = Telemetry.objects.select_related('gateway', 'device').order_by('-collected_at', '-created_at')[:10]
+    latest_data = TelemetrySerializer(latest_telemetry, many=True).data
+
+    video = _video_status_payload()
+    return Response({
+        'stats': _stats_payload(),
+        'latest_telemetry': latest_data,
+        'video': video,
+        'video_runtime': {
+            'wvp': video.get('wvp', {}).get('runtime', {}),
+            'zlm': video.get('zlm', {}).get('probe', {}),
+        },
+        'video_inventory': _video_inventory_payload(),
+    })
+
+
+@api_view(['GET'])
+def video_status(request):
+    return Response(_video_status_payload())
+
+
+@api_view(['GET'])
+def video_runtime(request):
+    video = _video_status_payload()
+    return Response({
+        'status': video.get('wvp', {}).get('status'),
+        'wvp': video.get('wvp', {}),
+        'zlm': video.get('zlm', {}),
+    })
+
+
+@api_view(['GET'])
+def video_inventory(request):
+    return Response(_video_inventory_payload())
 
 
 @api_view(['GET'])
@@ -272,6 +277,7 @@ def system_status(request):
             'wvp': video.get('wvp', {}).get('runtime', {}),
             'zlm': video.get('zlm', {}).get('probe', {}),
         },
+        'video_inventory': _video_inventory_payload(),
         'ports': PORTS_PAYLOAD,
         'latest_telemetry': TelemetrySerializer(latest_telemetry, many=True).data,
     })
@@ -310,6 +316,7 @@ def home_dashboard(request):
             'wvp': video.get('wvp', {}).get('runtime', {}),
             'zlm': video.get('zlm', {}).get('probe', {}),
         },
+        'video_inventory': _video_inventory_payload(),
         'ports': PORTS_PAYLOAD,
         'gateway_summary': gateway_summary,
         'device_summary': device_summary,

@@ -750,14 +750,17 @@
           return;
         }
 
+        const inventory = video?.inventory || {};
         const items = [
           ['WVP 服务状态', video?.wvp?.status || '--'],
           ['WVP 登录可用', runtime.login_ready ? '是' : '否'],
           ['Admin 账户存在', runtime.admin_user_present ? '是' : '否'],
           ['管理前端可用', runtime.frontend_ready ? '是' : '否'],
           ['接口文档可用', runtime.api_doc_ready ? '是' : '否'],
-          ['媒体节点总数', runtime.media_server_count ?? 0],
-          ['在线媒体节点', runtime.media_server_online ?? 0],
+          ['媒体节点总数', inventory.media_server_total ?? runtime.media_server_count ?? 0],
+          ['在线媒体节点', inventory.media_server_online ?? runtime.media_server_online ?? 0],
+          ['视频设备总数', inventory.device_total ?? 0],
+          ['级联平台总数', inventory.platform_total ?? 0],
           ['Server ID', runtime.server_id || '--'],
         ];
 
@@ -793,6 +796,7 @@
           const video = {
             ...(data.video || {}),
             runtime: data.video_runtime || {},
+            inventory: data.video_inventory || {},
           };
 
           setText('gatewayCount', stats.gateway_count ?? 0);
