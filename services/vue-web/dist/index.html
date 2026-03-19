@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RK3576 Edge Platform</title>
+    <style>
+      :root {
+        --bg: #07111f;
+        --panel: rgba(15, 23, 42, 0.78);
+        --panel-strong: #111827;
+        --line: rgba(148, 163, 184, 0.16);
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --primary: #38bdf8;
+        --green: #22c55e;
+        --amber: #f59e0b;
+        --red: #ef4444;
+        --shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, Arial, sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(56, 189, 248, 0.15), transparent 28%),
+          radial-gradient(circle at left center, rgba(34, 197, 94, 0.1), transparent 22%),
+          linear-gradient(180deg, #08101c 0%, #0f172a 100%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 32px 20px 48px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.4fr 0.9fr;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+      }
+
+      .hero-main {
+        padding: 30px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 999px;
+        color: var(--primary);
+        background: rgba(56, 189, 248, 0.08);
+        font-size: 13px;
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-size: 40px;
+        line-height: 1.15;
+      }
+
+      .hero-desc {
+        color: var(--muted);
+        line-height: 1.8;
+        font-size: 15px;
+        max-width: 760px;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 22px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 148px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.18s ease, opacity 0.18s ease, border-color 0.18s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        opacity: 0.95;
+      }
+
+      .btn-primary {
+        color: #06141f;
+        background: linear-gradient(135deg, #38bdf8, #67e8f9);
+      }
+
+      .btn-secondary {
+        color: var(--text);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .status-panel {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .status-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        background: rgba(255, 255, 255, 0.025);
+        border: 1px solid rgba(148, 163, 184, 0.08);
+        border-radius: 14px;
+      }
+
+      .status-label {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .status-value {
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .status-ok {
+        color: var(--green);
+      }
+
+      .status-warn {
+        color: var(--amber);
+      }
+
+      .grid-stats {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .stat-card {
+        padding: 22px;
+      }
+
+      .stat-label {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+
+      .stat-value {
+        font-size: 34px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .stat-foot {
+        margin-top: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: 1.35fr 0.95fr;
+        gap: 20px;
+      }
+
+      .section {
+        padding: 22px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .section-title {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .section-subtitle {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .telemetry-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .telemetry-item {
+        padding: 16px;
+        border-radius: 16px;
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        background: rgba(255, 255, 255, 0.025);
+      }
+
+      .telemetry-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .telemetry-name {
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .telemetry-topic {
+        color: var(--muted);
+        font-size: 12px;
+        word-break: break-all;
+      }
+
+      .telemetry-time {
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .kv-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .kv {
+        min-width: 120px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(56, 189, 248, 0.07);
+        border: 1px solid rgba(56, 189, 248, 0.12);
+      }
+
+      .kv-key {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .kv-value {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .link-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .link-card {
+        display: block;
+        padding: 16px;
+        border-radius: 16px;
+        text-decoration: none;
+        color: var(--text);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        background: rgba(255, 255, 255, 0.025);
+      }
+
+      .link-card:hover {
+        border-color: rgba(56, 189, 248, 0.25);
+      }
+
+      .link-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .link-desc {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .empty {
+        padding: 24px;
+        border-radius: 16px;
+        border: 1px dashed rgba(148, 163, 184, 0.18);
+        text-align: center;
+        color: var(--muted);
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .toolbar button {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .toolbar button:hover {
+        border-color: rgba(56, 189, 248, 0.25);
+      }
+
+      .footer-note {
+        margin-top: 20px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      @media (max-width: 1100px) {
+        .hero,
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .grid-stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .container {
+          padding: 18px 14px 28px;
+        }
+
+        .hero-main,
+        .status-panel,
+        .section,
+        .stat-card {
+          padding: 18px;
+        }
+
+        .grid-stats {
+          grid-template-columns: 1fr;
+        }
+
+        h1 {
+          font-size: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <section class="hero">
+        <div class="panel hero-main">
+          <div class="badge">RK3576 · Edge AIoT Platform</div>
+          <h1>物联网边缘平台实时总览</h1>
+          <p class="hero-desc">
+            当前页面直接读取 Django `/api/overview/` 数据，展示网关、设备、遥测统计与最新传感器上报记录，作为
+            RK3576 边缘计算平台的最小可视化入口。后续可继续扩展视频监控、设备管理、规则引擎和告警中心。
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="/nodered/" target="_blank" rel="noreferrer">打开 Node-RED</a>
+            <a class="btn btn-secondary" href="/api/overview/" target="_blank" rel="noreferrer">查看概览 API</a>
+            <a class="btn btn-secondary" href="/api/telemetry/" target="_blank" rel="noreferrer">查看遥测 API</a>
+          </div>
+        </div>
+        <div class="panel status-panel">
+          <div class="status-row">
+            <div>
+              <div class="status-label">平台状态</div>
+              <div class="status-value status-ok" id="platformStatus">运行中</div>
+            </div>
+            <div class="status-value" id="lastRefresh">--</div>
+          </div>
+          <div class="status-row">
+            <div>
+              <div class="status-label">API 健康检查</div>
+              <div class="status-value" id="apiStatus">检查中...</div>
+            </div>
+            <div class="status-label">/api/health/</div>
+          </div>
+          <div class="status-row">
+            <div>
+              <div class="status-label">Node-RED</div>
+              <div class="status-value status-ok">已接入</div>
+            </div>
+            <div class="status-label">MQTT 编排</div>
+          </div>
+          <div class="status-row">
+            <div>
+              <div class="status-label">消息链路</div>
+              <div class="status-value status-ok">MQTT → Django → MySQL</div>
+            </div>
+            <div class="status-label">已打通</div>
+          </div>
+          <div class="toolbar">
+            <button id="refreshBtn">立即刷新</button>
+            <button id="toggleAutoBtn">关闭自动刷新</button>
+          </div>
+          <div class="footer-note">默认每 5 秒刷新一次概览数据。</div>
+        </div>
+      </section>
+
+      <section class="grid-stats" id="statsGrid">
+        <div class="panel stat-card">
+          <div class="stat-label">网关总数</div>
+          <div class="stat-value" id="gatewayCount">--</div>
+          <div class="stat-foot">边缘网关建档数量</div>
+        </div>
+        <div class="panel stat-card">
+          <div class="stat-label">设备总数</div>
+          <div class="stat-value" id="deviceCount">--</div>
+          <div class="stat-foot">已自动识别或手动创建</div>
+        </div>
+        <div class="panel stat-card">
+          <div class="stat-label">遥测总数</div>
+          <div class="stat-value" id="telemetryCount">--</div>
+          <div class="stat-foot">累计接收的数据条数</div>
+        </div>
+        <div class="panel stat-card">
+          <div class="stat-label">在线网关</div>
+          <div class="stat-value" id="onlineGatewayCount">--</div>
+          <div class="stat-foot">状态为 online 的网关</div>
+        </div>
+        <div class="panel stat-card">
+          <div class="stat-label">在线设备</div>
+          <div class="stat-value" id="onlineDeviceCount">--</div>
+          <div class="stat-foot">状态为 online 的设备</div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <div class="panel section">
+          <div class="section-header">
+            <div>
+              <div class="section-title">最新遥测数据</div>
+              <div class="section-subtitle">展示 `/api/overview/` 返回的 latest_telemetry</div>
+            </div>
+          </div>
+          <div class="telemetry-list" id="telemetryList">
+            <div class="empty">正在加载遥测数据...</div>
+          </div>
+        </div>
+
+        <div class="panel section">
+          <div class="section-header">
+            <div>
+              <div class="section-title">平台入口</div>
+              <div class="section-subtitle">后续可继续扩展为完整前端管理后台</div>
+            </div>
+          </div>
+          <div class="link-list">
+            <a class="link-card" href="/nodered/" target="_blank" rel="noreferrer">
+              <div class="link-title">Node-RED 在线编程</div>
+              <div class="link-desc">配置数据流、协议转换、MQTT 发布与边缘自动化逻辑。</div>
+            </a>
+            <a class="link-card" href="/api/gateways/" target="_blank" rel="noreferrer">
+              <div class="link-title">网关管理 API</div>
+              <div class="link-desc">查看网关对象，后续可增加网关状态、心跳和配置管理。</div>
+            </a>
+            <a class="link-card" href="/api/devices/" target="_blank" rel="noreferrer">
+              <div class="link-title">设备管理 API</div>
+              <div class="link-desc">查看传感器和设备建档结果，支持协议、状态和网关筛选。</div>
+            </a>
+            <a class="link-card" href="/api/telemetry/" target="_blank" rel="noreferrer">
+              <div class="link-title">遥测数据 API</div>
+              <div class="link-desc">查看最新采集数据，后续可扩展图表、时间范围查询和报表导出。</div>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const overviewUrl = '/api/overview/';
+      const healthUrl = '/api/health/';
+      const refreshBtn = document.getElementById('refreshBtn');
+      const toggleAutoBtn = document.getElementById('toggleAutoBtn');
+      let autoRefresh = true;
+      let timer = null;
+
+      function setText(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      }
+
+      function formatTime(value) {
+        if (!value) return '--';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return date.toLocaleString('zh-CN', { hour12: false });
+      }
+
+      function renderTelemetry(items) {
+        const container = document.getElementById('telemetryList');
+        if (!items || items.length === 0) {
+          container.innerHTML = '<div class="empty">暂无遥测数据，请先通过 Node-RED 或 MQTT 发布测试消息。</div>';
+          return;
+        }
+
+        container.innerHTML = items.map(item => {
+          const payload = item.payload || {};
+          const kv = Object.entries(payload).map(([key, value]) => {
+            const displayValue = typeof value === 'object' ? JSON.stringify(value) : value;
+            return `
+              <div class="kv">
+                <div class="kv-key">${key}</div>
+                <div class="kv-value">${displayValue}</div>
+              </div>
+            `;
+          }).join('');
+
+          return `
+            <div class="telemetry-item">
+              <div class="telemetry-top">
+                <div>
+                  <div class="telemetry-name">设备 #${item.device} · 网关 #${item.gateway}</div>
+                  <div class="telemetry-topic">${item.topic || '--'}</div>
+                </div>
+                <div class="telemetry-time">${formatTime(item.collected_at)}</div>
+              </div>
+              <div class="kv-grid">${kv || '<div class="empty">无 payload 数据</div>'}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      async function loadHealth() {
+        try {
+          const res = await fetch(healthUrl, { cache: 'no-store' });
+          if (!res.ok) throw new Error('health request failed');
+          const data = await res.json();
+          setText('apiStatus', data.status === 'ok' ? '正常' : '异常');
+          document.getElementById('apiStatus').className = data.status === 'ok' ? 'status-value status-ok' : 'status-value status-warn';
+        } catch (err) {
+          setText('apiStatus', '不可达');
+          document.getElementById('apiStatus').className = 'status-value status-warn';
+        }
+      }
+
+      async function loadOverview() {
+        try {
+          const res = await fetch(overviewUrl, { cache: 'no-store' });
+          if (!res.ok) throw new Error('overview request failed');
+          const data = await res.json();
+          const stats = data.stats || {};
+
+          setText('gatewayCount', stats.gateway_count ?? 0);
+          setText('deviceCount', stats.device_count ?? 0);
+          setText('telemetryCount', stats.telemetry_count ?? 0);
+          setText('onlineGatewayCount', stats.online_gateway_count ?? 0);
+          setText('onlineDeviceCount', stats.online_device_count ?? 0);
+          setText('lastRefresh', formatTime(new Date().toISOString()));
+
+          renderTelemetry(data.latest_telemetry || []);
+        } catch (err) {
+          renderTelemetry([]);
+          setText('lastRefresh', '刷新失败');
+        }
+      }
+
+      async function refreshAll() {
+        await Promise.all([loadHealth(), loadOverview()]);
+      }
+
+      function startAutoRefresh() {
+        stopAutoRefresh();
+        timer = setInterval(() => {
+          if (autoRefresh) refreshAll();
+        }, 5000);
+      }
+
+      function stopAutoRefresh() {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+      }
+
+      refreshBtn.addEventListener('click', refreshAll);
+      toggleAutoBtn.addEventListener('click', () => {
+        autoRefresh = !autoRefresh;
+        toggleAutoBtn.textContent = autoRefresh ? '关闭自动刷新' : '开启自动刷新';
+        if (autoRefresh) {
+          refreshAll();
+          startAutoRefresh();
+        } else {
+          stopAutoRefresh();
+        }
+      });
+
+      refreshAll();
+      startAutoRefresh();
+    </script>
+  </body>
+</html>
