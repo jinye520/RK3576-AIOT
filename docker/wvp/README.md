@@ -1,22 +1,26 @@
-# WVP Placeholder
+# WVP Runtime Layout
 
-当前 `docker-compose.video.yml` 中的 `wvp` 服务为占位容器，用于先完成视频子系统网络、端口、卷、配置结构搭建。
+当前项目中的 `wvp` 已不再是纯占位服务，而是基于真实 WVP 运行路径工作。
 
-## 下一步接入真实 WVP-GB28181-pro
-
-建议后续补充：
-
-1. 下载并放置 WVP 可运行包/JAR 到 `data/wvp/`
-2. 将 `docker-compose.video.yml` 中的 `wvp` 服务改为真实启动命令
-3. 根据实际版本完善 `application-docker.yml`
-4. 初始化 WVP 数据库
-5. 联调 ZLMediaKit、SIP、RTP、录像目录
-
-## 推荐后续结构
+## 当前目录约定
 
 ```text
 data/wvp/
 ├── wvp-pro.jar
-├── logs/
-└── config/
+├── runtime-override/
+│   └── static/
+└── logs/
 ```
+
+## 说明
+
+- `wvp-builder` 会优先构建 `wvp-pro.jar`
+- 若检测到源码目录可用，还会自动构建 Vue 前端静态资源到 `runtime-override/static/`
+- `start-wvp.sh` 会在启动时优先挂载 `runtime-override/static/`，从而恢复原 WVP Vue 管理后台入口
+
+## 当前可验证入口
+
+- `http://localhost:28080/`
+- `http://localhost:28080/#/login`
+- `http://localhost:28080/doc.html`
+- `http://localhost:28080/swagger-ui/index.html`

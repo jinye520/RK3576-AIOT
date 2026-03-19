@@ -21,9 +21,31 @@ services:
       - edge-net
 
   wvp-builder:
-    image: maven:3.9-eclipse-temurin-11
+    image: node:20-bullseye
     container_name: edge-wvp-builder
-    command: ["sh", "-c", "if [ -f /output/wvp-pro.jar ]; then echo '[wvp-builder] jar already exists'; else mvn -q -DskipTests package && cp target/wvp-pro-*.jar /output/wvp-pro.jar; fi && tail -f /dev/null"]
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        cd /src
+        if [ ! -f /output/wvp-pro.jar ]; then
+          apt-get update >/dev/null && apt-get install -y openjdk-17-jdk maven rsync >/dev/null
+          mvn -q -DskipTests package
+          cp target/wvp-pro-*.jar /output/wvp-pro.jar
+        else
+          echo '[wvp-builder] jar already exists'
+        fi
+        if [ ! -f /output/runtime-override/static/index.html ]; then
+          cd /src/web
+          npm install
+          npm run build:prod
+          mkdir -p /output/runtime-override
+          rsync -a --delete /src/src/main/resources/static/ /output/runtime-override/static/
+        else
+          echo '[wvp-builder] runtime static already exists'
+        fi
+        tail -f /dev/null
     volumes:
       - ./data/wvp-source:/src
       - ./data/wvp:/output

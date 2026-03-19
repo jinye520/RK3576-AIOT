@@ -25,6 +25,7 @@
 - 已验证 WVP 对外可访问的管理/文档入口为 `http://localhost:28080/doc.html` 与 `http://localhost:28080/swagger-ui/index.html`
 - 已验证 `http://localhost:28080/v3/api-docs` 可正常返回 OpenAPI 文档
 - 已修复当前运行包未发布原 Vue 静态前端的问题，现已恢复 `http://localhost:28080/` 与 `http://localhost:28080/#/login` 入口
+- 已将前端恢复方案固化到 `start-wvp.sh` 运行时覆盖机制，并补充 `wvp-builder` 自动构建 runtime static 的路径
 - 当前剩余问题集中在数据库初始化固化与平台首页的视频入口收口
 
 ## 仍需人工确认的关键点
