@@ -19,7 +19,8 @@
 - `wvp-builder` 服务已加入视频 compose，可自动构建 JAR
 - 已验证 WVP 2.7.4 JAR 可以启动到服务初始化阶段
 - 已验证 SIP 8116 启动成功
-- 当前剩余问题集中在 ZLM 连接与数据库初始化细节收口
+- 已修复 ZLM secret 不一致导致的节点连接失败问题
+- 当前剩余问题集中在数据库初始化固化与管理页面验证收口
 
 ## 仍需人工确认的关键点
 
@@ -33,8 +34,9 @@
 1. 修复 `data/wvp` 与 `data/zlm` 宿主机目录权限
 2. 将官方 2.7.4 MySQL 初始化脚本正式落地到 `docker/mysql/init/001-wvp-init.sql`
 3. 清空并重建 MySQL 数据卷后重新启动视频栈
-4. 校准 ZLM hook 与 WVP 地址联通问题
-5. 验证：
+4. 验证 WVP 管理页面、默认登录流程与节点状态展示
+5. 视需要补充 Django 对 WVP 运行态的主动探测
+6. 验证：
    - `http://localhost:28080`
    - `http://localhost:28082`
    - `/api/video/status/`

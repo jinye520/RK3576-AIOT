@@ -59,7 +59,7 @@ media:
   rtsp-port: ${MediaRtsp:15540}
   rtsp-ssl-port: 0
   auto-config: true
-  secret: ${ZLM_SERCERT:su6TiedN2rVAmBbIDX0aa0QTiBJLBdcf}
+  secret: ${ZLM_SERCERT:0}
   rtp:
     enable: false
     port-range: 30000,30500

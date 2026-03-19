@@ -51,7 +51,7 @@ services:
       DATABASE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       ZLM_HOST: zlm
       ZLM_HOOK_HOST: edge-wvp
-      ZLM_SERCERT: su6TiedN2rVAmBbIDX0aa0QTiBJLBdcf
+      ZLM_SERCERT: ${ZLM_SERCERT:-0}
       MediaHttp: 28082
       MediaHttps: 28443
       MediaRtmp: 19350
