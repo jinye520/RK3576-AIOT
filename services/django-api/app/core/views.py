@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import requests
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils import timezone
@@ -32,25 +33,52 @@ def _video_status_payload():
     zlm_config_path = Path('/app/docker/zlm/config.ini')
     wvp_config_path = Path('/app/docker/wvp/application-docker.yml')
 
+    zlm_status = 'configured'
+    wvp_status = 'placeholder' if not wvp_jar_path.exists() else 'running-candidate'
+    wvp_probe = {'reachable': False}
+    zlm_probe = {'reachable': False}
+
+    if wvp_jar_path.exists():
+        try:
+            response = requests.get('http://edge-wvp:18978/api/server/media_server/list', timeout=3)
+            if response.status_code in (200, 401):
+                wvp_probe['reachable'] = True
+                if response.status_code == 401:
+                    wvp_status = 'running'
+        except requests.RequestException:
+            pass
+
+        try:
+            response = requests.post('http://zlm/index/api/getServerConfig', data={'secret': '0'}, timeout=3)
+            if response.ok:
+                payload = response.json()
+                zlm_probe['reachable'] = payload.get('code') == 0
+                if zlm_probe['reachable']:
+                    zlm_status = 'running'
+        except (requests.RequestException, ValueError):
+            pass
+
     return {
         'enabled': True,
         'zlm': {
-            'status': 'configured',
+            'status': zlm_status,
             'http_url': 'http://localhost:28082',
             'rtmp_port': 19350,
             'rtsp_port': 15540,
             'rtc_port': 11000,
             'config_exists': zlm_config_path.exists(),
+            'probe': zlm_probe,
         },
         'wvp': {
-            'status': 'placeholder' if not wvp_jar_path.exists() else 'running-candidate',
+            'status': wvp_status,
             'http_url': 'http://localhost:28080',
-            'sip_tcp_port': 25060,
-            'sip_udp_port': 15060,
+            'sip_tcp_port': 28116,
+            'sip_udp_port': 28116,
             'rtp_udp_range': '13000-13100',
             'config_exists': wvp_config_path.exists(),
             'jar_exists': wvp_jar_path.exists(),
             'jar_path': str(wvp_jar_path),
+            'probe': wvp_probe,
         },
     }
 

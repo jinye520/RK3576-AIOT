@@ -67,7 +67,7 @@ services:
       RecordSip: false
       RecordPushLive: false
     ports:
-      - "28080:18080"
+      - "28080:18978"
       - "28116:8116"
       - "28116:8116/udp"
       - "13000-13100:30000-30100/udp"

@@ -3,4 +3,5 @@ djangorestframework>=3.15
 mysqlclient>=2.2
 redis>=5.0
 paho-mqtt>=2.1
+requests>=2.32
 gunicorn>=22.0

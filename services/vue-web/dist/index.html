@@ -734,8 +734,8 @@
           const zlmStatus = video.zlm?.status || 'unknown';
           const text = `${zlmStatus.toUpperCase()} / ${wvpStatus.toUpperCase()}`;
           videoStatusEl.textContent = text;
-          videoStatusHintEl.textContent = video.wvp?.jar_exists ? 'WVP 包已就绪' : 'WVP 仍为占位模式';
-          videoStatusEl.className = (wvpStatus === 'package-ready' || wvpStatus === 'running-candidate') ? 'status-value status-ok' : 'status-value status-warn';
+          videoStatusHintEl.textContent = video.wvp?.probe?.reachable ? 'WVP 服务可访问' : (video.wvp?.jar_exists ? 'WVP 包已就绪' : 'WVP 仍为占位模式');
+          videoStatusEl.className = (wvpStatus === 'package-ready' || wvpStatus === 'running-candidate' || wvpStatus === 'running') ? 'status-value status-ok' : 'status-value status-warn';
 
           renderTelemetry(data.latest_telemetry || []);
         } catch (err) {
