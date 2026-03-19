@@ -249,6 +249,12 @@
         gap: 12px;
       }
 
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
       .telemetry-item {
         padding: 16px;
         border-radius: 16px;
@@ -559,6 +565,18 @@
         <div class="panel section">
           <div class="section-header">
             <div>
+              <div class="section-title">视频资源摘要</div>
+              <div class="section-subtitle">汇总视频设备、媒体节点、级联平台与入口可访问性</div>
+            </div>
+          </div>
+          <div class="summary-grid" id="videoSummaryGrid">
+            <div class="empty">正在加载视频资源摘要...</div>
+          </div>
+        </div>
+
+        <div class="panel section">
+          <div class="section-header">
+            <div>
               <div class="section-title">平台入口</div>
               <div class="section-subtitle">后续可继续扩展为完整前端管理后台</div>
             </div>
@@ -742,6 +760,26 @@
         }
       }
 
+      function renderVideoSummary(video) {
+        const container = document.getElementById('videoSummaryGrid');
+        const inventory = video?.inventory || {};
+        if (!container) return;
+        const items = [
+          ['视频设备总数', inventory.device_total ?? 0],
+          ['级联平台总数', inventory.platform_total ?? 0],
+          ['媒体节点总数', inventory.media_server_total ?? 0],
+          ['在线媒体节点', inventory.media_server_online ?? 0],
+          ['WVP 前端可用', inventory.frontend_ready ? '是' : '否'],
+          ['接口文档可用', inventory.api_doc_ready ? '是' : '否'],
+        ];
+        container.innerHTML = items.map(([label, value]) => `
+          <div class="kv">
+            <div class="kv-key">${label}</div>
+            <div class="kv-value">${value}</div>
+          </div>
+        `).join('');
+      }
+
       function renderVideoRuntime(video) {
         const container = document.getElementById('videoRuntimeList');
         const runtime = video?.wvp?.runtime || video?.runtime?.wvp;
@@ -818,9 +856,11 @@
 
           renderTelemetry(data.latest_telemetry || []);
           renderVideoRuntime(video);
+          renderVideoSummary(video);
         } catch (err) {
           renderTelemetry([]);
           renderVideoRuntime(null);
+          renderVideoSummary({ inventory: {} });
           setText('lastRefresh', '刷新失败');
           const videoStatusEl = document.getElementById('videoStatus');
           if (videoStatusEl) {

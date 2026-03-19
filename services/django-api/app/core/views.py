@@ -155,6 +155,8 @@ def _video_inventory_payload():
         'platform_total': 0,
         'media_server_total': 0,
         'media_server_online': 0,
+        'api_doc_ready': False,
+        'frontend_ready': False,
     }
 
     if token:
@@ -197,6 +199,18 @@ def _video_inventory_payload():
                 inventory['media_server_total'] = len(media_payload)
                 inventory['media_server_online'] = sum(1 for item in media_payload if item.get('status'))
         except (requests.RequestException, ValueError):
+            pass
+
+        try:
+            api_doc_response = requests.get('http://edge-wvp:18978/v3/api-docs', timeout=3)
+            inventory['api_doc_ready'] = api_doc_response.ok
+        except requests.RequestException:
+            pass
+
+        try:
+            frontend_response = requests.get('http://edge-wvp:18978/', timeout=3)
+            inventory['frontend_ready'] = frontend_response.ok and 'WVP视频平台' in frontend_response.text
+        except requests.RequestException:
             pass
 
     return inventory
