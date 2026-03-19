@@ -37,6 +37,15 @@ def _video_status_payload():
     wvp_status = 'placeholder' if not wvp_jar_path.exists() else 'running-candidate'
     wvp_probe = {'reachable': False}
     zlm_probe = {'reachable': False}
+    wvp_runtime = {
+        'login_ready': False,
+        'admin_user_present': False,
+        'media_server_count': 0,
+        'media_server_online': 0,
+        'server_id': None,
+        'api_doc_ready': False,
+        'frontend_ready': False,
+    }
 
     if wvp_jar_path.exists():
         try:
@@ -56,6 +65,46 @@ def _video_status_payload():
                 if zlm_probe['reachable']:
                     zlm_status = 'running'
         except (requests.RequestException, ValueError):
+            pass
+
+        try:
+            login_response = requests.get(
+                'http://edge-wvp:18978/api/user/login',
+                params={
+                    'username': 'admin',
+                    'password': '21232f297a57a5a743894a0e4a801fc3',
+                },
+                timeout=3,
+            )
+            if login_response.ok:
+                login_payload = login_response.json()
+                token = login_payload.get('data', {}).get('accessToken')
+                wvp_runtime['login_ready'] = bool(token)
+                wvp_runtime['admin_user_present'] = login_payload.get('data', {}).get('username') == 'admin'
+                wvp_runtime['server_id'] = login_payload.get('data', {}).get('serverId')
+                if token:
+                    media_response = requests.get(
+                        'http://edge-wvp:18978/api/server/media_server/list',
+                        headers={'access-token': token},
+                        timeout=3,
+                    )
+                    if media_response.ok:
+                        media_payload = media_response.json().get('data') or []
+                        wvp_runtime['media_server_count'] = len(media_payload)
+                        wvp_runtime['media_server_online'] = sum(1 for item in media_payload if item.get('status'))
+        except (requests.RequestException, ValueError):
+            pass
+
+        try:
+            api_doc_response = requests.get('http://edge-wvp:18978/v3/api-docs', timeout=3)
+            wvp_runtime['api_doc_ready'] = api_doc_response.ok
+        except requests.RequestException:
+            pass
+
+        try:
+            frontend_response = requests.get('http://edge-wvp:18978/', timeout=3)
+            wvp_runtime['frontend_ready'] = frontend_response.ok and 'WVP视频平台' in frontend_response.text
+        except requests.RequestException:
             pass
 
     return {
@@ -79,6 +128,7 @@ def _video_status_payload():
             'jar_exists': wvp_jar_path.exists(),
             'jar_path': str(wvp_jar_path),
             'probe': wvp_probe,
+            'runtime': wvp_runtime,
         },
     }
 
@@ -117,6 +167,16 @@ def overview(request):
 @api_view(['GET'])
 def video_status(request):
     return Response(_video_status_payload())
+
+
+@api_view(['GET'])
+def video_runtime(request):
+    video = _video_status_payload()
+    return Response({
+        'status': video.get('wvp', {}).get('status'),
+        'wvp': video.get('wvp', {}),
+        'zlm': video.get('zlm', {}),
+    })
 
 
 @api_view(['GET'])

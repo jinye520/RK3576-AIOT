@@ -16,6 +16,7 @@ from .views import (
     telemetry_detail,
     telemetry_list_create,
     telemetry_summary,
+    video_runtime,
     video_status,
 )
 
@@ -24,6 +25,7 @@ urlpatterns = [
     path('health/', health, name='health'),
     path('overview/', overview, name='overview'),
     path('video/status/', video_status, name='video-status'),
+    path('video/runtime/', video_runtime, name='video-runtime'),
     path('system/ports/', system_ports, name='system-ports'),
     path('system/status/', system_status, name='system-status'),
     path('home/dashboard/', home_dashboard, name='home-dashboard'),

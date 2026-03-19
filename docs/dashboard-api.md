@@ -10,8 +10,16 @@
 
 - 统计信息
 - 视频状态
+- 视频运行态（WVP 登录、admin 账户、媒体节点在线数、前端与文档可访问性）
 - 端口信息
 - 最新遥测
 - 网关汇总
 - 设备汇总
 - 遥测汇总
+
+## 相关接口
+
+- `/api/video/status/`
+- `/api/video/runtime/`
+- `/api/system/status/`
+- `/api/home/dashboard/`

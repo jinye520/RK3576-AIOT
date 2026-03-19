@@ -547,6 +547,18 @@
         <div class="panel section">
           <div class="section-header">
             <div>
+              <div class="section-title">视频运行态</div>
+              <div class="section-subtitle">展示 WVP 登录、前端、文档与媒体节点在线情况</div>
+            </div>
+          </div>
+          <div class="telemetry-list" id="videoRuntimeList">
+            <div class="empty">正在加载视频运行态...</div>
+          </div>
+        </div>
+
+        <div class="panel section">
+          <div class="section-header">
+            <div>
               <div class="section-title">平台入口</div>
               <div class="section-subtitle">后续可继续扩展为完整前端管理后台</div>
             </div>
@@ -729,6 +741,38 @@
         }
       }
 
+      function renderVideoRuntime(video) {
+        const container = document.getElementById('videoRuntimeList');
+        const runtime = video?.wvp?.runtime;
+        if (!container) return;
+        if (!runtime) {
+          container.innerHTML = '<div class="empty">暂无视频运行态数据</div>';
+          return;
+        }
+
+        const items = [
+          ['WVP 服务状态', video?.wvp?.status || '--'],
+          ['WVP 登录可用', runtime.login_ready ? '是' : '否'],
+          ['Admin 账户存在', runtime.admin_user_present ? '是' : '否'],
+          ['管理前端可用', runtime.frontend_ready ? '是' : '否'],
+          ['接口文档可用', runtime.api_doc_ready ? '是' : '否'],
+          ['媒体节点总数', runtime.media_server_count ?? 0],
+          ['在线媒体节点', runtime.media_server_online ?? 0],
+          ['Server ID', runtime.server_id || '--'],
+        ];
+
+        container.innerHTML = items.map(([label, value]) => `
+          <div class="telemetry-item">
+            <div class="telemetry-top">
+              <div>
+                <div class="telemetry-name">${label}</div>
+              </div>
+              <div class="telemetry-time">${value}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+
       async function loadOverview() {
         try {
           const res = await fetch(overviewUrl, { cache: 'no-store' });
@@ -754,8 +798,10 @@
           videoStatusEl.className = (wvpStatus === 'package-ready' || wvpStatus === 'running-candidate' || wvpStatus === 'running') ? 'status-value status-ok' : 'status-value status-warn';
 
           renderTelemetry(data.latest_telemetry || []);
+          renderVideoRuntime(video);
         } catch (err) {
           renderTelemetry([]);
+          renderVideoRuntime(null);
           setText('lastRefresh', '刷新失败');
           const videoStatusEl = document.getElementById('videoStatus');
           if (videoStatusEl) {
