@@ -3,146 +3,320 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>智能物联网控制盒后台 · RK3576</title>
+    <title>智能海洋物联网控制盒管理中心</title>
     <style>
       :root {
-        --deep-1: #02111b;
-        --deep-2: #062334;
-        --deep-3: #0a3244;
-        --panel: rgba(4, 23, 36, 0.78);
-        --line: rgba(91, 206, 214, 0.18);
-        --line-strong: rgba(124, 235, 255, 0.36);
-        --text: #ebfbff;
-        --muted: #8db8c4;
-        --primary: #58d6d0;
-        --accent: #7ce7ff;
-        --green: #4fd6a6;
-        --amber: #f6c86b;
-        --red: #ff7a7a;
-        --shadow: 0 34px 120px rgba(0, 0, 0, 0.42);
+        --bg: #f4f8fb;
+        --sidebar: #0f2740;
+        --sidebar-soft: #163554;
+        --panel: #ffffff;
+        --panel-soft: #f7fbff;
+        --line: #e3edf5;
+        --line-strong: #c8dced;
+        --text: #10273f;
+        --muted: #6d8197;
+        --primary: #1f7ae0;
+        --primary-soft: #ebf4ff;
+        --success: #18a874;
+        --amber: #f0a33a;
+        --danger: #e55353;
+        --shadow: 0 12px 28px rgba(16, 39, 63, 0.08);
       }
+
       * { box-sizing: border-box; }
       html, body { margin: 0; min-height: 100%; }
       body {
-        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
         color: var(--text);
-        background:
-          radial-gradient(circle at 84% 12%, rgba(124,231,255,0.18), transparent 18%),
-          radial-gradient(circle at 10% 88%, rgba(79,214,166,0.12), transparent 22%),
-          linear-gradient(180deg, #010b11 0%, #041826 46%, #07283b 100%);
+        background: linear-gradient(180deg, #eef5fb 0%, #f7fbff 100%);
       }
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background:
-          radial-gradient(circle at 20% 30%, rgba(124,231,255,0.08), transparent 18%),
-          radial-gradient(circle at 70% 60%, rgba(88,214,208,0.08), transparent 22%),
-          linear-gradient(transparent 0 96%, rgba(124,231,255,0.05) 96% 100%);
-        background-size: auto, auto, 100% 44px;
-        opacity: 0.9;
-      }
+
       .layout {
-        display: grid;
-        grid-template-columns: 280px 1fr;
         min-height: 100vh;
+        display: grid;
+        grid-template-columns: 248px 1fr;
       }
+
       .sidebar {
-        padding: 22px 18px;
-        background: rgba(2, 12, 19, 0.82);
-        border-right: 1px solid rgba(124,231,255,0.1);
-        backdrop-filter: blur(18px);
+        background: linear-gradient(180deg, var(--sidebar) 0%, var(--sidebar-soft) 100%);
+        color: #eef7ff;
+        padding: 20px 16px;
         display: flex;
         flex-direction: column;
-        gap: 18px;
+        gap: 16px;
       }
-      .brand, .session, .menu, .quick, .panel, .menu-card, .metric {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(16px);
+
+      .brand {
+        padding: 18px 16px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
       }
-      .brand, .session, .quick { padding: 18px; }
+
       .brand-badge {
         display: inline-flex;
         align-items: center;
-        padding: 7px 12px;
+        padding: 6px 10px;
         border-radius: 999px;
-        border: 1px solid rgba(124,231,255,0.22);
-        color: var(--accent);
-        font-size: 12px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-      .brand-title { margin: 16px 0 8px; font-size: 28px; font-weight: 800; }
-      .brand-desc, .helper, .menu-card p, .hero-desc { color: var(--muted); font-size: 13px; line-height: 1.85; }
-      .section-kicker {
-        color: var(--muted);
+        background: rgba(255,255,255,0.08);
         font-size: 11px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
+        letter-spacing: 0.12em;
       }
-      .session-user { margin-top: 10px; font-size: 18px; font-weight: 700; }
-      .session-meta { margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.75; }
-      .menu { padding: 12px; display: grid; gap: 8px; }
-      .menu a {
-        text-decoration: none;
-        color: var(--text);
-        padding: 14px 16px;
-        border-radius: 16px;
-        border: 1px solid transparent;
-        background: rgba(255,255,255,0.03);
-        font-size: 14px;
+
+      .brand-title {
+        margin-top: 14px;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1.35;
+      }
+
+      .brand-desc {
+        margin-top: 8px;
+        color: rgba(238,247,255,0.7);
+        font-size: 12px;
+        line-height: 1.8;
+      }
+
+      .session-box,
+      .quick-box {
+        padding: 16px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .section-title {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(238,247,255,0.72);
+      }
+
+      .session-user {
+        margin-top: 10px;
+        font-size: 18px;
         font-weight: 700;
       }
-      .menu a:hover, .menu a.active {
-        border-color: rgba(124,231,255,0.22);
-        background: linear-gradient(135deg, rgba(88,214,208,0.14), rgba(124,231,255,0.08));
+
+      .session-meta {
+        margin-top: 6px;
+        color: rgba(238,247,255,0.7);
+        font-size: 12px;
+        line-height: 1.8;
       }
+
+      .nav {
+        display: grid;
+        gap: 6px;
+      }
+
+      .nav a {
+        color: #eef7ff;
+        text-decoration: none;
+        padding: 12px 14px;
+        border-radius: 14px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .nav a.active,
+      .nav a:hover {
+        background: rgba(255,255,255,0.12);
+      }
+
       .btn {
         width: 100%;
-        border-radius: 14px;
-        padding: 12px 14px;
+        padding: 11px 12px;
+        border-radius: 12px;
+        border: 0;
+        cursor: pointer;
         font-size: 13px;
         font-weight: 700;
-        cursor: pointer;
       }
-      .ghost { color: var(--text); border: 1px solid rgba(124,231,255,0.16); background: rgba(255,255,255,0.035); }
-      .danger { color: #ffd7d7; border: 1px solid rgba(255,122,122,0.22); background: rgba(255,122,122,0.12); }
-      .main { padding: 24px; display: grid; gap: 18px; }
-      .hero { padding: 26px; }
-      .hero h1 { margin: 12px 0 10px; font-size: 38px; line-height: 1.08; }
+
+      .btn-light { background: rgba(255,255,255,0.14); color: #eef7ff; }
+      .btn-danger { background: rgba(229,83,83,0.2); color: #ffdede; }
+
+      .content {
+        display: grid;
+        grid-template-rows: 72px 1fr;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        background: rgba(255,255,255,0.8);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(10px);
+      }
+
+      .topbar-title {
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .topbar-subtitle {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .page {
+        padding: 24px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 20px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.4fr 0.8fr;
+        gap: 18px;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: 30px;
+        line-height: 1.25;
+      }
+
+      .hero p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.9;
+        font-size: 14px;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #ecfbf5;
+        color: var(--success);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
       .metrics {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
+        gap: 16px;
       }
-      .metric { padding: 18px; }
-      .metric-label { color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
-      .metric-value { margin-top: 10px; font-size: 30px; font-weight: 800; }
-      .metric-foot { margin-top: 8px; color: var(--muted); font-size: 12px; }
-      .grid {
+
+      .metric-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+
+      .metric-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .metric-value {
+        margin-top: 10px;
+        font-size: 30px;
+        font-weight: 800;
+      }
+
+      .metric-foot {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .grid-2 {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 18px;
       }
-      .panel { padding: 22px; }
-      .panel h2 { margin: 0 0 8px; font-size: 22px; }
-      .menu-grid {
+
+      .panel-title {
+        margin: 0 0 14px;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .info-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
-        margin-top: 14px;
       }
-      .menu-card { padding: 16px; text-decoration: none; color: var(--text); }
-      .menu-card h3 { margin: 0 0 8px; font-size: 16px; }
-      .status { margin-top: 12px; color: var(--green); font-size: 13px; font-weight: 700; }
-      .bad { color: var(--red); }
-      @media (max-width: 1080px) {
+
+      .info-item {
+        padding: 14px;
+        border-radius: 14px;
+        background: var(--panel-soft);
+        border: 1px solid var(--line);
+      }
+
+      .info-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .info-value {
+        margin-top: 8px;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        font-size: 13px;
+      }
+
+      .table th {
+        color: var(--muted);
+        font-weight: 700;
+        background: #fbfdff;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .tag-blue { background: #ebf4ff; color: var(--primary); }
+      .tag-green { background: #ecfbf5; color: var(--success); }
+      .tag-amber { background: #fff7ea; color: var(--amber); }
+
+      @media (max-width: 1200px) {
         .layout { grid-template-columns: 1fr; }
-        .grid, .menu-grid, .metrics { grid-template-columns: 1fr; }
+        .hero, .metrics, .grid-2, .info-grid { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -150,18 +324,18 @@
     <div class="layout">
       <aside class="sidebar">
         <section class="brand">
-          <div class="brand-badge">Edge Control Center</div>
-          <div class="brand-title">智能物联网控制盒后台</div>
-          <div class="brand-desc">用于 RK3576 智能物联网控制盒的运维与配置管理，包括数据采集、协议转换、视频接入、录像存储、云平台推送与系统状态。</div>
+          <div class="brand-badge">Control Center</div>
+          <div class="brand-title">智能海洋物联网控制盒</div>
+          <div class="brand-desc">本地管理、设备配置、数据采集、协议转换、视频接入与系统状态统一控制中心。</div>
         </section>
 
-        <section class="session">
-          <div class="section-kicker">Control Box Session</div>
+        <section class="session-box">
+          <div class="section-title">Session</div>
           <div class="session-user" id="sessionUser">未检查</div>
           <div class="session-meta" id="sessionMeta">正在检查登录态...</div>
         </section>
 
-        <nav class="menu">
+        <nav class="nav">
           <a class="active" href="/admin.html">控制盒总览</a>
           <a href="/users.html">用户管理</a>
           <a href="/api/devices/" target="_blank" rel="noreferrer">数据采集</a>
@@ -170,97 +344,222 @@
           <a href="/api/video/status/" target="_blank" rel="noreferrer">录像存储</a>
           <a href="/api/system/status/" target="_blank" rel="noreferrer">云平台推送</a>
           <a href="/api/system/status/" target="_blank" rel="noreferrer">系统状态</a>
-          <a href="/bigscreen.html">指挥大屏</a>
+          <a href="/bigscreen.html">监控大屏</a>
         </nav>
 
-        <section class="quick">
-          <div class="section-kicker">Quick Actions</div>
+        <section class="quick-box">
+          <div class="section-title">Quick Actions</div>
           <div style="display:grid; gap:10px; margin-top:12px;">
-            <button class="btn ghost" id="goBigscreenBtn">进入指挥大屏</button>
-            <button class="btn ghost" id="goConsoleBtn">返回首页</button>
-            <button class="btn danger" id="logoutBtn">退出登录</button>
+            <button class="btn btn-light" id="goBigscreenBtn">打开监控大屏</button>
+            <button class="btn btn-light" id="goUsersBtn">打开用户管理</button>
+            <button class="btn btn-danger" id="logoutBtn">退出登录</button>
           </div>
         </section>
       </aside>
 
-      <main class="main">
-        <section class="panel hero">
-          <div class="section-kicker">RK3576 Smart IoT Control Box</div>
-          <h1>边缘控制中心后台</h1>
-          <div class="hero-desc">
-            这是管理员使用的智能物联网控制盒后台。普通用户登录后不会在指挥大屏中看到后台入口。管理员可从大屏进入此处，继续管理控制盒的数据采集、协议转换、视频接入、本地录像、云端推送与系统状态等能力。
+      <section class="content">
+        <header class="topbar">
+          <div>
+            <div class="topbar-title">控制盒管理与配置中心</div>
+            <div class="topbar-subtitle">对当前智能海洋物联网控制盒进行本地管理、参数配置与运行查看</div>
           </div>
-          <div class="status" id="accessStatus">正在验证管理员权限...</div>
-        </section>
+          <div class="topbar-right">
+            <span id="accessStatus">正在验证管理员权限...</span>
+          </div>
+        </header>
 
-        <section class="metrics">
-          <div class="metric">
-            <div class="metric-label">核心能力</div>
-            <div class="metric-value">5</div>
-            <div class="metric-foot">采集 / 转换 / 视频 / 录像 / 推送</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">部署位置</div>
-            <div class="metric-value">RK3576</div>
-            <div class="metric-foot">边缘控制盒本地部署</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">运行模式</div>
-            <div class="metric-value">边缘</div>
-            <div class="metric-foot">本地处理与本地存储优先</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">主界面</div>
-            <div class="metric-value">大屏</div>
-            <div class="metric-foot">登录成功后先进入指挥大屏</div>
-          </div>
-        </section>
+        <main class="page">
+          <section class="hero">
+            <section class="panel">
+              <div class="status-badge">管理员后台</div>
+              <h1>智能海洋物联网控制盒管理中心</h1>
+              <p>
+                该后台用于对本地控制盒进行统一管理与配置，包括设备接入、采集状态、协议转换、视频系统、云平台推送及系统运行状态查看。普通用户仅查看监控大屏，管理员可进入此处执行配置与运维。
+              </p>
+            </section>
+            <section class="panel">
+              <h3 class="panel-title">控制盒状态</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">设备型号</div>
+                  <div class="info-value">RK3576</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">运行模式</div>
+                  <div class="info-value">边缘本地</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">部署场景</div>
+                  <div class="info-value">海洋监测</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">配置入口</div>
+                  <div class="info-value">本地后台</div>
+                </div>
+              </div>
+            </section>
+          </section>
 
-        <section class="grid">
-          <section class="panel">
-            <h2>后台模块</h2>
-            <p>当前后台首页作为统一导航入口，连接现有页面和 API，后续可继续扩展为智能物联网控制盒的完整本地管理后台。</p>
-            <div class="menu-grid">
-              <a class="menu-card" href="/users.html">
-                <h3>用户管理</h3>
-                <p>平台账户、角色、启停状态、密码重置与删除。</p>
-              </a>
-              <a class="menu-card" href="/api/devices/" target="_blank" rel="noreferrer">
-                <h3>数据采集</h3>
-                <p>查看现场采集设备、协议与数据接入状态。</p>
-              </a>
-              <a class="menu-card" href="/nodered/" target="_blank" rel="noreferrer">
-                <h3>协议转换</h3>
-                <p>查看协议转换流程、规则流与 MQTT 联动链路。</p>
-              </a>
-              <a class="menu-card" href="http://localhost:28080/" target="_blank" rel="noreferrer">
-                <h3>视频接入</h3>
-                <p>进入 WVP 后台查看视频设备、节点与流管理。</p>
-              </a>
-              <a class="menu-card" href="/api/video/status/" target="_blank" rel="noreferrer">
-                <h3>录像存储</h3>
-                <p>查看视频状态、媒体节点与本地录像相关能力。</p>
-              </a>
-              <a class="menu-card" href="/api/system/status/" target="_blank" rel="noreferrer">
-                <h3>云平台推送 / 系统状态</h3>
-                <p>查看本地服务、聚合运行态与云端推送链路基础状态。</p>
-              </a>
+          <section class="metrics">
+            <div class="metric-card">
+              <div class="metric-label">管理模块</div>
+              <div class="metric-value">8</div>
+              <div class="metric-foot">覆盖控制盒关键能力</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">配置方式</div>
+              <div class="metric-value">本地</div>
+              <div class="metric-foot">适合边缘侧独立运行</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">主流程</div>
+              <div class="metric-value">大屏 → 后台</div>
+              <div class="metric-foot">管理员从监控中心进入</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">运维目标</div>
+              <div class="metric-value">配置 + 管理</div>
+              <div class="metric-foot">面向控制盒设备本体</div>
             </div>
           </section>
 
-          <section class="panel">
-            <h2>控制盒业务逻辑</h2>
-            <p>
-              1. 现场设备与传感器接入控制盒。<br/>
-              2. 控制盒完成数据采集与协议解析。<br/>
-              3. 在边缘侧执行协议转换、规则处理与状态聚合。<br/>
-              4. 接入视频流并执行本地录像与缓存。<br/>
-              5. 将关键数据、状态与告警推送到云平台。<br/>
-              6. 本地通过指挥大屏和后台界面完成统一监控与配置。
-            </p>
+          <section class="grid-2">
+            <section class="panel">
+              <h3 class="panel-title">控制盒配置总览</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">数据采集</div>
+                  <div class="info-value">设备接入 / 遥测采集 / 网关映射</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">协议转换</div>
+                  <div class="info-value">Node-RED / MQTT / 规则流</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">视频接入</div>
+                  <div class="info-value">WVP / ZLM / 点位管理</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">云平台推送</div>
+                  <div class="info-value">本地聚合后上云</div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <h3 class="panel-title">推荐操作路径</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>步骤</th>
+                    <th>模块</th>
+                    <th>说明</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><span class="tag tag-blue">数据采集</span></td>
+                    <td>确认设备、网关与遥测已正常接入。</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td><span class="tag tag-blue">协议转换</span></td>
+                    <td>检查规则流、MQTT 转发与本地协议映射。</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td><span class="tag tag-green">视频接入</span></td>
+                    <td>核查 WVP / ZLM / 视频点位与媒体节点状态。</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td><span class="tag tag-amber">系统状态</span></td>
+                    <td>查看控制盒服务运行态与推送状态。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
           </section>
-        </section>
-      </main>
+
+          <section class="grid-2">
+            <section class="panel">
+              <h3 class="panel-title">配置入口</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>能力模块</th>
+                    <th>入口</th>
+                    <th>用途</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>用户管理</td>
+                    <td><a href="/users.html">/users.html</a></td>
+                    <td>管理员、操作员、访客账户维护</td>
+                  </tr>
+                  <tr>
+                    <td>数据采集</td>
+                    <td><a href="/api/devices/" target="_blank" rel="noreferrer">/api/devices/</a></td>
+                    <td>查看采集设备、状态与接入结果</td>
+                  </tr>
+                  <tr>
+                    <td>协议转换</td>
+                    <td><a href="/nodered/" target="_blank" rel="noreferrer">/nodered/</a></td>
+                    <td>规则流与协议转换链路配置</td>
+                  </tr>
+                  <tr>
+                    <td>视频接入</td>
+                    <td><a href="http://localhost:28080/" target="_blank" rel="noreferrer">WVP 后台</a></td>
+                    <td>查看视频点位、流管理与媒体服务</td>
+                  </tr>
+                  <tr>
+                    <td>系统状态</td>
+                    <td><a href="/api/system/status/" target="_blank" rel="noreferrer">/api/system/status/</a></td>
+                    <td>控制盒本地服务与聚合运行态</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="panel">
+              <h3 class="panel-title">控制盒管理说明</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>管理对象</th>
+                    <th>当前方式</th>
+                    <th>后续方向</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>设备基础配置</td>
+                    <td>通过接口与后台入口查看</td>
+                    <td>进一步做成可配置表单</td>
+                  </tr>
+                  <tr>
+                    <td>采集参数</td>
+                    <td>通过采集接口与网关数据联动</td>
+                    <td>补充采样周期、阈值、告警配置</td>
+                  </tr>
+                  <tr>
+                    <td>视频参数</td>
+                    <td>通过 WVP / ZLM 后台管理</td>
+                    <td>整合为统一控制盒配置页</td>
+                  </tr>
+                  <tr>
+                    <td>上云策略</td>
+                    <td>当前以接口聚合展示为主</td>
+                    <td>补充云平台推送策略配置</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </section>
+        </main>
+      </section>
     </div>
 
     <script>
@@ -286,7 +585,6 @@
           userEl.textContent = '未登录';
           metaEl.textContent = '请先登录控制盒管理账户。';
           accessStatus.textContent = '未登录，无法进入控制盒后台。';
-          accessStatus.classList.add('bad');
           window.location.href = '/login.html';
           return;
         }
@@ -295,15 +593,14 @@
         metaEl.textContent = `账号：${data.user.username} · 角色：${data.user.role}`;
 
         if (data.user.role !== 'admin') {
-          accessStatus.textContent = '当前账户不是管理员，控制盒后台入口不可用。';
-          accessStatus.classList.add('bad');
+          accessStatus.textContent = '当前账户不是管理员，已返回监控大屏。';
           setTimeout(() => {
             window.location.href = '/bigscreen.html';
           }, 800);
           return;
         }
 
-        accessStatus.textContent = '管理员权限已验证，可进入控制盒后台管理模块。';
+        accessStatus.textContent = '管理员权限已验证';
       }
 
       async function logout() {
@@ -319,8 +616,8 @@
       document.getElementById('goBigscreenBtn').addEventListener('click', () => {
         window.location.href = '/bigscreen.html';
       });
-      document.getElementById('goConsoleBtn').addEventListener('click', () => {
-        window.location.href = '/';
+      document.getElementById('goUsersBtn').addEventListener('click', () => {
+        window.location.href = '/users.html';
       });
       document.getElementById('logoutBtn').addEventListener('click', logout);
 
