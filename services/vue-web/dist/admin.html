@@ -31,385 +31,105 @@
         background: linear-gradient(180deg, #eef5fb 0%, #f7fbff 100%);
       }
 
-      .layout {
-        min-height: 100vh;
-        display: grid;
-        grid-template-columns: 248px 1fr;
-      }
-
+      .layout { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; }
       .sidebar {
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        overflow: auto;
+        position: sticky; top: 0; height: 100vh; overflow: auto;
         background: linear-gradient(180deg, var(--sidebar) 0%, var(--sidebar-soft) 100%);
-        color: #eef7ff;
-        padding: 20px 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
+        color: #eef7ff; padding: 20px 16px; display: flex; flex-direction: column; gap: 16px;
       }
-
-      .brand,
-      .session-box,
-      .quick-box {
-        padding: 16px;
-        border-radius: 18px;
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.08);
-      }
-
-      .brand-title {
-        font-size: 22px;
-        font-weight: 800;
-        line-height: 1.45;
-        text-align: center;
-      }
-
-      .section-title {
-        font-size: 11px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: rgba(238,247,255,0.72);
-      }
-
-      .session-user {
-        margin-top: 10px;
-        font-size: 18px;
-        font-weight: 700;
-      }
-
-      .session-meta {
-        margin-top: 6px;
-        color: rgba(238,247,255,0.7);
-        font-size: 12px;
-        line-height: 1.8;
-      }
-
-      .nav-group-title {
-        margin: 6px 0 4px;
-        color: rgba(238,247,255,0.62);
-        font-size: 11px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
-
-      .nav {
-        display: grid;
-        gap: 6px;
-      }
-
+      .brand, .quick-box { padding: 16px; border-radius: 18px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); }
+      .brand-title { font-size: 22px; font-weight: 800; line-height: 1.45; text-align: center; }
+      .nav-group-title { margin: 6px 0 4px; color: rgba(238,247,255,0.62); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+      .nav { display: grid; gap: 6px; }
       .nav button {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-align: left;
-        color: #eef7ff;
-        text-decoration: none;
-        padding: 12px 14px;
-        border-radius: 14px;
-        font-size: 14px;
-        font-weight: 600;
-        border: 0;
-        background: transparent;
-        cursor: pointer;
+        width: 100%; display: flex; align-items: center; gap: 10px; text-align: left; color: #eef7ff;
+        padding: 12px 14px; border-radius: 14px; font-size: 14px; font-weight: 600; border: 0; background: transparent; cursor: pointer;
       }
-
-      .nav button::before {
-        content: "";
-        width: 8px;
-        height: 8px;
-        border-radius: 999px;
-        background: rgba(238,247,255,0.28);
-        flex: 0 0 auto;
-      }
-
-      .nav button.active,
-      .nav button:hover {
-        background: rgba(255,255,255,0.12);
-      }
-
-      .nav button.active::before {
-        background: #7ed7ff;
-        box-shadow: 0 0 0 4px rgba(126,215,255,0.14);
-      }
-
-      .btn {
-        width: 100%;
-        padding: 11px 12px;
-        border-radius: 12px;
-        border: 0;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 700;
-      }
-
+      .nav button::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: rgba(238,247,255,0.28); flex: 0 0 auto; }
+      .nav button.active, .nav button:hover { background: rgba(255,255,255,0.12); }
+      .nav button.active::before { background: #7ed7ff; box-shadow: 0 0 0 4px rgba(126,215,255,0.14); }
+      .btn { width: 100%; padding: 11px 12px; border-radius: 12px; border: 0; cursor: pointer; font-size: 13px; font-weight: 700; }
       .btn-light { background: rgba(255,255,255,0.14); color: #eef7ff; }
       .btn-danger { background: rgba(229,83,83,0.2); color: #ffdede; }
 
-      .content {
-        display: grid;
-        grid-template-rows: 72px 1fr;
-      }
-
+      .content { display: grid; grid-template-rows: 72px 1fr; }
       .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 24px;
-        background: rgba(255,255,255,0.82);
-        border-bottom: 1px solid var(--line);
-        backdrop-filter: blur(10px);
+        display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+        background: rgba(255,255,255,0.82); border-bottom: 1px solid var(--line); backdrop-filter: blur(10px);
       }
+      .topbar-title { font-size: 22px; font-weight: 800; }
+      .topbar-subtitle { margin-top: 4px; color: var(--muted); font-size: 12px; }
+      .topbar-right { color: var(--muted); font-size: 13px; }
 
-      .topbar-title {
-        font-size: 22px;
-        font-weight: 800;
-      }
-
-      .topbar-subtitle {
-        margin-top: 4px;
-        color: var(--muted);
-        font-size: 12px;
-      }
-
-      .topbar-right {
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      .page {
-        padding: 24px;
-        display: grid;
-        gap: 18px;
-      }
-
-      .panel,
-      .metric-card {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        box-shadow: var(--shadow);
-      }
-
-      .panel {
-        padding: 20px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .panel::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(180deg, rgba(255,255,255,0.5), transparent 22%);
-        opacity: 0.28;
-      }
-
-      .panel > * {
-        position: relative;
-        z-index: 1;
-      }
+      .page { padding: 24px; display: grid; gap: 18px; }
+      .panel, .metric-card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }
+      .panel { padding: 20px; position: relative; overflow: hidden; }
+      .panel::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(255,255,255,0.5), transparent 22%); opacity: 0.28; }
+      .panel > * { position: relative; z-index: 1; }
       .hidden { display: none !important; }
 
-      .hero {
-        display: grid;
-        grid-template-columns: 1.4fr 0.8fr;
-        gap: 18px;
-      }
+      .hero { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 18px; }
+      .hero h1 { margin: 0; font-size: 30px; line-height: 1.25; }
+      .hero p { margin: 10px 0 0; color: var(--muted); line-height: 1.9; font-size: 14px; }
+      .status-badge { display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 999px; background: #ecfbf5; color: var(--success); font-size: 12px; font-weight: 700; }
 
-      .hero h1 {
-        margin: 0;
-        font-size: 30px;
-        line-height: 1.25;
-      }
-
-      .hero p {
-        margin: 10px 0 0;
-        color: var(--muted);
-        line-height: 1.9;
-        font-size: 14px;
-      }
-
-      .status-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 8px 12px;
-        border-radius: 999px;
-        background: #ecfbf5;
-        color: var(--success);
-        font-size: 12px;
-        font-weight: 700;
-      }
-
-      .metrics {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 16px;
-      }
-
+      .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
       .metric-card { padding: 18px; }
       .metric-label { color: var(--muted); font-size: 12px; }
       .metric-value { margin-top: 10px; font-size: 28px; font-weight: 800; }
       .metric-foot { margin-top: 6px; color: var(--muted); font-size: 12px; }
 
-      .grid-2 {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-      }
+      .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+      .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 
-      .panel-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 14px;
-      }
+      .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+      .panel-title { margin: 0; font-size: 18px; font-weight: 700; }
+      .panel-subtitle { color: var(--muted); font-size: 13px; margin: 0 0 16px; line-height: 1.8; }
 
-      .panel-title {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 700;
-      }
-
-      .panel-subtitle {
-        color: var(--muted);
-        font-size: 13px;
-        margin: 0 0 16px;
-        line-height: 1.8;
-      }
-
-      .info-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .info-item {
-        padding: 14px;
-        border-radius: 14px;
-        background: var(--panel-soft);
-        border: 1px solid var(--line);
-      }
-
+      .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .info-item { padding: 14px; border-radius: 14px; background: var(--panel-soft); border: 1px solid var(--line); }
       .info-label { color: var(--muted); font-size: 12px; }
       .info-value { margin-top: 8px; font-size: 16px; font-weight: 700; }
 
-      .table {
-        width: 100%;
-        border-collapse: collapse;
-      }
+      .table { width: 100%; border-collapse: collapse; }
+      .table th, .table td { padding: 12px 10px; border-bottom: 1px solid var(--line); text-align: left; font-size: 13px; vertical-align: top; }
+      .table th { color: var(--muted); font-weight: 700; background: #fbfdff; }
 
-      .table th,
-      .table td {
-        padding: 12px 10px;
-        border-bottom: 1px solid var(--line);
-        text-align: left;
-        font-size: 13px;
-        vertical-align: top;
-      }
-
-      .table th {
-        color: var(--muted);
-        font-weight: 700;
-        background: #fbfdff;
-      }
-
-      .tag {
-        display: inline-flex;
-        align-items: center;
-        padding: 5px 10px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 700;
-      }
-
+      .tag { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
       .tag-blue { background: #ebf4ff; color: var(--primary); }
       .tag-green { background: #ecfbf5; color: var(--success); }
       .tag-amber { background: #fff7ea; color: var(--amber); }
+      .tag-red { background: #fff1f1; color: var(--danger); }
 
-      .filters,
-      .actions,
-      .inline-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
+      .status-list { display: grid; gap: 10px; }
+      .status-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-radius: 14px; background: var(--panel-soft); border: 1px solid var(--line); }
+      .status-name { color: var(--muted); font-size: 13px; }
+      .status-value { font-size: 13px; font-weight: 700; }
 
+      .filters, .actions, .inline-actions { display: flex; flex-wrap: wrap; gap: 10px; }
       .inline-actions { margin-top: 10px; }
-
-      input,
-      select,
-      textarea {
-        width: 100%;
-        padding: 12px 14px;
-        border-radius: 12px;
-        border: 1px solid var(--line-strong);
-        background: #fff;
-        color: var(--text);
-        outline: none;
+      input, select, textarea {
+        width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line-strong); background: #fff; color: var(--text); outline: none;
       }
-
       textarea { min-height: 96px; resize: vertical; }
-
       .field { margin-bottom: 12px; }
-      .field label {
-        display: block;
-        margin-bottom: 6px;
-        color: var(--muted);
-        font-size: 12px;
-      }
+      .field label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
 
-      .primary-btn,
-      .secondary-btn,
-      .danger-btn {
-        border: 0;
-        border-radius: 12px;
-        padding: 10px 12px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 700;
+      .primary-btn, .secondary-btn, .danger-btn {
+        border: 0; border-radius: 12px; padding: 10px 12px; cursor: pointer; font-size: 13px; font-weight: 700;
       }
-
       .primary-btn { background: var(--primary); color: #fff; }
       .secondary-btn { background: var(--primary-soft); color: var(--primary); }
       .danger-btn { background: #fff1f1; color: var(--danger); }
 
-      .result,
-      .confirm-box {
-        margin-top: 14px;
-        padding: 14px;
-        border-radius: 14px;
-        font-size: 13px;
-        line-height: 1.75;
-      }
-
-      .result {
-        border: 1px solid var(--line);
-        background: var(--panel-soft);
-        color: var(--muted);
-      }
-
-      .confirm-box {
-        border: 1px solid #f3c6c6;
-        background: #fff6f6;
-        color: #b74c4c;
-        display: none;
-      }
-
-      .user-list-toolbar {
-        display: grid;
-        grid-template-columns: 1.1fr 0.7fr auto;
-        gap: 10px;
-        margin-bottom: 14px;
-      }
+      .result, .confirm-box { margin-top: 14px; padding: 14px; border-radius: 14px; font-size: 13px; line-height: 1.75; }
+      .result { border: 1px solid var(--line); background: var(--panel-soft); color: var(--muted); }
+      .confirm-box { border: 1px solid #f3c6c6; background: #fff6f6; color: #b74c4c; display: none; }
+      .user-list-toolbar { display: grid; grid-template-columns: 1.1fr 0.7fr auto; gap: 10px; margin-bottom: 14px; }
 
       @media (max-width: 1280px) {
         .layout { grid-template-columns: 1fr; }
-        .hero, .metrics, .grid-2, .info-grid, .user-list-toolbar { grid-template-columns: 1fr; }
+        .hero, .metrics, .grid-2, .grid-3, .info-grid, .user-list-toolbar { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -460,9 +180,7 @@
               <section class="panel">
                 <div class="status-badge">管理员后台</div>
                 <h1>智能海洋物联网控制盒管理中心</h1>
-                <p>
-                  该后台用于对本地控制盒进行统一管理与配置，包括设备接入、采集状态、协议转换、视频系统、云平台推送及系统运行状态查看。左侧选择不同模块，右侧展示对应的配置界面。
-                </p>
+                <p>该后台用于对本地控制盒进行统一管理与配置，包括设备接入、采集状态、协议转换、视频系统、云平台推送及系统运行状态查看。左侧选择不同模块，右侧展示对应的配置界面。</p>
               </section>
               <section class="panel">
                 <h3 class="panel-title">控制盒状态</h3>
@@ -495,28 +213,30 @@
               </table>
             </section>
 
-            <section class="grid-2">
+            <section class="grid-3">
               <section class="panel">
-                <h3 class="panel-title">控制盒配置总览</h3>
-                <div class="info-grid">
-                  <div class="info-item"><div class="info-label">数据采集</div><div class="info-value">设备接入 / 遥测采集 / 网关映射</div></div>
-                  <div class="info-item"><div class="info-label">协议转换</div><div class="info-value">Node-RED / MQTT / 规则流</div></div>
-                  <div class="info-item"><div class="info-label">视频接入</div><div class="info-value">WVP / ZLM / 点位管理</div></div>
-                  <div class="info-item"><div class="info-label">云平台推送</div><div class="info-value">本地聚合后上云</div></div>
+                <h3 class="panel-title">基础配置概要</h3>
+                <div class="status-list">
+                  <div class="status-item"><span class="status-name">控制盒名称</span><span class="status-value">智能海洋物联网控制盒-A01</span></div>
+                  <div class="status-item"><span class="status-name">设备编号</span><span class="status-value">RK3576-AIOT-0001</span></div>
+                  <div class="status-item"><span class="status-name">部署位置</span><span class="status-value">海域边缘监测站 01</span></div>
                 </div>
               </section>
-
               <section class="panel">
-                <h3 class="panel-title">推荐操作路径</h3>
-                <table class="table">
-                  <thead><tr><th>步骤</th><th>模块</th><th>说明</th></tr></thead>
-                  <tbody>
-                    <tr><td>1</td><td><span class="tag tag-blue">基础配置</span></td><td>先设置控制盒名称、编号、位置与运行模式。</td></tr>
-                    <tr><td>2</td><td><span class="tag tag-blue">数据采集</span></td><td>确认设备、网关与遥测已正常接入。</td></tr>
-                    <tr><td>3</td><td><span class="tag tag-green">视频接入</span></td><td>核查 WVP / ZLM / 视频点位与媒体节点状态。</td></tr>
-                    <tr><td>4</td><td><span class="tag tag-amber">云平台推送</span></td><td>查看上云参数与推送状态。</td></tr>
-                  </tbody>
-                </table>
+                <h3 class="panel-title">协议与视频</h3>
+                <div class="status-list">
+                  <div class="status-item"><span class="status-name">协议转换</span><span class="status-value">统一协议转换入口</span></div>
+                  <div class="status-item"><span class="status-name">视频接入</span><span class="status-value">统一视频管理入口</span></div>
+                  <div class="status-item"><span class="status-name">监控大屏</span><span class="status-value">已启用</span></div>
+                </div>
+              </section>
+              <section class="panel">
+                <h3 class="panel-title">系统与权限</h3>
+                <div class="status-list">
+                  <div class="status-item"><span class="status-name">系统状态</span><span class="status-value">本地服务监控</span></div>
+                  <div class="status-item"><span class="status-name">用户管理</span><span class="status-value">已并入后台</span></div>
+                  <div class="status-item"><span class="status-name">登录体系</span><span class="status-value">平台统一登录</span></div>
+                </div>
               </section>
             </section>
           </section>
@@ -573,13 +293,13 @@
                 <h3 class="panel-title">协议转换配置</h3>
                 <button class="secondary-btn" onclick="window.open('/api/platform/access/nodered/', '_blank')">统一协议转换入口</button>
               </div>
-              <p class="panel-subtitle">查看和配置 Node-RED、MQTT 转发与本地规则流。</p>
+              <p class="panel-subtitle">查看和配置 Node-RED、MQTT 转发与本地规则流。当前通过平台统一入口管理 Node-RED，不再作为独立登录系统暴露。</p>
               <table class="table">
                 <thead><tr><th>模块</th><th>当前状态</th><th>说明</th><th>入口</th></tr></thead>
                 <tbody>
-                  <tr><td>Node-RED</td><td>运行中</td><td>用于本地协议转换和规则处理</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
-                  <tr><td>MQTT Broker</td><td>运行中</td><td>承载边缘采集消息总线</td><td><a href="/api/system/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
-                  <tr><td>规则流</td><td>已部署</td><td>负责协议映射、清洗和转发</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一配置入口</a></td></tr>
+                  <tr><td>Node-RED</td><td><span class="tag tag-green">受控访问</span></td><td>平台统一登录后进入协议转换管理界面</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
+                  <tr><td>MQTT Broker</td><td><span class="tag tag-green">运行中</span></td><td>承载边缘采集消息总线</td><td><a href="/api/system/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
+                  <tr><td>规则流</td><td><span class="tag tag-blue">已部署</span></td><td>负责协议映射、清洗和转发</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一配置入口</a></td></tr>
                 </tbody>
               </table>
             </section>
@@ -591,20 +311,20 @@
                 <h3 class="panel-title">视频接入配置</h3>
                 <button class="secondary-btn" onclick="window.open('/api/platform/access/video/', '_blank')">统一视频管理入口</button>
               </div>
-              <p class="panel-subtitle">统一管理 WVP / ZLM / 视频点位接入与本地流媒体状态。</p>
+              <p class="panel-subtitle">统一管理 WVP / ZLM / 视频点位接入与本地流媒体状态。不再强调 WVP 自带用户体系，而由平台统一登录后受控进入。</p>
               <div class="grid-2">
                 <div>
-                  <div class="field"><label>WVP 地址</label><input value="http://localhost:28080/" /></div>
-                  <div class="field"><label>ZLM 地址</label><input value="http://localhost:28082/" /></div>
-                  <div class="field"><label>点位策略</label><textarea>当前按本地监控点位进行统一接入与展示。</textarea></div>
+                  <div class="field"><label>视频管理入口</label><input value="/api/platform/access/video/" readonly /></div>
+                  <div class="field"><label>ZLM 状态接口</label><input value="/api/video/status/" readonly /></div>
+                  <div class="field"><label>点位策略</label><textarea>当前按本地监控点位进行统一接入与展示，后续逐步在平台后台中聚合更多视频管理能力。</textarea></div>
                 </div>
                 <div>
                   <table class="table">
                     <thead><tr><th>视频模块</th><th>状态</th><th>入口</th></tr></thead>
                     <tbody>
-                      <tr><td>视频管理</td><td>运行中</td><td><a href="/api/platform/access/video/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
-                      <tr><td>ZLM 服务</td><td>运行中</td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
-                      <tr><td>监控大屏</td><td>启用中</td><td><a href="/bigscreen.html">打开</a></td></tr>
+                      <tr><td>视频管理</td><td><span class="tag tag-green">受控访问</span></td><td><a href="/api/platform/access/video/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
+                      <tr><td>ZLM 服务</td><td><span class="tag tag-green">运行中</span></td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
+                      <tr><td>监控大屏</td><td><span class="tag tag-blue">启用中</span></td><td><a href="/bigscreen.html">打开</a></td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -644,10 +364,10 @@
               <table class="table">
                 <thead><tr><th>服务</th><th>状态</th><th>说明</th><th>入口</th></tr></thead>
                 <tbody>
-                  <tr><td>Django API</td><td>运行中</td><td>提供控制盒聚合接口</td><td><a href="/api/" target="_blank" rel="noreferrer">/api/</a></td></tr>
-                  <tr><td>Node-RED</td><td>运行中</td><td>规则流与协议转换引擎</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
-                  <tr><td>WVP</td><td>运行中</td><td>视频接入与管理能力</td><td><a href="/api/platform/access/video/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
-                  <tr><td>ZLM</td><td>运行中</td><td>流媒体节点与分发</td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
+                  <tr><td>Django API</td><td><span class="tag tag-green">运行中</span></td><td>提供控制盒聚合接口</td><td><a href="/api/" target="_blank" rel="noreferrer">/api/</a></td></tr>
+                  <tr><td>Node-RED</td><td><span class="tag tag-green">运行中</span></td><td>规则流与协议转换引擎</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
+                  <tr><td>WVP</td><td><span class="tag tag-green">运行中</span></td><td>视频接入与管理能力</td><td><a href="/api/platform/access/video/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
+                  <tr><td>ZLM</td><td><span class="tag tag-green">运行中</span></td><td>流媒体节点与分发</td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
                 </tbody>
               </table>
             </section>
@@ -739,8 +459,8 @@
         overviewView: ['控制盒总览', '统一查看控制盒能力结构与推荐操作路径'],
         baseConfigView: ['基础配置', '配置控制盒名称、编号、位置与运行模式'],
         collectConfigView: ['数据采集', '管理采样周期、阈值与设备采集策略'],
-        protocolConfigView: ['协议转换', '查看与配置本地规则流、MQTT 与协议映射'],
-        videoConfigView: ['视频接入', '管理视频点位、WVP 与流媒体服务'],
+        protocolConfigView: ['协议转换', '通过平台统一入口管理 Node-RED 与规则流'],
+        videoConfigView: ['视频接入', '通过平台统一入口管理视频接入与流媒体服务'],
         cloudConfigView: ['云平台推送', '配置上云地址、策略与同步方式'],
         systemStatusView: ['系统状态', '查看控制盒本地服务与聚合接口运行态'],
         userManagementView: ['用户管理', '在后台中直接维护平台用户与角色权限'],
@@ -938,20 +658,13 @@
       async function loadSession() {
         const res = await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
         const data = await res.json();
-        const userEl = document.getElementById('sessionUser');
-        const metaEl = document.getElementById('sessionMeta');
         const accessStatus = document.getElementById('accessStatus');
 
         if (!data.authenticated || !data.user) {
-          userEl.textContent = '未登录';
-          metaEl.textContent = '请先登录控制盒管理账户。';
           accessStatus.textContent = '未登录，无法进入控制盒后台。';
           window.location.href = '/login.html';
           return;
         }
-
-        userEl.textContent = data.user.display_name;
-        metaEl.textContent = `账号：${data.user.username} · 角色：${data.user.role}`;
 
         if (data.user.role !== 'admin') {
           accessStatus.textContent = '当前账户不是管理员，已返回监控大屏。';
@@ -961,7 +674,7 @@
           return;
         }
 
-        accessStatus.textContent = '管理员权限已验证';
+        accessStatus.textContent = `管理员权限已验证 · 当前用户：${data.user.display_name}`;
         await loadUsers();
       }
 
