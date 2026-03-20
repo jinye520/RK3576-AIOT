@@ -48,7 +48,7 @@
         height: 100vh;
         padding: 18px;
         display: grid;
-        grid-template-rows: 118px 120px 1fr;
+        grid-template-rows: 118px 1fr;
         gap: 16px;
       }
 
@@ -93,25 +93,6 @@
         text-align: center;
       }
 
-      .header-center h1 {
-        margin: 0;
-        font-size: 18px;
-        line-height: 1.1;
-        font-weight: 700;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-
-      .header-center p {
-        margin: 12px 0 0;
-        color: var(--text);
-        font-size: 38px;
-        line-height: 1.08;
-        font-weight: 800;
-        letter-spacing: 0.06em;
-      }
-
       .header-side {
         display: grid;
         justify-items: end;
@@ -151,36 +132,56 @@
 
       .hidden { display: none !important; }
 
-      .metric-row {
+      .device-status-card {
+        border-radius: 24px;
+        padding: 16px;
+        border: 1px solid rgba(153, 229, 255, 0.12);
+        background: var(--panel-soft);
+      }
+
+      .device-status-head {
+        margin-bottom: 14px;
+      }
+
+      .device-status-title {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .device-status-subtitle {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .device-status-grid {
         display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
       }
 
-      .metric {
-        border-radius: 22px;
-        padding: 16px 16px 14px;
-        overflow: hidden;
+      .device-status-item {
+        border-radius: 16px;
+        border: 1px solid rgba(153, 229, 255, 0.1);
+        background: rgba(255,255,255,0.05);
+        padding: 12px;
       }
 
-      .metric-label {
+      .device-status-label {
         color: var(--muted);
         font-size: 11px;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
       }
 
-      .metric-value {
-        margin-top: 10px;
-        font-size: 28px;
+      .device-status-value {
+        margin-top: 8px;
+        font-size: 24px;
         font-weight: 800;
       }
 
-      .metric-foot {
-        margin-top: 6px;
+      .device-status-foot {
+        margin-top: 4px;
         color: var(--muted);
         font-size: 11px;
-        line-height: 1.65;
       }
 
       .main {
@@ -422,8 +423,7 @@
           overflow: auto;
         }
         .header,
-        .main,
-        .metric-row { grid-template-columns: 1fr; }
+        .main { grid-template-columns: 1fr; }
         .header-side,
         .header-center { justify-items: start; text-align: left; }
         .video-grid,
@@ -439,10 +439,7 @@
           <div class="brand-tag">Smart Marine Control Box</div>
           <div class="brand-title">控制盒本地监控大屏</div>
         </div>
-        <div class="header-center">
-          <h1>LOCAL MONITORING SCREEN</h1>
-          <p>海洋物联网在线监控大屏</p>
-        </div>
+        <div class="header-center"></div>
         <div class="header-side">
           <div class="clock" id="clockText">--:--:--</div>
           <div class="subline" id="dateText">--</div>
@@ -454,39 +451,6 @@
           </div>
         </div>
       </header>
-
-      <section class="metric-row">
-        <div class="metric">
-          <div class="metric-label">在线设备</div>
-          <div class="metric-value" id="metricDevices">--</div>
-          <div class="metric-foot">本地控制盒当前识别设备数</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">在线状态</div>
-          <div class="metric-value" id="metricOnlineDevices">--</div>
-          <div class="metric-foot">实时在线采集设备数量</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">视频点位</div>
-          <div class="metric-value" id="metricVideoDevices">--</div>
-          <div class="metric-foot">本地已接入视频点位</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">媒体节点</div>
-          <div class="metric-value" id="metricMediaNodes">--</div>
-          <div class="metric-foot">视频链路在线节点数</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">遥测累计</div>
-          <div class="metric-value" id="metricTelemetry">--</div>
-          <div class="metric-foot">本地边缘遥测接入总量</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">视频链路</div>
-          <div class="metric-value" id="metricWvpLogin">--</div>
-          <div class="metric-foot">WVP / ZLM 运行状态</div>
-        </div>
-      </section>
 
       <section class="main">
         <div class="stack">
@@ -525,13 +489,13 @@
           </section>
 
           <section class="panel">
-            <div class="panel-head">
-              <div>
-                <div class="panel-title">视频资源摘要</div>
-                <div class="panel-subtitle">本地视频能力与媒体资源</div>
+            <div class="device-status-card">
+              <div class="device-status-head">
+                <div class="device-status-title">设备状态</div>
+                <div class="device-status-subtitle">本地设备、视频与遥测运行摘要</div>
               </div>
+              <div class="device-status-grid" id="deviceStatusGrid"></div>
             </div>
-            <div class="summary-grid" id="videoSummaryStrip"></div>
           </section>
         </div>
       </section>
@@ -641,11 +605,6 @@
         });
       }
 
-      function setText(id, value) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = value;
-      }
-
       function updateAccessNote(session) {
         const userInfoText = document.getElementById('userInfoText');
         const adminEntryBtn = document.getElementById('adminEntryBtn');
@@ -720,17 +679,20 @@
         `).join('');
       }
 
-      function renderVideoSummaryStrip(inventory) {
+      function renderDeviceStatus(stats, inventory) {
         const items = [
-          ['视频点位', inventory.device_total ?? 0],
-          ['级联平台', inventory.platform_total ?? 0],
-          ['媒体节点', inventory.media_server_total ?? 0],
-          ['在线节点', inventory.media_server_online ?? 0],
+          ['在线设备', stats.device_count ?? 0, '设备总量'],
+          ['在线状态', stats.online_device_count ?? 0, '实时在线'],
+          ['视频点位', inventory.device_total ?? 0, '本地视频'],
+          ['媒体节点', `${inventory.media_server_online ?? 0}/${inventory.media_server_total ?? 0}`, '视频链路'],
+          ['遥测累计', stats.telemetry_count ?? 0, '边缘接入'],
+          ['视频链路', inventory.login_ready ? 'READY' : 'WAIT', 'WVP / ZLM'],
         ];
-        document.getElementById('videoSummaryStrip').innerHTML = items.map(([label, value]) => `
-          <div class="summary-card">
-            <div class="summary-label">${label}</div>
-            <div class="summary-value">${value}</div>
+        document.getElementById('deviceStatusGrid').innerHTML = items.map(([label, value, foot]) => `
+          <div class="device-status-item">
+            <div class="device-status-label">${label}</div>
+            <div class="device-status-value">${value}</div>
+            <div class="device-status-foot">${foot}</div>
           </div>
         `).join('');
       }
@@ -744,21 +706,14 @@
           const inventory = data.video_inventory || {};
           latestSeries = data.latest_telemetry || [];
 
-          setText('metricDevices', stats.device_count ?? 0);
-          setText('metricOnlineDevices', stats.online_device_count ?? 0);
-          setText('metricVideoDevices', inventory.device_total ?? 0);
-          setText('metricMediaNodes', `${inventory.media_server_online ?? 0}/${inventory.media_server_total ?? 0}`);
-          setText('metricTelemetry', stats.telemetry_count ?? 0);
-          setText('metricWvpLogin', inventory.login_ready ? 'READY' : 'WAIT');
-
           renderTelemetryFeed(latestSeries);
           renderVideoGrid(data.video_slots || []);
-          renderVideoSummaryStrip(inventory);
+          renderDeviceStatus(stats, inventory);
           drawSensorChart(latestSeries);
         } catch (err) {
           document.getElementById('telemetryFeed').innerHTML = '<div class="summary-card" style="padding:14px;">本地采集流加载失败</div>';
-          document.getElementById('videoGrid').innerHTML = '<div class="summary-card" style="padding:14px;">本地视频矩阵加载失败</div>';
-          document.getElementById('videoSummaryStrip').innerHTML = '<div class="summary-card" style="padding:14px;">视频摘要加载失败</div>';
+          document.getElementById('videoGrid').innerHTML = '<div class="summary-card" style="padding:14px;">本地视频加载失败</div>';
+          document.getElementById('deviceStatusGrid').innerHTML = '<div class="summary-card" style="padding:14px; grid-column: 1 / -1;">设备状态加载失败</div>';
           drawSensorChart([]);
         }
       }
