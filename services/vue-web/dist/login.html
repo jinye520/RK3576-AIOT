@@ -6,22 +6,22 @@
     <title>RK3576 智能物联网控制盒 · 登录</title>
     <style>
       :root {
-        --deep-0: #010910;
-        --deep-1: #031421;
-        --deep-2: #07283b;
-        --deep-3: #0d3a52;
-        --panel: rgba(5, 22, 34, 0.72);
-        --panel-strong: rgba(8, 28, 42, 0.92);
-        --line: rgba(92, 208, 216, 0.14);
-        --line-strong: rgba(124, 235, 255, 0.32);
+        --deep-0: #020913;
+        --deep-1: #051a28;
+        --deep-2: #0a2b40;
+        --deep-3: #103f59;
+        --panel: rgba(6, 24, 36, 0.78);
+        --panel-strong: rgba(7, 23, 35, 0.94);
+        --line: rgba(107, 212, 228, 0.14);
+        --line-strong: rgba(129, 234, 255, 0.38);
         --text: #ecfbff;
-        --muted: #89afbb;
-        --primary: #58d6d0;
-        --accent: #7ce7ff;
+        --muted: #8fb5c2;
+        --primary: #63ddd5;
+        --accent: #82ebff;
         --green: #4fd6a6;
         --amber: #f6c86b;
         --red: #ff7a7a;
-        --shadow: 0 38px 120px rgba(0, 0, 0, 0.48);
+        --shadow: 0 40px 120px rgba(0, 0, 0, 0.5);
       }
       * { box-sizing: border-box; }
       html, body { margin: 0; min-height: 100%; }
@@ -32,9 +32,9 @@
         font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at 82% 14%, rgba(124,231,255,0.14), transparent 16%),
-          radial-gradient(circle at 14% 86%, rgba(79,214,166,0.08), transparent 18%),
-          linear-gradient(180deg, #01070d 0%, #041522 42%, #07283b 100%);
+          radial-gradient(circle at 80% 14%, rgba(130,235,255,0.14), transparent 16%),
+          radial-gradient(circle at 12% 84%, rgba(99,221,213,0.08), transparent 18%),
+          linear-gradient(180deg, #01070d 0%, #04131f 42%, #08283b 100%);
         overflow: hidden;
       }
       body::before {
@@ -43,40 +43,31 @@
         inset: 0;
         pointer-events: none;
         background:
-          radial-gradient(circle at 16% 28%, rgba(124,231,255,0.07), transparent 18%),
-          radial-gradient(circle at 72% 58%, rgba(88,214,208,0.07), transparent 22%),
-          linear-gradient(transparent 0 97%, rgba(124,231,255,0.04) 97% 100%);
-        background-size: auto, auto, 100% 40px;
-      }
-      body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background-image: linear-gradient(90deg, transparent 0 97%, rgba(124,231,255,0.026) 97% 100%);
-        background-size: 40px 100%;
-        mask-image: radial-gradient(circle at center, black 34%, transparent 88%);
+          linear-gradient(transparent 0 97%, rgba(130,235,255,0.04) 97% 100%),
+          linear-gradient(90deg, transparent 0 97%, rgba(130,235,255,0.026) 97% 100%);
+        background-size: 100% 40px, 40px 100%;
+        opacity: 0.8;
       }
       .shell {
         position: relative;
         width: min(1140px, calc(100vw - 32px));
         min-height: min(760px, calc(100vh - 48px));
         display: grid;
-        grid-template-columns: 1.14fr 0.86fr;
+        grid-template-columns: 1.12fr 0.88fr;
         border-radius: 34px;
         overflow: hidden;
         background: rgba(2, 11, 18, 0.46);
-        border: 1px solid rgba(124,231,255,0.1);
+        border: 1px solid rgba(130,235,255,0.1);
         box-shadow: var(--shadow);
         backdrop-filter: blur(18px);
       }
       .visual {
         position: relative;
-        padding: 42px 40px;
+        padding: 44px 42px;
         background:
-          radial-gradient(circle at top left, rgba(124,231,255,0.12), transparent 22%),
-          linear-gradient(180deg, rgba(4,18,30,0.78), rgba(5,25,39,0.46));
-        border-right: 1px solid rgba(124,231,255,0.08);
+          radial-gradient(circle at top left, rgba(130,235,255,0.11), transparent 22%),
+          linear-gradient(180deg, rgba(4,18,30,0.78), rgba(5,25,39,0.48));
+        border-right: 1px solid rgba(130,235,255,0.08);
         overflow: hidden;
       }
       .visual::before {
@@ -84,23 +75,23 @@
         position: absolute;
         inset: 0;
         background:
-          radial-gradient(circle at 78% 18%, rgba(88,214,208,0.14), transparent 18%),
-          radial-gradient(circle at 28% 76%, rgba(124,231,255,0.07), transparent 24%);
+          radial-gradient(circle at 78% 18%, rgba(99,221,213,0.12), transparent 18%),
+          radial-gradient(circle at 28% 76%, rgba(130,235,255,0.06), transparent 24%);
         pointer-events: none;
       }
       .visual::after {
         content: "";
         position: absolute;
-        right: -140px;
-        bottom: -140px;
-        width: 460px;
-        height: 460px;
+        right: -120px;
+        bottom: -120px;
+        width: 420px;
+        height: 420px;
         border-radius: 50%;
-        border: 1px solid rgba(124,231,255,0.1);
+        border: 1px solid rgba(130,235,255,0.12);
         box-shadow:
-          0 0 0 38px rgba(124,231,255,0.025),
-          0 0 0 90px rgba(124,231,255,0.018),
-          0 0 0 150px rgba(124,231,255,0.008);
+          0 0 0 34px rgba(130,235,255,0.022),
+          0 0 0 82px rgba(130,235,255,0.014),
+          0 0 0 136px rgba(130,235,255,0.008);
         pointer-events: none;
       }
       .badge {
@@ -108,20 +99,20 @@
         z-index: 1;
         display: inline-flex;
         align-items: center;
-        padding: 8px 12px;
+        padding: 8px 14px;
         border-radius: 999px;
-        border: 1px solid rgba(124,231,255,0.2);
+        border: 1px solid rgba(130,235,255,0.18);
         color: var(--accent);
         font-size: 12px;
-        letter-spacing: 0.16em;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
       }
       .visual h1 {
         position: relative;
         z-index: 1;
-        margin: 22px 0 14px;
-        font-size: 48px;
-        line-height: 1.04;
+        margin: 22px 0 16px;
+        font-size: 52px;
+        line-height: 1.08;
         letter-spacing: 0.01em;
       }
       .visual-desc {
@@ -129,28 +120,37 @@
         z-index: 1;
         max-width: 540px;
         color: var(--muted);
-        font-size: 15px;
+        font-size: 16px;
         line-height: 1.92;
+      }
+      .visual-en {
+        position: relative;
+        z-index: 1;
+        margin-top: 14px;
+        color: rgba(130, 235, 255, 0.72);
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
       }
       .visual-pills {
         position: relative;
         z-index: 1;
-        margin-top: 24px;
+        margin-top: 22px;
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
       }
       .pill {
-        padding: 8px 10px;
+        padding: 9px 12px;
         border-radius: 999px;
-        border: 1px solid rgba(124,231,255,0.12);
-        background: rgba(124,231,255,0.06);
+        border: 1px solid rgba(130,235,255,0.12);
+        background: rgba(130,235,255,0.055);
         font-size: 12px;
       }
       .visual-footer {
         position: absolute;
-        left: 40px;
-        right: 40px;
+        left: 42px;
+        right: 42px;
         bottom: 34px;
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -160,8 +160,8 @@
       .mini-card {
         padding: 16px;
         border-radius: 20px;
-        background: rgba(255,255,255,0.025);
-        border: 1px solid rgba(124,231,255,0.08);
+        background: rgba(255,255,255,0.022);
+        border: 1px solid rgba(130,235,255,0.08);
       }
       .mini-label {
         color: var(--muted);
@@ -178,51 +178,52 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 36px;
-        background: linear-gradient(180deg, rgba(6,23,36,0.96), rgba(4,18,28,0.94));
+        padding: 42px 40px;
+        background: linear-gradient(180deg, rgba(6,23,36,0.97), rgba(4,18,28,0.95));
       }
       .auth-card {
-        width: min(100%, 390px);
+        width: min(100%, 404px);
       }
       .section-kicker {
         color: var(--muted);
         font-size: 11px;
-        letter-spacing: 0.16em;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
       }
       .tabs {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        margin: 16px 0 22px;
+        gap: 10px;
+        margin: 18px 0 24px;
       }
       .tab-btn {
         appearance: none;
-        border: 1px solid rgba(124,231,255,0.12);
+        border: 1px solid rgba(130,235,255,0.12);
         background: rgba(255,255,255,0.02);
         color: var(--text);
         cursor: pointer;
-        border-radius: 16px;
-        padding: 12px 14px;
+        border-radius: 18px;
+        padding: 13px 14px;
         font-size: 13px;
         font-weight: 700;
       }
       .tab-btn.active {
         color: #032435;
-        background: linear-gradient(135deg, #58d6d0, #7ce7ff);
+        background: linear-gradient(135deg, #63ddd5, #82ebff);
+        box-shadow: 0 12px 32px rgba(99,221,213,0.22);
       }
       .panel-title {
-        font-size: 30px;
+        font-size: 44px;
         font-weight: 800;
         margin-bottom: 10px;
       }
       .panel-subtitle {
         color: var(--muted);
         font-size: 13px;
-        line-height: 1.85;
-        margin-bottom: 22px;
+        line-height: 1.9;
+        margin-bottom: 24px;
       }
-      .field { margin-bottom: 14px; }
+      .field { margin-bottom: 16px; }
       .field label {
         display: block;
         margin-bottom: 8px;
@@ -231,32 +232,33 @@
       }
       .field input {
         width: 100%;
-        padding: 14px 16px;
-        border-radius: 16px;
-        border: 1px solid rgba(124,231,255,0.12);
-        background: rgba(255,255,255,0.025);
+        padding: 16px 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(130,235,255,0.12);
+        background: rgba(255,255,255,0.024);
         color: var(--text);
         outline: none;
+        font-size: 15px;
       }
       .field input:focus { border-color: var(--line-strong); }
       .primary-btn {
         width: 100%;
         border: 0;
-        border-radius: 16px;
-        padding: 15px 16px;
-        font-size: 14px;
+        border-radius: 18px;
+        padding: 17px 16px;
+        font-size: 15px;
         font-weight: 800;
         color: #032435;
-        background: linear-gradient(135deg, #58d6d0, #7ce7ff);
+        background: linear-gradient(135deg, #63ddd5, #82ebff);
         cursor: pointer;
         margin-top: 6px;
       }
       .result {
         margin-top: 18px;
-        padding: 14px;
-        border-radius: 16px;
-        border: 1px solid rgba(124,231,255,0.1);
-        background: rgba(255,255,255,0.025);
+        padding: 15px 16px;
+        border-radius: 18px;
+        border: 1px solid rgba(130,235,255,0.1);
+        background: rgba(255,255,255,0.024);
         color: var(--muted);
         font-size: 13px;
         line-height: 1.75;
@@ -283,8 +285,8 @@
       }
       @media (max-width: 640px) {
         body { padding: 16px; }
-        .visual, .auth { padding: 20px; }
-        .visual h1 { font-size: 36px; }
+        .visual, .auth { padding: 22px; }
+        .visual h1 { font-size: 38px; }
         .visual-footer { grid-template-columns: 1fr; }
       }
     </style>
@@ -297,6 +299,7 @@
         <div class="visual-desc">
           部署在 RK3576 上的海洋场景边缘控制中心，负责现场数据采集、协议转换、视频接入、本地录像存储及云平台推送，形成一体化边缘控制闭环。
         </div>
+        <div class="visual-en">SMART EDGE CONTROLLER FOR MARINE IOT</div>
         <div class="visual-pills">
           <span class="pill">数据采集</span>
           <span class="pill">协议转换</span>
@@ -324,45 +327,45 @@
         <div class="auth-card">
           <div class="section-kicker">Access Portal</div>
           <div class="tabs">
-            <button class="tab-btn active" id="tabLoginBtn">用户登录</button>
-            <button class="tab-btn" id="tabRegisterBtn">新用户注册</button>
+            <button class="tab-btn active" id="tabLoginBtn" type="button">用户登录</button>
+            <button class="tab-btn" id="tabRegisterBtn" type="button">新用户注册</button>
           </div>
 
-          <div id="loginPanel">
+          <form id="loginPanel">
             <div class="panel-title">登录</div>
             <div class="panel-subtitle">登录成功后将直接进入智能物联网控制盒指挥大屏。</div>
             <div class="field">
-              <label>用户名</label>
-              <input id="loginUsername" value="admin" />
+              <label for="loginUsername">用户名</label>
+              <input id="loginUsername" name="username" autocomplete="username" value="admin" />
             </div>
             <div class="field">
-              <label>密码</label>
-              <input id="loginPassword" type="password" value="admin123456" />
+              <label for="loginPassword">密码</label>
+              <input id="loginPassword" name="password" autocomplete="current-password" type="password" value="admin123456" />
             </div>
-            <button class="primary-btn" id="loginBtn">登录</button>
-          </div>
+            <button class="primary-btn" id="loginBtn" type="submit">登录</button>
+          </form>
 
-          <div id="registerPanel" class="hidden">
+          <form id="registerPanel" class="hidden">
             <div class="panel-title">注册</div>
             <div class="panel-subtitle">新用户注册后默认成为观察员，并自动进入控制盒指挥大屏。</div>
             <div class="field">
-              <label>显示名称</label>
-              <input id="registerDisplayName" placeholder="请输入显示名称" />
+              <label for="registerDisplayName">显示名称</label>
+              <input id="registerDisplayName" name="display_name" autocomplete="name" placeholder="请输入显示名称" />
             </div>
             <div class="field">
-              <label>用户名</label>
-              <input id="registerUsername" placeholder="请输入用户名" />
+              <label for="registerUsername">用户名</label>
+              <input id="registerUsername" name="username" autocomplete="username" placeholder="请输入用户名" />
             </div>
             <div class="field">
-              <label>密码</label>
-              <input id="registerPassword" type="password" placeholder="至少 6 位" />
+              <label for="registerPassword">密码</label>
+              <input id="registerPassword" name="password" autocomplete="new-password" type="password" placeholder="至少 6 位" />
             </div>
             <div class="field">
-              <label>确认密码</label>
-              <input id="registerConfirmPassword" type="password" placeholder="再次输入密码" />
+              <label for="registerConfirmPassword">确认密码</label>
+              <input id="registerConfirmPassword" name="confirm_password" autocomplete="new-password" type="password" placeholder="再次输入密码" />
             </div>
-            <button class="primary-btn" id="registerBtn">注册</button>
-          </div>
+            <button class="primary-btn" id="registerBtn" type="submit">注册</button>
+          </form>
 
           <div class="result" id="resultBox">默认测试账号：admin / admin123456</div>
         </div>
@@ -456,8 +459,14 @@
 
       document.getElementById('tabLoginBtn').addEventListener('click', () => showTab('login'));
       document.getElementById('tabRegisterBtn').addEventListener('click', () => showTab('register'));
-      document.getElementById('loginBtn').addEventListener('click', login);
-      document.getElementById('registerBtn').addEventListener('click', registerUser);
+      document.getElementById('loginPanel').addEventListener('submit', (event) => {
+        event.preventDefault();
+        login();
+      });
+      document.getElementById('registerPanel').addEventListener('submit', (event) => {
+        event.preventDefault();
+        registerUser();
+      });
     </script>
   </body>
 </html>
