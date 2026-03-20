@@ -11,6 +11,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.shortcuts import redirect
 
 from .demo_data import PORTS_PAYLOAD
 from .models import Device, Gateway, PlatformUser, Telemetry
@@ -699,6 +700,43 @@ def index(request):
         'devices': '/api/devices/',
         'telemetry': '/api/telemetry/',
     })
+
+
+def _platform_session_user(request):
+    username = request.session.get('platform_username')
+    role = request.session.get('platform_role')
+    if not username or not role:
+        return None
+    try:
+        user = PlatformUser.objects.get(username=username, role=role, is_active=True)
+    except PlatformUser.DoesNotExist:
+        return None
+    return user
+
+
+def _require_admin_html(request):
+    user = _platform_session_user(request)
+    if not user:
+        return redirect('/login.html')
+    if user.role != PlatformUser.ROLE_ADMIN:
+        return redirect('/bigscreen.html')
+    return None
+
+
+@api_view(['GET'])
+def platform_access_nodered(request):
+    guard = _require_admin_html(request)
+    if guard:
+        return guard
+    return redirect('/nodered/')
+
+
+@api_view(['GET'])
+def platform_access_video(request):
+    guard = _require_admin_html(request)
+    if guard:
+        return guard
+    return redirect('http://localhost:28080/')
 
 
 @api_view(['GET', 'POST'])

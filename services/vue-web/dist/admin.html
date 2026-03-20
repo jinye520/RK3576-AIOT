@@ -571,15 +571,15 @@
             <section class="panel">
               <div class="panel-head">
                 <h3 class="panel-title">协议转换配置</h3>
-                <button class="secondary-btn" onclick="window.open('/nodered/', '_blank')">打开 Node-RED</button>
+                <button class="secondary-btn" onclick="window.open('/api/platform/access/nodered/', '_blank')">统一协议转换入口</button>
               </div>
               <p class="panel-subtitle">查看和配置 Node-RED、MQTT 转发与本地规则流。</p>
               <table class="table">
                 <thead><tr><th>模块</th><th>当前状态</th><th>说明</th><th>入口</th></tr></thead>
                 <tbody>
-                  <tr><td>Node-RED</td><td>运行中</td><td>用于本地协议转换和规则处理</td><td><a href="/nodered/" target="_blank" rel="noreferrer">打开</a></td></tr>
+                  <tr><td>Node-RED</td><td>运行中</td><td>用于本地协议转换和规则处理</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
                   <tr><td>MQTT Broker</td><td>运行中</td><td>承载边缘采集消息总线</td><td><a href="/api/system/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
-                  <tr><td>规则流</td><td>已部署</td><td>负责协议映射、清洗和转发</td><td><a href="/nodered/" target="_blank" rel="noreferrer">配置</a></td></tr>
+                  <tr><td>规则流</td><td>已部署</td><td>负责协议映射、清洗和转发</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一配置入口</a></td></tr>
                 </tbody>
               </table>
             </section>
@@ -589,7 +589,7 @@
             <section class="panel">
               <div class="panel-head">
                 <h3 class="panel-title">视频接入配置</h3>
-                <button class="secondary-btn" onclick="window.open('http://localhost:28080/', '_blank')">打开视频后台</button>
+                <button class="secondary-btn" onclick="window.open('/api/platform/access/video/', '_blank')">统一视频管理入口</button>
               </div>
               <p class="panel-subtitle">统一管理 WVP / ZLM / 视频点位接入与本地流媒体状态。</p>
               <div class="grid-2">
@@ -602,7 +602,7 @@
                   <table class="table">
                     <thead><tr><th>视频模块</th><th>状态</th><th>入口</th></tr></thead>
                     <tbody>
-                      <tr><td>WVP 后台</td><td>运行中</td><td><a href="http://localhost:28080/" target="_blank" rel="noreferrer">打开</a></td></tr>
+                      <tr><td>视频管理</td><td>运行中</td><td><a href="/api/platform/access/video/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
                       <tr><td>ZLM 服务</td><td>运行中</td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
                       <tr><td>监控大屏</td><td>启用中</td><td><a href="/bigscreen.html">打开</a></td></tr>
                     </tbody>
@@ -645,8 +645,8 @@
                 <thead><tr><th>服务</th><th>状态</th><th>说明</th><th>入口</th></tr></thead>
                 <tbody>
                   <tr><td>Django API</td><td>运行中</td><td>提供控制盒聚合接口</td><td><a href="/api/" target="_blank" rel="noreferrer">/api/</a></td></tr>
-                  <tr><td>Node-RED</td><td>运行中</td><td>规则流与协议转换引擎</td><td><a href="/nodered/" target="_blank" rel="noreferrer">打开</a></td></tr>
-                  <tr><td>WVP</td><td>运行中</td><td>视频接入与管理后台</td><td><a href="http://localhost:28080/" target="_blank" rel="noreferrer">打开</a></td></tr>
+                  <tr><td>Node-RED</td><td>运行中</td><td>规则流与协议转换引擎</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
+                  <tr><td>WVP</td><td>运行中</td><td>视频接入与管理能力</td><td><a href="/api/platform/access/video/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
                   <tr><td>ZLM</td><td>运行中</td><td>流媒体节点与分发</td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
                 </tbody>
               </table>
