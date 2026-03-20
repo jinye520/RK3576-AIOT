@@ -154,33 +154,33 @@
       .metric-row {
         display: grid;
         grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 14px;
+        gap: 12px;
       }
 
       .metric {
-        border-radius: 24px;
-        padding: 18px;
+        border-radius: 22px;
+        padding: 16px 16px 14px;
         overflow: hidden;
       }
 
       .metric-label {
         color: var(--muted);
-        font-size: 12px;
+        font-size: 11px;
         letter-spacing: 0.1em;
         text-transform: uppercase;
       }
 
       .metric-value {
-        margin-top: 12px;
-        font-size: 32px;
+        margin-top: 10px;
+        font-size: 28px;
         font-weight: 800;
       }
 
       .metric-foot {
-        margin-top: 8px;
+        margin-top: 6px;
         color: var(--muted);
-        font-size: 12px;
-        line-height: 1.7;
+        font-size: 11px;
+        line-height: 1.65;
       }
 
       .main {
@@ -197,8 +197,8 @@
       }
 
       .panel {
-        border-radius: 28px;
-        padding: 18px;
+        border-radius: 24px;
+        padding: 16px;
         min-height: 0;
         display: flex;
         flex-direction: column;
@@ -280,7 +280,7 @@
 
       .video-card {
         position: relative;
-        min-height: 210px;
+        min-height: 220px;
         border-radius: 22px;
         overflow: hidden;
         border: 1px solid rgba(153, 229, 255, 0.12);
@@ -296,7 +296,7 @@
         left: 16px;
         font-size: 11px;
         letter-spacing: 0.18em;
-        color: rgba(235, 251, 255, 0.54);
+        color: rgba(235, 251, 255, 0.44);
       }
 
       .video-card::after {
@@ -325,7 +325,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: rgba(235, 251, 255, 0.38);
+        color: rgba(235, 251, 255, 0.34);
         font-size: 14px;
         letter-spacing: 0.12em;
       }
@@ -344,6 +344,8 @@
       .telemetry-feed {
         overflow: auto;
         padding-right: 4px;
+        display: grid;
+        gap: 10px;
       }
 
       .telemetry-row {
@@ -394,6 +396,10 @@
       }
 
       .summary-card {
+        min-height: 96px;
+      }
+
+      .summary-card {
         padding: 14px;
       }
 
@@ -422,6 +428,7 @@
         .header-center { justify-items: start; text-align: left; }
         .video-grid,
         .summary-grid { grid-template-columns: 1fr; }
+        .video-card { min-height: 200px; }
       }
     </style>
   </head>
