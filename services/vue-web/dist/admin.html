@@ -293,7 +293,7 @@
                 <h3 class="panel-title">协议转换配置</h3>
                 <button class="secondary-btn" onclick="window.open('/api/platform/access/nodered/', '_blank')">统一协议转换入口</button>
               </div>
-              <p class="panel-subtitle">查看和配置 Node-RED、MQTT 转发与本地规则流。当前通过平台统一入口管理 Node-RED，不再作为独立登录系统暴露。</p>
+              <p class="panel-subtitle">查看和配置 Node-RED、MQTT 转发与本地规则流。当前通过平台统一入口管理 Node-RED，不再作为独立登录系统暴露。</p><div class="grid-2" style="margin-bottom:16px;"><div><div class="field"><label>统一入口路径</label><input id="protocolEntryPath" readonly /></div><div class="field"><label>消息总线状态接口</label><input id="protocolBrokerStatusApi" readonly /></div></div><div><div class="field"><label>规则流策略</label><textarea id="protocolRuleStrategy"></textarea></div><div class="field"><label>访问模式说明</label><textarea id="protocolAccessMode"></textarea></div><div class="inline-actions"><button class="primary-btn" id="saveProtocolConfigBtn">保存协议配置</button><button class="secondary-btn" onclick="window.open('/api/platform/access/nodered/', '_blank')">进入协议转换</button></div><div class="result" id="protocolConfigResultBox">协议配置结果将在这里显示。</div></div></div>
               <table class="table">
                 <thead><tr><th>模块</th><th>当前状态</th><th>说明</th><th>入口</th></tr></thead>
                 <tbody id="protocolStatusTableBody">
@@ -314,9 +314,9 @@
               <p class="panel-subtitle">统一管理 WVP / ZLM / 视频点位接入与本地流媒体状态。不再强调 WVP 自带用户体系，而由平台统一登录后受控进入。</p>
               <div class="grid-2">
                 <div>
-                  <div class="field"><label>视频管理入口</label><input value="/video-platform/（经平台统一入口守卫）" readonly /></div>
-                  <div class="field"><label>ZLM 状态接口</label><input value="/api/video/status/" readonly /></div>
-                  <div class="field"><label>点位策略</label><textarea>当前按本地监控点位进行统一接入与展示，后续逐步在平台后台中聚合更多视频管理能力。</textarea></div>
+                  <div class="field"><label>视频管理入口</label><input id="videoEntryPath" readonly /></div>
+                  <div class="field"><label>ZLM 状态接口</label><input id="videoStatusApi" readonly /></div>
+                  <div class="field"><label>点位策略</label><textarea id="videoSlotStrategy"></textarea></div><div class="field"><label>录像存储策略</label><textarea id="videoStoragePolicy"></textarea></div><div class="inline-actions"><button class="primary-btn" id="saveVideoConfigBtn">保存视频配置</button><button class="secondary-btn" onclick="window.open('/api/platform/access/video/', '_blank')">进入视频管理</button></div><div class="result" id="videoConfigResultBox">视频配置结果将在这里显示。</div>
                 </div>
                 <div>
                   <table class="table">
@@ -509,6 +509,20 @@
         document.getElementById('collectDissolvedOxygenThreshold').value = config.dissolved_oxygen_threshold || '';
       }
 
+      function fillProtocolConfigForm(config) {
+        document.getElementById('protocolEntryPath').value = config.entry_path || '/nodered/';
+        document.getElementById('protocolBrokerStatusApi').value = config.broker_status_api || '/api/system/status/';
+        document.getElementById('protocolRuleStrategy').value = config.rule_strategy || '';
+        document.getElementById('protocolAccessMode').value = config.access_mode || '';
+      }
+
+      function fillVideoConfigForm(config) {
+        document.getElementById('videoEntryPath').value = config.entry_path || '/video-platform/';
+        document.getElementById('videoStatusApi').value = config.status_api || '/api/video/status/';
+        document.getElementById('videoSlotStrategy').value = config.slot_strategy || '';
+        document.getElementById('videoStoragePolicy').value = config.storage_policy || '';
+      }
+
       async function loadPlatformSettings() {
         const res = await fetch('/api/platform/settings/', { cache: 'no-store', credentials: 'same-origin' });
         const data = await res.json();
@@ -516,6 +530,8 @@
         platformSettings = data;
         fillBaseConfigForm(data.base_config?.value || {});
         fillCollectConfigForm(data.collect_config?.value || {});
+        fillProtocolConfigForm(data.protocol_config?.value || {});
+        fillVideoConfigForm(data.video_config?.value || {});
       }
 
       async function updatePlatformSetting(key, value) {
@@ -860,6 +876,36 @@
           await loadPlatformSettings();
         } catch (err) {
           setConfigResult('collectConfigResultBox', err.message, 'bad');
+        }
+      });
+      document.getElementById('saveProtocolConfigBtn').addEventListener('click', async () => {
+        try {
+          const value = {
+            entry_path: document.getElementById('protocolEntryPath').value.trim(),
+            broker_status_api: document.getElementById('protocolBrokerStatusApi').value.trim(),
+            rule_strategy: document.getElementById('protocolRuleStrategy').value.trim(),
+            access_mode: document.getElementById('protocolAccessMode').value.trim(),
+          };
+          await updatePlatformSetting('protocol_config', value);
+          setConfigResult('protocolConfigResultBox', '协议配置保存成功。', 'ok');
+          await loadPlatformSettings();
+        } catch (err) {
+          setConfigResult('protocolConfigResultBox', err.message, 'bad');
+        }
+      });
+      document.getElementById('saveVideoConfigBtn').addEventListener('click', async () => {
+        try {
+          const value = {
+            entry_path: document.getElementById('videoEntryPath').value.trim(),
+            status_api: document.getElementById('videoStatusApi').value.trim(),
+            slot_strategy: document.getElementById('videoSlotStrategy').value.trim(),
+            storage_policy: document.getElementById('videoStoragePolicy').value.trim(),
+          };
+          await updatePlatformSetting('video_config', value);
+          setConfigResult('videoConfigResultBox', '视频配置保存成功。', 'ok');
+          await loadPlatformSettings();
+        } catch (err) {
+          setConfigResult('videoConfigResultBox', err.message, 'bad');
         }
       });
 
