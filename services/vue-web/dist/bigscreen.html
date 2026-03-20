@@ -26,9 +26,9 @@
         font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at 20% 18%, rgba(148, 235, 255, 0.16), transparent 24%),
-          radial-gradient(circle at 82% 20%, rgba(123, 232, 225, 0.12), transparent 20%),
-          linear-gradient(180deg, #0d3046 0%, #12384f 46%, #163e57 100%);
+          radial-gradient(circle at 18% 16%, rgba(188, 243, 255, 0.3), transparent 24%),
+          radial-gradient(circle at 82% 18%, rgba(138, 236, 232, 0.22), transparent 22%),
+          linear-gradient(180deg, #5ba5c8 0%, #6bb3d3 34%, #77bdd9 100%);
         overflow: hidden;
       }
 
@@ -64,7 +64,7 @@
       .header {
         border-radius: 28px;
         display: grid;
-        grid-template-columns: 240px 1fr 260px;
+        grid-template-columns: 320px 1fr 220px;
         align-items: center;
         padding: 0 24px;
       }
@@ -93,12 +93,19 @@
         text-align: center;
         display: grid;
         justify-items: center;
+        gap: 6px;
+      }
+
+      .center-title {
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
       }
 
       .center-time {
-        color: var(--text);
-        font-size: 22px;
-        font-weight: 700;
+        color: rgba(246, 253, 255, 0.9);
+        font-size: 14px;
+        font-weight: 600;
         letter-spacing: 0.08em;
       }
 
@@ -106,6 +113,12 @@
         display: grid;
         justify-items: end;
         gap: 8px;
+      }
+
+      .header-left {
+        display: grid;
+        align-content: center;
+        gap: 10px;
       }
 
       .clock {
@@ -145,6 +158,10 @@
         background: linear-gradient(135deg, var(--primary), var(--accent));
         color: #062336;
         border-color: transparent;
+      }
+
+      .header-left .header-actions {
+        justify-content: start;
       }
 
       .hidden { display: none !important; }
@@ -541,21 +558,21 @@
   <body>
     <div class="screen">
       <header class="header">
-        <div>
+        <div class="header-left">
           <div class="brand-tag">Smart Marine Control Box</div>
-          <div class="brand-title">控制盒本地监控大屏</div>
+          <div class="header-actions">
+            <button class="nav-chip primary hidden" id="adminEntryBtn">后台管理</button>
+            <button class="nav-chip" id="logoutBtn">退出登录</button>
+          </div>
         </div>
         <div class="header-center">
+          <div class="center-title">智能海洋物联网控制盒监控中心</div>
           <div class="center-time" id="centerTimeText">--</div>
         </div>
         <div class="header-side">
           <div class="clock" id="clockText">--:--:--</div>
           <div class="subline" id="dateText">--</div>
           <div class="subline" id="userInfoText">当前未登录</div>
-          <div class="header-actions">
-            <button class="nav-chip primary hidden" id="adminEntryBtn">后台管理</button>
-            <button class="nav-chip" id="logoutBtn">退出登录</button>
-          </div>
         </div>
       </header>
 
