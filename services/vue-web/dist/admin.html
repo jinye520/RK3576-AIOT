@@ -193,7 +193,25 @@
         box-shadow: var(--shadow);
       }
 
-      .panel { padding: 20px; }
+      .panel {
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(255,255,255,0.5), transparent 22%);
+        opacity: 0.28;
+      }
+
+      .panel > * {
+        position: relative;
+        z-index: 1;
+      }
       .hidden { display: none !important; }
 
       .hero {
@@ -243,8 +261,16 @@
         gap: 18px;
       }
 
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
       .panel-title {
-        margin: 0 0 14px;
+        margin: 0;
         font-size: 18px;
         font-weight: 700;
       }
@@ -497,7 +523,10 @@
 
           <section id="baseConfigView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">基础配置</h3>
+              <div class="panel-head">
+                <h3 class="panel-title">基础配置</h3>
+                <button class="secondary-btn">应用配置</button>
+              </div>
               <p class="panel-subtitle">配置控制盒名称、编号、位置与运行模式，作为后台的基础设备信息。</p>
               <div class="grid-2">
                 <div>
@@ -517,7 +546,10 @@
 
           <section id="collectConfigView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">数据采集配置</h3>
+              <div class="panel-head">
+                <h3 class="panel-title">数据采集配置</h3>
+                <button class="secondary-btn">查看接入日志</button>
+              </div>
               <p class="panel-subtitle">配置采样周期、采集协议、告警阈值与网关接入策略。</p>
               <div class="grid-2">
                 <div>
@@ -537,7 +569,10 @@
 
           <section id="protocolConfigView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">协议转换配置</h3>
+              <div class="panel-head">
+                <h3 class="panel-title">协议转换配置</h3>
+                <button class="secondary-btn" onclick="window.open('/nodered/', '_blank')">打开 Node-RED</button>
+              </div>
               <p class="panel-subtitle">查看和配置 Node-RED、MQTT 转发与本地规则流。</p>
               <table class="table">
                 <thead><tr><th>模块</th><th>当前状态</th><th>说明</th><th>入口</th></tr></thead>
@@ -552,7 +587,10 @@
 
           <section id="videoConfigView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">视频接入配置</h3>
+              <div class="panel-head">
+                <h3 class="panel-title">视频接入配置</h3>
+                <button class="secondary-btn" onclick="window.open('http://localhost:28080/', '_blank')">打开视频后台</button>
+              </div>
               <p class="panel-subtitle">统一管理 WVP / ZLM / 视频点位接入与本地流媒体状态。</p>
               <div class="grid-2">
                 <div>
@@ -576,7 +614,10 @@
 
           <section id="cloudConfigView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">云平台推送配置</h3>
+              <div class="panel-head">
+                <h3 class="panel-title">云平台推送配置</h3>
+                <button class="secondary-btn">测试推送</button>
+              </div>
               <p class="panel-subtitle">配置上云地址、推送频率与策略，用于边缘数据和状态同步。</p>
               <div class="grid-2">
                 <div>
@@ -595,7 +636,10 @@
 
           <section id="systemStatusView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">系统状态</h3>
+              <div class="panel-head">
+                <h3 class="panel-title">系统状态</h3>
+                <button class="secondary-btn" onclick="window.open('/api/system/status/', '_blank')">打开状态接口</button>
+              </div>
               <p class="panel-subtitle">查看控制盒本地服务状态、聚合接口与核心运行能力。</p>
               <table class="table">
                 <thead><tr><th>服务</th><th>状态</th><th>说明</th><th>入口</th></tr></thead>
@@ -611,7 +655,10 @@
 
           <section id="userManagementView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">用户管理</h3>
+              <div class="panel-head">
+                <h3 class="panel-title">用户管理</h3>
+                <button class="secondary-btn" id="focusCreateUserBtn">新建用户</button>
+              </div>
               <p class="panel-subtitle">已将独立用户管理页集成到当前管理后台。可在此查看、创建、修改、重置密码与删除平台用户。</p>
 
               <div class="metrics" style="margin-bottom:16px;">
@@ -944,6 +991,10 @@
         } catch (err) {
           setUserResult(err.message, 'bad');
         }
+      });
+      document.getElementById('focusCreateUserBtn').addEventListener('click', () => {
+        switchView('userManagementView');
+        document.getElementById('createUsername').focus();
       });
       document.getElementById('createUserBtn').addEventListener('click', async () => {
         try {
