@@ -341,14 +341,14 @@
               <p class="panel-subtitle">配置上云地址、推送频率与策略，用于边缘数据和状态同步。</p>
               <div class="grid-2">
                 <div>
-                  <div class="field"><label>云平台地址</label><input value="https://cloud.example.com/iot/upload" /></div>
-                  <div class="field"><label>推送频率</label><select><option>实时</option><option>30 秒</option><option>60 秒</option></select></div>
-                  <div class="field"><label>推送对象</label><textarea>遥测数据、视频状态、设备告警、控制盒健康状态。</textarea></div>
+                  <div class="field"><label>云平台地址</label><input id="cloudUrl" /></div>
+                  <div class="field"><label>推送频率</label><select id="cloudPushFrequency"><option>实时</option><option>30 秒</option><option>60 秒</option></select></div>
+                  <div class="field"><label>推送对象</label><textarea id="cloudPushTargets"></textarea></div>
                 </div>
                 <div>
-                  <div class="field"><label>认证方式</label><select><option>Token</option><option>AK/SK</option></select></div>
-                  <div class="field"><label>推送策略</label><textarea>关键告警实时上报，基础数据按策略聚合后推送。</textarea></div>
-                  <div class="inline-actions"><button class="primary-btn">保存上云配置</button><button class="secondary-btn">测试连接</button></div>
+                  <div class="field"><label>认证方式</label><select id="cloudAuthType"><option>Token</option><option>AK/SK</option></select></div>
+                  <div class="field"><label>推送策略</label><textarea id="cloudPushStrategy"></textarea></div>
+                  <div class="inline-actions"><button class="primary-btn" id="saveCloudConfigBtn">保存上云配置</button><button class="secondary-btn" id="testCloudConfigBtn">测试连接</button></div><div class="result" id="cloudConfigResultBox">上云配置结果将在这里显示。</div>
                 </div>
               </div>
             </section>
@@ -523,6 +523,14 @@
         document.getElementById('videoStoragePolicy').value = config.storage_policy || '';
       }
 
+      function fillCloudConfigForm(config) {
+        document.getElementById('cloudUrl').value = config.cloud_url || '';
+        document.getElementById('cloudPushFrequency').value = config.push_frequency || '实时';
+        document.getElementById('cloudPushTargets').value = config.push_targets || '';
+        document.getElementById('cloudAuthType').value = config.auth_type || 'Token';
+        document.getElementById('cloudPushStrategy').value = config.push_strategy || '';
+      }
+
       async function loadPlatformSettings() {
         const res = await fetch('/api/platform/settings/', { cache: 'no-store', credentials: 'same-origin' });
         const data = await res.json();
@@ -532,6 +540,7 @@
         fillCollectConfigForm(data.collect_config?.value || {});
         fillProtocolConfigForm(data.protocol_config?.value || {});
         fillVideoConfigForm(data.video_config?.value || {});
+        fillCloudConfigForm(data.cloud_config?.value || {});
       }
 
       async function updatePlatformSetting(key, value) {
@@ -907,6 +916,25 @@
         } catch (err) {
           setConfigResult('videoConfigResultBox', err.message, 'bad');
         }
+      });
+      document.getElementById('saveCloudConfigBtn').addEventListener('click', async () => {
+        try {
+          const value = {
+            cloud_url: document.getElementById('cloudUrl').value.trim(),
+            push_frequency: document.getElementById('cloudPushFrequency').value,
+            push_targets: document.getElementById('cloudPushTargets').value.trim(),
+            auth_type: document.getElementById('cloudAuthType').value,
+            push_strategy: document.getElementById('cloudPushStrategy').value.trim(),
+          };
+          await updatePlatformSetting('cloud_config', value);
+          setConfigResult('cloudConfigResultBox', '上云配置保存成功。', 'ok');
+          await loadPlatformSettings();
+        } catch (err) {
+          setConfigResult('cloudConfigResultBox', err.message, 'bad');
+        }
+      });
+      document.getElementById('testCloudConfigBtn').addEventListener('click', () => {
+        setConfigResult('cloudConfigResultBox', '已记录当前上云配置，可继续在后端补充真实连通性测试逻辑。', 'ok');
       });
 
       switchView('overviewView');
