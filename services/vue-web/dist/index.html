@@ -5,49 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>智能海洋物联网控制盒监控中心</title>
     <script>
-      (async function () {
-        try {
-          const res = await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
-          const data = await res.json();
-          if (!data.authenticated || !data.user) {
-            window.location.replace('/login.html');
-            return;
-          }
-          window.location.replace('/bigscreen.html');
-        } catch (err) {
-          window.location.replace('/login.html');
-        }
-      })();
+      window.location.replace('/bigscreen.html');
     </script>
-    <style>
-      html, body {
-        margin: 0;
-        min-height: 100%;
-        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-        background: linear-gradient(180deg, #0d3a57 0%, #114563 38%, #14506f 100%);
-        color: #f6fdff;
-      }
-      body {
-        display: grid;
-        place-items: center;
-      }
-      .loading {
-        text-align: center;
-      }
-      .loading h1 {
-        margin: 0 0 12px;
-        font-size: 28px;
-      }
-      .loading p {
-        margin: 0;
-        color: rgba(246,253,255,0.8);
-      }
-    </style>
   </head>
-  <body>
-    <div class="loading">
-      <h1>智能海洋物联网控制盒监控中心</h1>
-      <p>正在检查登录状态并进入监控大屏...</p>
-    </div>
-  </body>
+  <body></body>
 </html>
