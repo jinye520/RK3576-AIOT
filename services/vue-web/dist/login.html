@@ -63,26 +63,20 @@
         padding: 46px 42px 34px;
         background: linear-gradient(180deg, rgba(16, 54, 77, 0.2), rgba(15, 48, 70, 0.08));
         border-right: 1px solid rgba(153, 229, 255, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
       }
 
-      .brand-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 8px 14px;
-        border-radius: 999px;
-        border: 1px solid rgba(153, 229, 255, 0.18);
-        color: #d9f7ff;
-        font-size: 11px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        background: rgba(255,255,255,0.04);
+      .brand-wrap {
+        max-width: 520px;
       }
 
       .brand-title {
-        margin: 28px 0 10px;
-        max-width: 420px;
+        margin: 0 0 12px;
         font-size: 56px;
-        line-height: 1.08;
+        line-height: 1.12;
         font-weight: 800;
         letter-spacing: 0.01em;
         word-break: keep-all;
@@ -232,15 +226,17 @@
         .brand-panel, .auth-panel { padding: 24px 22px; }
         .brand-title { font-size: 40px; }
         .panel-title { font-size: 36px; }
+        .brand-en { letter-spacing: 0.16em; }
       }
     </style>
   </head>
   <body>
     <div class="shell">
       <section class="brand-panel">
-        <div class="brand-badge">Smart IoT Control Box</div>
-        <h1 class="brand-title">智能海洋物联网控制盒</h1>
-        <div class="brand-en">SMART MARINE IOT CONTROL BOX</div>
+        <div class="brand-wrap">
+          <h1 class="brand-title">智能海洋物联网控制盒</h1>
+          <div class="brand-en">SMART MARINE IOT CONTROL BOX</div>
+        </div>
       </section>
 
       <section class="auth-panel">
