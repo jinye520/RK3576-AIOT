@@ -314,7 +314,7 @@
               <p class="panel-subtitle">统一管理 WVP / ZLM / 视频点位接入与本地流媒体状态。不再强调 WVP 自带用户体系，而由平台统一登录后受控进入。</p>
               <div class="grid-2">
                 <div>
-                  <div class="field"><label>视频管理入口</label><input value="/api/platform/access/video/" readonly /></div>
+                  <div class="field"><label>视频管理入口</label><input value="/video-platform/（经平台统一入口守卫）" readonly /></div>
                   <div class="field"><label>ZLM 状态接口</label><input value="/api/video/status/" readonly /></div>
                   <div class="field"><label>点位策略</label><textarea>当前按本地监控点位进行统一接入与展示，后续逐步在平台后台中聚合更多视频管理能力。</textarea></div>
                 </div>
@@ -688,7 +688,7 @@
         `;
 
         document.getElementById('overviewProtocolStatus').textContent = nodeRedOnline ? '统一协议转换入口（在线）' : '统一协议转换入口（需检查）';
-        document.getElementById('overviewVideoStatus').textContent = wvpOnline ? '统一视频管理入口（在线）' : '统一视频管理入口（需检查）';
+        document.getElementById('overviewVideoStatus').textContent = wvpOnline ? '统一统一视频管理入口（在线）' : '统一视频管理入口（需检查）';
       }
 
       async function loadSession() {

@@ -792,7 +792,7 @@ def platform_access_video(request):
     if guard:
         return guard
     return _reverse_proxy_redirect_html(
-        'http://localhost:28080/',
+        '/video-platform/',
         '统一视频管理入口',
         '当前入口已纳入平台统一登录体系，仅管理员可访问。点击下方按钮继续进入视频接入与媒体服务管理界面。',
     )
