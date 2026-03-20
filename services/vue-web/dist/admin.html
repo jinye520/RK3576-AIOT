@@ -104,17 +104,22 @@
         gap: 6px;
       }
 
-      .nav a {
+      .nav button {
+        width: 100%;
+        text-align: left;
         color: #eef7ff;
         text-decoration: none;
         padding: 12px 14px;
         border-radius: 14px;
         font-size: 14px;
         font-weight: 600;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
       }
 
-      .nav a.active,
-      .nav a:hover {
+      .nav button.active,
+      .nav button:hover {
         background: rgba(255,255,255,0.12);
       }
 
@@ -177,6 +182,7 @@
       }
 
       .panel { padding: 20px; }
+      .hidden { display: none !important; }
 
       .hero {
         display: grid;
@@ -215,23 +221,9 @@
       }
 
       .metric-card { padding: 18px; }
-
-      .metric-label {
-        color: var(--muted);
-        font-size: 12px;
-      }
-
-      .metric-value {
-        margin-top: 10px;
-        font-size: 28px;
-        font-weight: 800;
-      }
-
-      .metric-foot {
-        margin-top: 6px;
-        color: var(--muted);
-        font-size: 12px;
-      }
+      .metric-label { color: var(--muted); font-size: 12px; }
+      .metric-value { margin-top: 10px; font-size: 28px; font-weight: 800; }
+      .metric-foot { margin-top: 6px; color: var(--muted); font-size: 12px; }
 
       .grid-2 {
         display: grid;
@@ -265,16 +257,8 @@
         border: 1px solid var(--line);
       }
 
-      .info-label {
-        color: var(--muted);
-        font-size: 12px;
-      }
-
-      .info-value {
-        margin-top: 8px;
-        font-size: 16px;
-        font-weight: 700;
-      }
+      .info-label { color: var(--muted); font-size: 12px; }
+      .info-value { margin-top: 8px; font-size: 16px; font-weight: 700; }
 
       .table {
         width: 100%;
@@ -320,7 +304,8 @@
       .inline-actions { margin-top: 10px; }
 
       input,
-      select {
+      select,
+      textarea {
         width: 100%;
         padding: 12px 14px;
         border-radius: 12px;
@@ -329,6 +314,8 @@
         color: var(--text);
         outline: none;
       }
+
+      textarea { min-height: 96px; resize: vertical; }
 
       .field { margin-bottom: 12px; }
       .field label {
@@ -375,10 +362,6 @@
         display: none;
       }
 
-      .ok { color: var(--success); }
-      .warn { color: var(--amber); }
-      .bad { color: var(--danger); }
-
       .user-list-toolbar {
         display: grid;
         grid-template-columns: 1.1fr 0.7fr auto;
@@ -408,22 +391,21 @@
         </section>
 
         <nav class="nav">
-          <a class="active" href="/admin.html">控制盒总览</a>
-          <a href="#userManagementSection">用户管理</a>
-          <a href="/api/devices/" target="_blank" rel="noreferrer">数据采集</a>
-          <a href="/nodered/" target="_blank" rel="noreferrer">协议转换</a>
-          <a href="http://localhost:28080/" target="_blank" rel="noreferrer">视频接入</a>
-          <a href="/api/video/status/" target="_blank" rel="noreferrer">录像存储</a>
-          <a href="/api/system/status/" target="_blank" rel="noreferrer">云平台推送</a>
-          <a href="/api/system/status/" target="_blank" rel="noreferrer">系统状态</a>
-          <a href="/bigscreen.html">监控大屏</a>
+          <button class="active" data-view="overviewView">控制盒总览</button>
+          <button data-view="baseConfigView">基础配置</button>
+          <button data-view="collectConfigView">数据采集</button>
+          <button data-view="protocolConfigView">协议转换</button>
+          <button data-view="videoConfigView">视频接入</button>
+          <button data-view="cloudConfigView">云平台推送</button>
+          <button data-view="systemStatusView">系统状态</button>
+          <button data-view="userManagementView">用户管理</button>
         </nav>
 
         <section class="quick-box">
           <div class="section-title">Quick Actions</div>
           <div style="display:grid; gap:10px; margin-top:12px;">
             <button class="btn btn-light" id="goBigscreenBtn">打开监控大屏</button>
-            <button class="btn btn-light" id="scrollUsersBtn">定位用户管理</button>
+            <button class="btn btn-light" id="goOverviewBtn">返回总览</button>
             <button class="btn btn-danger" id="logoutBtn">退出登录</button>
           </div>
         </section>
@@ -432,321 +414,251 @@
       <section class="content">
         <header class="topbar">
           <div>
-            <div class="topbar-title">控制盒管理与配置中心</div>
-            <div class="topbar-subtitle">对当前智能海洋物联网控制盒进行本地管理、参数配置与运行查看</div>
+            <div class="topbar-title" id="topbarTitle">控制盒总览</div>
+            <div class="topbar-subtitle" id="topbarSubtitle">对当前智能海洋物联网控制盒进行本地管理、参数配置与运行查看</div>
           </div>
           <div class="topbar-right" id="accessStatus">正在验证管理员权限...</div>
         </header>
 
         <main class="page">
-          <section class="hero">
-            <section class="panel">
-              <div class="status-badge">管理员后台</div>
-              <h1>智能海洋物联网控制盒管理中心</h1>
-              <p>
-                该后台用于对本地控制盒进行统一管理与配置，包括设备接入、采集状态、协议转换、视频系统、云平台推送及系统运行状态查看。普通用户仅查看监控大屏，管理员可进入此处执行配置与运维。
-              </p>
+          <section id="overviewView" class="view-section">
+            <section class="hero">
+              <section class="panel">
+                <div class="status-badge">管理员后台</div>
+                <h1>智能海洋物联网控制盒管理中心</h1>
+                <p>
+                  该后台用于对本地控制盒进行统一管理与配置，包括设备接入、采集状态、协议转换、视频系统、云平台推送及系统运行状态查看。左侧选择不同模块，右侧展示对应的配置界面。
+                </p>
+              </section>
+              <section class="panel">
+                <h3 class="panel-title">控制盒状态</h3>
+                <div class="info-grid">
+                  <div class="info-item"><div class="info-label">设备型号</div><div class="info-value">RK3576</div></div>
+                  <div class="info-item"><div class="info-label">运行模式</div><div class="info-value">边缘本地</div></div>
+                  <div class="info-item"><div class="info-label">部署场景</div><div class="info-value">海洋监测</div></div>
+                  <div class="info-item"><div class="info-label">配置入口</div><div class="info-value">本地后台</div></div>
+                </div>
+              </section>
             </section>
+
+            <section class="metrics">
+              <div class="metric-card"><div class="metric-label">管理模块</div><div class="metric-value">8</div><div class="metric-foot">覆盖控制盒关键能力</div></div>
+              <div class="metric-card"><div class="metric-label">配置方式</div><div class="metric-value">本地</div><div class="metric-foot">适合边缘侧独立运行</div></div>
+              <div class="metric-card"><div class="metric-label">主流程</div><div class="metric-value">导航切换</div><div class="metric-foot">左侧选择，右侧展示</div></div>
+              <div class="metric-card"><div class="metric-label">运维目标</div><div class="metric-value">配置 + 管理</div><div class="metric-foot">面向控制盒设备本体</div></div>
+            </section>
+
+            <section class="grid-2">
+              <section class="panel">
+                <h3 class="panel-title">控制盒配置总览</h3>
+                <div class="info-grid">
+                  <div class="info-item"><div class="info-label">数据采集</div><div class="info-value">设备接入 / 遥测采集 / 网关映射</div></div>
+                  <div class="info-item"><div class="info-label">协议转换</div><div class="info-value">Node-RED / MQTT / 规则流</div></div>
+                  <div class="info-item"><div class="info-label">视频接入</div><div class="info-value">WVP / ZLM / 点位管理</div></div>
+                  <div class="info-item"><div class="info-label">云平台推送</div><div class="info-value">本地聚合后上云</div></div>
+                </div>
+              </section>
+
+              <section class="panel">
+                <h3 class="panel-title">推荐操作路径</h3>
+                <table class="table">
+                  <thead><tr><th>步骤</th><th>模块</th><th>说明</th></tr></thead>
+                  <tbody>
+                    <tr><td>1</td><td><span class="tag tag-blue">基础配置</span></td><td>先设置控制盒名称、编号、位置与运行模式。</td></tr>
+                    <tr><td>2</td><td><span class="tag tag-blue">数据采集</span></td><td>确认设备、网关与遥测已正常接入。</td></tr>
+                    <tr><td>3</td><td><span class="tag tag-green">视频接入</span></td><td>核查 WVP / ZLM / 视频点位与媒体节点状态。</td></tr>
+                    <tr><td>4</td><td><span class="tag tag-amber">云平台推送</span></td><td>查看上云参数与推送状态。</td></tr>
+                  </tbody>
+                </table>
+              </section>
+            </section>
+          </section>
+
+          <section id="baseConfigView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">控制盒状态</h3>
-              <div class="info-grid">
-                <div class="info-item">
-                  <div class="info-label">设备型号</div>
-                  <div class="info-value">RK3576</div>
+              <h3 class="panel-title">基础配置</h3>
+              <p class="panel-subtitle">配置控制盒名称、编号、位置与运行模式，作为后台的基础设备信息。</p>
+              <div class="grid-2">
+                <div>
+                  <div class="field"><label>控制盒名称</label><input value="智能海洋物联网控制盒-A01" /></div>
+                  <div class="field"><label>设备编号</label><input value="RK3576-AIOT-0001" /></div>
+                  <div class="field"><label>部署位置</label><input value="海域边缘监测站 01" /></div>
+                  <div class="field"><label>所属项目</label><input value="海洋环境在线监测项目" /></div>
                 </div>
-                <div class="info-item">
-                  <div class="info-label">运行模式</div>
-                  <div class="info-value">边缘本地</div>
-                </div>
-                <div class="info-item">
-                  <div class="info-label">部署场景</div>
-                  <div class="info-value">海洋监测</div>
-                </div>
-                <div class="info-item">
-                  <div class="info-label">配置入口</div>
-                  <div class="info-value">本地后台</div>
+                <div>
+                  <div class="field"><label>运行模式</label><select><option>边缘本地</option><option>边缘 + 云协同</option></select></div>
+                  <div class="field"><label>设备描述</label><textarea>负责海洋环境监测、本地视频接入、协议转换与云平台推送。</textarea></div>
+                  <div class="inline-actions"><button class="primary-btn">保存基础配置</button><button class="secondary-btn">恢复默认</button></div>
                 </div>
               </div>
             </section>
           </section>
 
-          <section class="metrics">
-            <div class="metric-card">
-              <div class="metric-label">管理模块</div>
-              <div class="metric-value">8</div>
-              <div class="metric-foot">覆盖控制盒关键能力</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-label">配置方式</div>
-              <div class="metric-value">本地</div>
-              <div class="metric-foot">适合边缘侧独立运行</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-label">主流程</div>
-              <div class="metric-value">大屏 → 后台</div>
-              <div class="metric-foot">管理员从监控中心进入</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-label">运维目标</div>
-              <div class="metric-value">配置 + 管理</div>
-              <div class="metric-foot">面向控制盒设备本体</div>
-            </div>
-          </section>
-
-          <section class="grid-2">
+          <section id="collectConfigView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">控制盒配置总览</h3>
-              <div class="info-grid">
-                <div class="info-item">
-                  <div class="info-label">数据采集</div>
-                  <div class="info-value">设备接入 / 遥测采集 / 网关映射</div>
+              <h3 class="panel-title">数据采集配置</h3>
+              <p class="panel-subtitle">配置采样周期、采集协议、告警阈值与网关接入策略。</p>
+              <div class="grid-2">
+                <div>
+                  <div class="field"><label>采样周期</label><select><option>10 秒</option><option>30 秒</option><option>60 秒</option></select></div>
+                  <div class="field"><label>采集协议</label><select><option>MQTT</option><option>Modbus</option><option>HTTP</option></select></div>
+                  <div class="field"><label>网关映射策略</label><textarea>按海域分区自动映射至本地网关。</textarea></div>
                 </div>
-                <div class="info-item">
-                  <div class="info-label">协议转换</div>
-                  <div class="info-value">Node-RED / MQTT / 规则流</div>
-                </div>
-                <div class="info-item">
-                  <div class="info-label">视频接入</div>
-                  <div class="info-value">WVP / ZLM / 点位管理</div>
-                </div>
-                <div class="info-item">
-                  <div class="info-label">云平台推送</div>
-                  <div class="info-value">本地聚合后上云</div>
+                <div>
+                  <div class="field"><label>水温告警阈值</label><input value="30 ℃" /></div>
+                  <div class="field"><label>PH 告警阈值</label><input value="8.5" /></div>
+                  <div class="field"><label>溶解氧阈值</label><input value="5.0 mg/L" /></div>
+                  <div class="inline-actions"><button class="primary-btn">保存采集配置</button><button class="secondary-btn">查看设备接口</button></div>
                 </div>
               </div>
             </section>
+          </section>
 
+          <section id="protocolConfigView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">推荐操作路径</h3>
+              <h3 class="panel-title">协议转换配置</h3>
+              <p class="panel-subtitle">查看和配置 Node-RED、MQTT 转发与本地规则流。</p>
               <table class="table">
-                <thead>
-                  <tr>
-                    <th>步骤</th>
-                    <th>模块</th>
-                    <th>说明</th>
-                  </tr>
-                </thead>
+                <thead><tr><th>模块</th><th>当前状态</th><th>说明</th><th>入口</th></tr></thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td><span class="tag tag-blue">数据采集</span></td>
-                    <td>确认设备、网关与遥测已正常接入。</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td><span class="tag tag-blue">协议转换</span></td>
-                    <td>检查规则流、MQTT 转发与本地协议映射。</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td><span class="tag tag-green">视频接入</span></td>
-                    <td>核查 WVP / ZLM / 视频点位与媒体节点状态。</td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td><span class="tag tag-amber">系统状态</span></td>
-                    <td>查看控制盒服务运行态与推送状态。</td>
-                  </tr>
+                  <tr><td>Node-RED</td><td>运行中</td><td>用于本地协议转换和规则处理</td><td><a href="/nodered/" target="_blank" rel="noreferrer">打开</a></td></tr>
+                  <tr><td>MQTT Broker</td><td>运行中</td><td>承载边缘采集消息总线</td><td><a href="/api/system/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
+                  <tr><td>规则流</td><td>已部署</td><td>负责协议映射、清洗和转发</td><td><a href="/nodered/" target="_blank" rel="noreferrer">配置</a></td></tr>
                 </tbody>
               </table>
             </section>
           </section>
 
-          <section class="grid-2">
+          <section id="videoConfigView" class="view-section hidden">
             <section class="panel">
-              <h3 class="panel-title">配置入口</h3>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>能力模块</th>
-                    <th>入口</th>
-                    <th>用途</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>数据采集</td>
-                    <td><a href="/api/devices/" target="_blank" rel="noreferrer">/api/devices/</a></td>
-                    <td>查看采集设备、状态与接入结果</td>
-                  </tr>
-                  <tr>
-                    <td>协议转换</td>
-                    <td><a href="/nodered/" target="_blank" rel="noreferrer">/nodered/</a></td>
-                    <td>规则流与协议转换链路配置</td>
-                  </tr>
-                  <tr>
-                    <td>视频接入</td>
-                    <td><a href="http://localhost:28080/" target="_blank" rel="noreferrer">WVP 后台</a></td>
-                    <td>查看视频点位、流管理与媒体服务</td>
-                  </tr>
-                  <tr>
-                    <td>系统状态</td>
-                    <td><a href="/api/system/status/" target="_blank" rel="noreferrer">/api/system/status/</a></td>
-                    <td>控制盒本地服务与聚合运行态</td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-
-            <section class="panel">
-              <h3 class="panel-title">控制盒管理说明</h3>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>管理对象</th>
-                    <th>当前方式</th>
-                    <th>后续方向</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>设备基础配置</td>
-                    <td>通过接口与后台入口查看</td>
-                    <td>进一步做成可配置表单</td>
-                  </tr>
-                  <tr>
-                    <td>采集参数</td>
-                    <td>通过采集接口与网关数据联动</td>
-                    <td>补充采样周期、阈值、告警配置</td>
-                  </tr>
-                  <tr>
-                    <td>视频参数</td>
-                    <td>通过 WVP / ZLM 后台管理</td>
-                    <td>整合为统一控制盒配置页</td>
-                  </tr>
-                  <tr>
-                    <td>上云策略</td>
-                    <td>当前以接口聚合展示为主</td>
-                    <td>补充云平台推送策略配置</td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </section>
-
-          <section class="panel" id="userManagementSection">
-            <h3 class="panel-title">用户管理</h3>
-            <p class="panel-subtitle">已将独立用户管理页集成到当前管理后台。可在此查看、创建、修改、重置密码与删除平台用户。</p>
-
-            <div class="metrics" style="margin-bottom:16px;">
-              <div class="metric-card">
-                <div class="metric-label">账户总数</div>
-                <div class="metric-value" id="userStatTotal">--</div>
-                <div class="metric-foot">平台全部用户</div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-label">管理员</div>
-                <div class="metric-value" id="userStatAdmin">--</div>
-                <div class="metric-foot">拥有完整后台权限</div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-label">操作员</div>
-                <div class="metric-value" id="userStatOperator">--</div>
-                <div class="metric-foot">执行日常运维</div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-label">观察员</div>
-                <div class="metric-value" id="userStatViewer">--</div>
-                <div class="metric-foot">默认大屏访问角色</div>
-              </div>
-            </div>
-
-            <div class="grid-2">
-              <section class="panel" style="padding:0; border:0; box-shadow:none; background:transparent;">
-                <div class="user-list-toolbar">
-                  <input id="userSearchInput" placeholder="按用户名 / 显示名称搜索" />
-                  <select id="roleFilterSelect">
-                    <option value="">全部角色</option>
-                    <option value="admin">管理员</option>
-                    <option value="operator">操作员</option>
-                    <option value="viewer">观察员</option>
-                  </select>
-                  <button class="secondary-btn" id="refreshUsersBtn">刷新列表</button>
+              <h3 class="panel-title">视频接入配置</h3>
+              <p class="panel-subtitle">统一管理 WVP / ZLM / 视频点位接入与本地流媒体状态。</p>
+              <div class="grid-2">
+                <div>
+                  <div class="field"><label>WVP 地址</label><input value="http://localhost:28080/" /></div>
+                  <div class="field"><label>ZLM 地址</label><input value="http://localhost:28082/" /></div>
+                  <div class="field"><label>点位策略</label><textarea>当前按本地监控点位进行统一接入与展示。</textarea></div>
                 </div>
-
-                <div class="panel" style="padding:0; overflow:hidden;">
+                <div>
                   <table class="table">
-                    <thead>
-                      <tr>
-                        <th>用户名</th>
-                        <th>显示名称</th>
-                        <th>角色</th>
-                        <th>状态</th>
-                        <th>菜单</th>
-                        <th>操作</th>
-                      </tr>
-                    </thead>
-                    <tbody id="usersTableBody">
-                      <tr><td colspan="6">正在加载用户列表...</td></tr>
+                    <thead><tr><th>视频模块</th><th>状态</th><th>入口</th></tr></thead>
+                    <tbody>
+                      <tr><td>WVP 后台</td><td>运行中</td><td><a href="http://localhost:28080/" target="_blank" rel="noreferrer">打开</a></td></tr>
+                      <tr><td>ZLM 服务</td><td>运行中</td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
+                      <tr><td>监控大屏</td><td>启用中</td><td><a href="/bigscreen.html">打开</a></td></tr>
                     </tbody>
                   </table>
                 </div>
-              </section>
+              </div>
+            </section>
+          </section>
 
-              <section>
-                <div class="panel">
-                  <h3 class="panel-title">创建用户</h3>
-                  <div class="field">
-                    <label>用户名</label>
-                    <input id="createUsername" placeholder="请输入用户名" />
-                  </div>
-                  <div class="field">
-                    <label>显示名称</label>
-                    <input id="createDisplayName" placeholder="请输入显示名称" />
-                  </div>
-                  <div class="field">
-                    <label>角色</label>
-                    <select id="createRole">
-                      <option value="viewer">观察员</option>
-                      <option value="operator">操作员</option>
-                      <option value="admin">管理员</option>
-                    </select>
-                  </div>
-                  <div class="field">
-                    <label>初始密码</label>
-                    <input id="createPassword" type="password" placeholder="至少 6 位" />
-                  </div>
-                  <button class="primary-btn" id="createUserBtn">创建用户</button>
+          <section id="cloudConfigView" class="view-section hidden">
+            <section class="panel">
+              <h3 class="panel-title">云平台推送配置</h3>
+              <p class="panel-subtitle">配置上云地址、推送频率与策略，用于边缘数据和状态同步。</p>
+              <div class="grid-2">
+                <div>
+                  <div class="field"><label>云平台地址</label><input value="https://cloud.example.com/iot/upload" /></div>
+                  <div class="field"><label>推送频率</label><select><option>实时</option><option>30 秒</option><option>60 秒</option></select></div>
+                  <div class="field"><label>推送对象</label><textarea>遥测数据、视频状态、设备告警、控制盒健康状态。</textarea></div>
                 </div>
+                <div>
+                  <div class="field"><label>认证方式</label><select><option>Token</option><option>AK/SK</option></select></div>
+                  <div class="field"><label>推送策略</label><textarea>关键告警实时上报，基础数据按策略聚合后推送。</textarea></div>
+                  <div class="inline-actions"><button class="primary-btn">保存上云配置</button><button class="secondary-btn">测试连接</button></div>
+                </div>
+              </div>
+            </section>
+          </section>
 
-                <div class="panel" style="margin-top:18px;">
-                  <h3 class="panel-title">用户操作台</h3>
-                  <div class="field">
-                    <label>选中用户 ID</label>
-                    <input id="selectedUserId" placeholder="点击列表中的操作按钮自动填充" readonly />
-                  </div>
-                  <div class="field">
-                    <label>角色调整</label>
-                    <select id="editRole">
+          <section id="systemStatusView" class="view-section hidden">
+            <section class="panel">
+              <h3 class="panel-title">系统状态</h3>
+              <p class="panel-subtitle">查看控制盒本地服务状态、聚合接口与核心运行能力。</p>
+              <table class="table">
+                <thead><tr><th>服务</th><th>状态</th><th>说明</th><th>入口</th></tr></thead>
+                <tbody>
+                  <tr><td>Django API</td><td>运行中</td><td>提供控制盒聚合接口</td><td><a href="/api/" target="_blank" rel="noreferrer">/api/</a></td></tr>
+                  <tr><td>Node-RED</td><td>运行中</td><td>规则流与协议转换引擎</td><td><a href="/nodered/" target="_blank" rel="noreferrer">打开</a></td></tr>
+                  <tr><td>WVP</td><td>运行中</td><td>视频接入与管理后台</td><td><a href="http://localhost:28080/" target="_blank" rel="noreferrer">打开</a></td></tr>
+                  <tr><td>ZLM</td><td>运行中</td><td>流媒体节点与分发</td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
+                </tbody>
+              </table>
+            </section>
+          </section>
+
+          <section id="userManagementView" class="view-section hidden">
+            <section class="panel">
+              <h3 class="panel-title">用户管理</h3>
+              <p class="panel-subtitle">已将独立用户管理页集成到当前管理后台。可在此查看、创建、修改、重置密码与删除平台用户。</p>
+
+              <div class="metrics" style="margin-bottom:16px;">
+                <div class="metric-card"><div class="metric-label">账户总数</div><div class="metric-value" id="userStatTotal">--</div><div class="metric-foot">平台全部用户</div></div>
+                <div class="metric-card"><div class="metric-label">管理员</div><div class="metric-value" id="userStatAdmin">--</div><div class="metric-foot">拥有完整后台权限</div></div>
+                <div class="metric-card"><div class="metric-label">操作员</div><div class="metric-value" id="userStatOperator">--</div><div class="metric-foot">执行日常运维</div></div>
+                <div class="metric-card"><div class="metric-label">观察员</div><div class="metric-value" id="userStatViewer">--</div><div class="metric-foot">默认大屏访问角色</div></div>
+              </div>
+
+              <div class="grid-2">
+                <section>
+                  <div class="user-list-toolbar">
+                    <input id="userSearchInput" placeholder="按用户名 / 显示名称搜索" />
+                    <select id="roleFilterSelect">
+                      <option value="">全部角色</option>
                       <option value="admin">管理员</option>
                       <option value="operator">操作员</option>
                       <option value="viewer">观察员</option>
                     </select>
+                    <button class="secondary-btn" id="refreshUsersBtn">刷新列表</button>
                   </div>
-                  <div class="field">
-                    <label>账号状态</label>
-                    <select id="editActive">
-                      <option value="true">启用</option>
-                      <option value="false">停用</option>
-                    </select>
+                  <div class="panel" style="padding:0; overflow:hidden;">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>用户名</th>
+                          <th>显示名称</th>
+                          <th>角色</th>
+                          <th>状态</th>
+                          <th>菜单</th>
+                          <th>操作</th>
+                        </tr>
+                      </thead>
+                      <tbody id="usersTableBody">
+                        <tr><td colspan="6">正在加载用户列表...</td></tr>
+                      </tbody>
+                    </table>
                   </div>
-                  <div class="field">
-                    <label>重置密码</label>
-                    <input id="resetPassword" type="password" placeholder="输入新密码" />
-                  </div>
-                  <div class="inline-actions">
-                    <button class="primary-btn" id="updateUserBtn">保存修改</button>
-                    <button class="secondary-btn" id="resetPasswordBtn">重置密码</button>
-                    <button class="danger-btn" id="deleteUserBtn">删除用户</button>
-                  </div>
-                  <div class="confirm-box" id="deleteConfirmBox">
-                    确认删除当前用户？再次点击“删除用户”将立即执行。
-                  </div>
-                </div>
-              </section>
-            </div>
+                </section>
 
-            <div class="result" id="userResultBox">用户管理结果将在这里显示。</div>
+                <section>
+                  <div class="panel">
+                    <h3 class="panel-title">创建用户</h3>
+                    <div class="field"><label>用户名</label><input id="createUsername" placeholder="请输入用户名" /></div>
+                    <div class="field"><label>显示名称</label><input id="createDisplayName" placeholder="请输入显示名称" /></div>
+                    <div class="field"><label>角色</label><select id="createRole"><option value="viewer">观察员</option><option value="operator">操作员</option><option value="admin">管理员</option></select></div>
+                    <div class="field"><label>初始密码</label><input id="createPassword" type="password" placeholder="至少 6 位" /></div>
+                    <button class="primary-btn" id="createUserBtn">创建用户</button>
+                  </div>
+
+                  <div class="panel" style="margin-top:18px;">
+                    <h3 class="panel-title">用户操作台</h3>
+                    <div class="field"><label>选中用户 ID</label><input id="selectedUserId" placeholder="点击列表中的操作按钮自动填充" readonly /></div>
+                    <div class="field"><label>角色调整</label><select id="editRole"><option value="admin">管理员</option><option value="operator">操作员</option><option value="viewer">观察员</option></select></div>
+                    <div class="field"><label>账号状态</label><select id="editActive"><option value="true">启用</option><option value="false">停用</option></select></div>
+                    <div class="field"><label>重置密码</label><input id="resetPassword" type="password" placeholder="输入新密码" /></div>
+                    <div class="inline-actions">
+                      <button class="primary-btn" id="updateUserBtn">保存修改</button>
+                      <button class="secondary-btn" id="resetPasswordBtn">重置密码</button>
+                      <button class="danger-btn" id="deleteUserBtn">删除用户</button>
+                    </div>
+                    <div class="confirm-box" id="deleteConfirmBox">确认删除当前用户？再次点击“删除用户”将立即执行。</div>
+                  </div>
+                </section>
+              </div>
+
+              <div class="result" id="userResultBox">用户管理结果将在这里显示。</div>
+            </section>
           </section>
         </main>
       </section>
@@ -755,6 +667,16 @@
     <script>
       let allUsers = [];
       let deleteArmed = false;
+      const viewMeta = {
+        overviewView: ['控制盒总览', '统一查看控制盒能力结构与推荐操作路径'],
+        baseConfigView: ['基础配置', '配置控制盒名称、编号、位置与运行模式'],
+        collectConfigView: ['数据采集', '管理采样周期、阈值与设备采集策略'],
+        protocolConfigView: ['协议转换', '查看与配置本地规则流、MQTT 与协议映射'],
+        videoConfigView: ['视频接入', '管理视频点位、WVP 与流媒体服务'],
+        cloudConfigView: ['云平台推送', '配置上云地址、策略与同步方式'],
+        systemStatusView: ['系统状态', '查看控制盒本地服务与聚合接口运行态'],
+        userManagementView: ['用户管理', '在后台中直接维护平台用户与角色权限'],
+      };
 
       function getCookie(name) {
         const value = `; ${document.cookie}`;
@@ -765,6 +687,18 @@
 
       async function ensureSessionCookie() {
         await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+      }
+
+      function switchView(viewId) {
+        document.querySelectorAll('.view-section').forEach((section) => {
+          section.classList.toggle('hidden', section.id !== viewId);
+        });
+        document.querySelectorAll('.nav button[data-view]').forEach((button) => {
+          button.classList.toggle('active', button.dataset.view === viewId);
+        });
+        const meta = viewMeta[viewId] || ['控制盒管理中心', ''];
+        document.getElementById('topbarTitle').textContent = meta[0];
+        document.getElementById('topbarSubtitle').textContent = meta[1];
       }
 
       function setUserResult(message, level = 'normal') {
@@ -793,6 +727,7 @@
         document.getElementById('editActive').value = String(user.is_active);
         deleteArmed = false;
         document.getElementById('deleteConfirmBox').style.display = 'none';
+        switchView('userManagementView');
         setUserResult(`已选中用户：${user.display_name}（${user.username}）`);
       }
 
@@ -860,6 +795,7 @@
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
+        switchView('userManagementView');
         setUserResult(`用户创建成功：${data.username}`, 'ok');
         await loadUsers();
       }
@@ -971,11 +907,14 @@
         window.location.href = '/login.html';
       }
 
+      document.querySelectorAll('.nav button[data-view]').forEach((button) => {
+        button.addEventListener('click', () => switchView(button.dataset.view));
+      });
       document.getElementById('goBigscreenBtn').addEventListener('click', () => {
         window.location.href = '/bigscreen.html';
       });
-      document.getElementById('scrollUsersBtn').addEventListener('click', () => {
-        document.getElementById('userManagementSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('goOverviewBtn').addEventListener('click', () => {
+        switchView('overviewView');
       });
       document.getElementById('logoutBtn').addEventListener('click', logout);
       document.getElementById('userSearchInput').addEventListener('input', applyUserFilters);
@@ -992,6 +931,7 @@
         try {
           await createUser();
         } catch (err) {
+          switchView('userManagementView');
           setUserResult(err.message, 'bad');
         }
       });
@@ -999,6 +939,7 @@
         try {
           await updateUser();
         } catch (err) {
+          switchView('userManagementView');
           setUserResult(err.message, 'bad');
         }
       });
@@ -1006,6 +947,7 @@
         try {
           await resetPassword();
         } catch (err) {
+          switchView('userManagementView');
           setUserResult(err.message, 'bad');
         }
       });
@@ -1013,11 +955,14 @@
         try {
           await deleteUser();
         } catch (err) {
+          switchView('userManagementView');
           setUserResult(err.message, 'bad');
         }
       });
 
+      switchView('overviewView');
       loadSession().catch((err) => {
+        switchView('userManagementView');
         setUserResult(err.message, 'bad');
       });
     </script>
