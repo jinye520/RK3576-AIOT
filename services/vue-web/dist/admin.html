@@ -86,6 +86,14 @@
         line-height: 1.8;
       }
 
+      .nav-group-title {
+        margin: 6px 0 4px;
+        color: rgba(238,247,255,0.62);
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
       .nav {
         display: grid;
         gap: 6px;
@@ -93,6 +101,9 @@
 
       .nav button {
         width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         text-align: left;
         color: #eef7ff;
         text-decoration: none;
@@ -105,9 +116,23 @@
         cursor: pointer;
       }
 
+      .nav button::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(238,247,255,0.28);
+        flex: 0 0 auto;
+      }
+
       .nav button.active,
       .nav button:hover {
         background: rgba(255,255,255,0.12);
+      }
+
+      .nav button.active::before {
+        background: #7ed7ff;
+        box-shadow: 0 0 0 4px rgba(126,215,255,0.14);
       }
 
       .btn {
@@ -369,6 +394,7 @@
           <div class="brand-title">智能海洋物联网控制盒<br />管理中心</div>
         </section>
 
+        <div class="nav-group-title">控制盒管理</div>
         <nav class="nav">
           <button class="active" data-view="overviewView">控制盒总览</button>
           <button data-view="baseConfigView">基础配置</button>
@@ -377,6 +403,10 @@
           <button data-view="videoConfigView">视频接入</button>
           <button data-view="cloudConfigView">云平台推送</button>
           <button data-view="systemStatusView">系统状态</button>
+        </nav>
+
+        <div class="nav-group-title">平台与权限</div>
+        <nav class="nav">
           <button data-view="userManagementView">用户管理</button>
         </nav>
 
