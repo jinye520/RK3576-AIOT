@@ -6,326 +6,326 @@
     <title>RK3576 智能物联网控制盒 · 登录</title>
     <style>
       :root {
-        --deep-0: #020913;
-        --deep-1: #051a28;
-        --deep-2: #0a2b40;
-        --deep-3: #103f59;
-        --panel: rgba(6, 24, 36, 0.78);
-        --panel-strong: rgba(7, 23, 35, 0.94);
-        --line: rgba(107, 212, 228, 0.14);
-        --line-strong: rgba(129, 234, 255, 0.38);
-        --text: #ecfbff;
-        --muted: #8fb5c2;
-        --primary: #63ddd5;
-        --accent: #82ebff;
+        --text: #f3fbff;
+        --muted: rgba(213, 236, 244, 0.74);
+        --line: rgba(126, 216, 248, 0.16);
+        --line-strong: rgba(126, 216, 248, 0.38);
+        --primary: #69e0dc;
+        --accent: #7ee2fb;
         --green: #4fd6a6;
         --amber: #f6c86b;
         --red: #ff7a7a;
-        --shadow: 0 40px 120px rgba(0, 0, 0, 0.5);
+        --shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
       }
+
       * { box-sizing: border-box; }
       html, body { margin: 0; min-height: 100%; }
       body {
-        display: grid;
-        place-items: center;
-        padding: 24px;
-        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at 80% 14%, rgba(130,235,255,0.14), transparent 16%),
-          radial-gradient(circle at 12% 84%, rgba(99,221,213,0.08), transparent 18%),
-          linear-gradient(180deg, #01070d 0%, #04131f 42%, #08283b 100%);
+          linear-gradient(rgba(2, 9, 19, 0.78), rgba(2, 9, 19, 0.82)),
+          url('/assets/login-ref/loginbg.png') center/cover no-repeat fixed;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 28px;
         overflow: hidden;
       }
+
       body::before {
         content: "";
         position: fixed;
         inset: 0;
         pointer-events: none;
         background:
-          linear-gradient(transparent 0 97%, rgba(130,235,255,0.04) 97% 100%),
-          linear-gradient(90deg, transparent 0 97%, rgba(130,235,255,0.026) 97% 100%);
+          linear-gradient(transparent 0 96%, rgba(126, 226, 251, 0.04) 96% 100%),
+          linear-gradient(90deg, transparent 0 96%, rgba(126, 226, 251, 0.022) 96% 100%);
         background-size: 100% 40px, 40px 100%;
-        opacity: 0.8;
+        opacity: 0.48;
       }
+
       .shell {
-        position: relative;
-        width: min(1140px, calc(100vw - 32px));
-        min-height: min(760px, calc(100vh - 48px));
+        width: min(1120px, calc(100vw - 56px));
+        min-height: min(740px, calc(100vh - 56px));
         display: grid;
-        grid-template-columns: 1.12fr 0.88fr;
-        border-radius: 34px;
+        grid-template-columns: 1.22fr 0.78fr;
+        border-radius: 30px;
         overflow: hidden;
-        background: rgba(2, 11, 18, 0.46);
-        border: 1px solid rgba(130,235,255,0.1);
+        background: rgba(5, 18, 28, 0.46);
+        border: 1px solid rgba(126, 226, 251, 0.1);
+        backdrop-filter: blur(10px);
         box-shadow: var(--shadow);
-        backdrop-filter: blur(18px);
       }
-      .visual {
+
+      .brand-panel {
         position: relative;
-        padding: 44px 42px;
-        background:
-          radial-gradient(circle at top left, rgba(130,235,255,0.11), transparent 22%),
-          linear-gradient(180deg, rgba(4,18,30,0.78), rgba(5,25,39,0.48));
-        border-right: 1px solid rgba(130,235,255,0.08);
-        overflow: hidden;
+        padding: 46px 42px 34px;
+        background: linear-gradient(180deg, rgba(5, 22, 34, 0.34), rgba(5, 22, 34, 0.16));
+        border-right: 1px solid rgba(126, 226, 251, 0.08);
       }
-      .visual::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-          radial-gradient(circle at 78% 18%, rgba(99,221,213,0.12), transparent 18%),
-          radial-gradient(circle at 28% 76%, rgba(130,235,255,0.06), transparent 24%);
-        pointer-events: none;
-      }
-      .visual::after {
-        content: "";
-        position: absolute;
-        right: -120px;
-        bottom: -120px;
-        width: 420px;
-        height: 420px;
-        border-radius: 50%;
-        border: 1px solid rgba(130,235,255,0.12);
-        box-shadow:
-          0 0 0 34px rgba(130,235,255,0.022),
-          0 0 0 82px rgba(130,235,255,0.014),
-          0 0 0 136px rgba(130,235,255,0.008);
-        pointer-events: none;
-      }
-      .badge {
-        position: relative;
-        z-index: 1;
+
+      .brand-badge {
         display: inline-flex;
         align-items: center;
-        padding: 8px 14px;
+        padding: 9px 16px;
         border-radius: 999px;
-        border: 1px solid rgba(130,235,255,0.18);
-        color: var(--accent);
+        border: 1px solid rgba(126, 226, 251, 0.16);
+        color: #bfefff;
         font-size: 12px;
         letter-spacing: 0.18em;
         text-transform: uppercase;
+        background: rgba(255,255,255,0.02);
       }
-      .visual h1 {
-        position: relative;
-        z-index: 1;
-        margin: 22px 0 16px;
-        font-size: 52px;
+
+      .brand-title {
+        margin: 28px 0 18px;
+        max-width: 520px;
+        font-size: 58px;
         line-height: 1.08;
+        font-weight: 800;
         letter-spacing: 0.01em;
+        word-break: keep-all;
       }
-      .visual-desc {
-        position: relative;
-        z-index: 1;
+
+      .brand-desc {
         max-width: 540px;
         color: var(--muted);
         font-size: 16px;
-        line-height: 1.92;
+        line-height: 1.95;
       }
-      .visual-en {
-        position: relative;
-        z-index: 1;
-        margin-top: 14px;
-        color: rgba(130, 235, 255, 0.72);
+
+      .brand-en {
+        margin-top: 18px;
+        color: rgba(179, 232, 246, 0.74);
         font-size: 12px;
-        letter-spacing: 0.22em;
+        letter-spacing: 0.24em;
         text-transform: uppercase;
       }
-      .visual-pills {
-        position: relative;
-        z-index: 1;
-        margin-top: 22px;
+
+      .pill-row {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 12px;
+        margin-top: 28px;
       }
+
       .pill {
-        padding: 9px 12px;
+        padding: 10px 14px;
         border-radius: 999px;
-        border: 1px solid rgba(130,235,255,0.12);
-        background: rgba(130,235,255,0.055);
+        border: 1px solid rgba(126, 226, 251, 0.14);
+        background: rgba(255,255,255,0.03);
         font-size: 12px;
+        color: #dff9ff;
       }
-      .visual-footer {
+
+      .brand-footer {
         position: absolute;
         left: 42px;
         right: 42px;
         bottom: 34px;
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
-        z-index: 1;
+        gap: 14px;
       }
-      .mini-card {
-        padding: 16px;
-        border-radius: 20px;
-        background: rgba(255,255,255,0.022);
-        border: 1px solid rgba(130,235,255,0.08);
+
+      .stat-card {
+        min-height: 92px;
+        padding: 16px 16px 14px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.024);
+        border: 1px solid rgba(126, 226, 251, 0.08);
       }
-      .mini-label {
-        color: var(--muted);
+
+      .stat-label {
+        color: rgba(213, 236, 244, 0.6);
         font-size: 11px;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.16em;
         text-transform: uppercase;
       }
-      .mini-value {
+
+      .stat-value {
         margin-top: 10px;
         font-size: 18px;
         font-weight: 800;
       }
-      .auth {
+
+      .auth-panel {
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 42px 40px;
-        background: linear-gradient(180deg, rgba(6,23,36,0.97), rgba(4,18,28,0.95));
+        padding: 36px 34px;
+        background: linear-gradient(180deg, rgba(4, 16, 25, 0.9), rgba(4, 16, 25, 0.94));
       }
+
       .auth-card {
-        width: min(100%, 404px);
+        width: min(100%, 392px);
       }
-      .section-kicker {
-        color: var(--muted);
+
+      .portal-kicker {
+        color: rgba(215, 238, 245, 0.7);
         font-size: 11px;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.22em;
         text-transform: uppercase;
+        margin-bottom: 18px;
       }
+
       .tabs {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin: 18px 0 24px;
+        gap: 12px;
+        margin-bottom: 28px;
       }
+
       .tab-btn {
         appearance: none;
-        border: 1px solid rgba(130,235,255,0.12);
+        border: 1px solid rgba(126, 226, 251, 0.12);
         background: rgba(255,255,255,0.02);
         color: var(--text);
         cursor: pointer;
-        border-radius: 18px;
-        padding: 13px 14px;
-        font-size: 13px;
+        border-radius: 20px;
+        padding: 14px 16px;
+        font-size: 14px;
         font-weight: 700;
       }
+
       .tab-btn.active {
-        color: #032435;
-        background: linear-gradient(135deg, #63ddd5, #82ebff);
-        box-shadow: 0 12px 32px rgba(99,221,213,0.22);
+        color: #062336;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        box-shadow: 0 12px 34px rgba(105, 224, 220, 0.22);
       }
+
       .panel-title {
-        font-size: 44px;
+        margin: 0 0 10px;
+        font-size: 40px;
+        line-height: 1.08;
         font-weight: 800;
-        margin-bottom: 10px;
       }
+
       .panel-subtitle {
         color: var(--muted);
         font-size: 13px;
         line-height: 1.9;
-        margin-bottom: 24px;
+        margin-bottom: 26px;
       }
-      .field { margin-bottom: 16px; }
+
+      .field { margin-bottom: 18px; }
+
       .field label {
         display: block;
-        margin-bottom: 8px;
-        color: var(--muted);
+        color: rgba(213, 236, 244, 0.72);
         font-size: 12px;
+        margin-bottom: 10px;
       }
+
       .field input {
         width: 100%;
-        padding: 16px 18px;
-        border-radius: 18px;
-        border: 1px solid rgba(130,235,255,0.12);
-        background: rgba(255,255,255,0.024);
+        border: 1px solid rgba(126, 226, 251, 0.12);
+        border-radius: 20px;
+        padding: 17px 18px;
+        background: rgba(255,255,255,0.025);
         color: var(--text);
         outline: none;
         font-size: 15px;
       }
-      .field input:focus { border-color: var(--line-strong); }
+
+      .field input:focus {
+        border-color: var(--line-strong);
+        box-shadow: 0 0 0 3px rgba(126, 226, 251, 0.08);
+      }
+
       .primary-btn {
         width: 100%;
         border: 0;
-        border-radius: 18px;
-        padding: 17px 16px;
+        border-radius: 20px;
+        padding: 18px 18px;
         font-size: 15px;
         font-weight: 800;
-        color: #032435;
-        background: linear-gradient(135deg, #63ddd5, #82ebff);
+        color: #062336;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
         cursor: pointer;
-        margin-top: 6px;
+        box-shadow: 0 12px 34px rgba(105, 224, 220, 0.18);
       }
+
       .result {
         margin-top: 18px;
-        padding: 15px 16px;
-        border-radius: 18px;
-        border: 1px solid rgba(130,235,255,0.1);
-        background: rgba(255,255,255,0.024);
+        border-radius: 20px;
+        border: 1px solid rgba(126, 226, 251, 0.1);
+        background: rgba(255,255,255,0.022);
+        padding: 16px 18px;
         color: var(--muted);
         font-size: 13px;
         line-height: 1.75;
       }
+
       .ok { color: var(--green); }
       .warn { color: var(--amber); }
       .bad { color: var(--red); }
       .hidden { display: none; }
+
       @media (max-width: 980px) {
         .shell {
           grid-template-columns: 1fr;
           min-height: auto;
         }
-        .visual {
-          min-height: 420px;
+        .brand-panel {
+          min-height: 430px;
         }
-        .visual-footer {
+        .brand-footer {
           position: relative;
           left: auto;
           right: auto;
           bottom: auto;
-          margin-top: 28px;
+          margin-top: 32px;
         }
       }
+
       @media (max-width: 640px) {
         body { padding: 16px; }
-        .visual, .auth { padding: 22px; }
-        .visual h1 { font-size: 38px; }
-        .visual-footer { grid-template-columns: 1fr; }
+        .brand-panel, .auth-panel { padding: 24px 22px; }
+        .brand-title { font-size: 40px; }
+        .panel-title { font-size: 36px; }
+        .brand-footer { grid-template-columns: 1fr; }
       }
     </style>
   </head>
   <body>
     <div class="shell">
-      <section class="visual">
-        <div class="badge">Smart IoT Control Box</div>
-        <h1>RK3576 智能物联网控制盒</h1>
-        <div class="visual-desc">
-          部署在 RK3576 上的海洋场景边缘控制中心，负责现场数据采集、协议转换、视频接入、本地录像存储及云平台推送，形成一体化边缘控制闭环。
+      <section class="brand-panel">
+        <div class="brand-badge">Smart IoT Control Box</div>
+        <h1 class="brand-title">RK3576 智能物联网控制盒</h1>
+        <div class="brand-desc">
+          面向海洋场景的边缘控制中心，负责现场数据采集、协议转换、视频接入、本地录像存储及云平台推送，形成控制盒一体化边缘处理闭环。
         </div>
-        <div class="visual-en">SMART EDGE CONTROLLER FOR MARINE IOT</div>
-        <div class="visual-pills">
+        <div class="brand-en">SMART EDGE CONTROLLER FOR MARINE IOT</div>
+        <div class="pill-row">
           <span class="pill">数据采集</span>
           <span class="pill">协议转换</span>
           <span class="pill">视频接入</span>
           <span class="pill">本地录像</span>
           <span class="pill">云端推送</span>
         </div>
-        <div class="visual-footer">
-          <div class="mini-card">
-            <div class="mini-label">部署位置</div>
-            <div class="mini-value">RK3576 边缘侧</div>
+
+        <div class="brand-footer">
+          <div class="stat-card">
+            <div class="stat-label">部署位置</div>
+            <div class="stat-value">RK3576 边缘侧</div>
           </div>
-          <div class="mini-card">
-            <div class="mini-label">主界面</div>
-            <div class="mini-value">控制盒指挥大屏</div>
+          <div class="stat-card">
+            <div class="stat-label">主界面</div>
+            <div class="stat-value">控制盒指挥大屏</div>
           </div>
-          <div class="mini-card">
-            <div class="mini-label">运维入口</div>
-            <div class="mini-value">管理员后台</div>
+          <div class="stat-card">
+            <div class="stat-label">运维入口</div>
+            <div class="stat-value">管理员后台</div>
           </div>
         </div>
       </section>
 
-      <section class="auth">
+      <section class="auth-panel">
         <div class="auth-card">
-          <div class="section-kicker">Access Portal</div>
+          <div class="portal-kicker">Access Portal</div>
           <div class="tabs">
             <button class="tab-btn active" id="tabLoginBtn" type="button">用户登录</button>
             <button class="tab-btn" id="tabRegisterBtn" type="button">新用户注册</button>
