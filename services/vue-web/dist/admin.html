@@ -250,15 +250,15 @@
               <p class="panel-subtitle">配置控制盒名称、编号、位置与运行模式，作为后台的基础设备信息。</p>
               <div class="grid-2">
                 <div>
-                  <div class="field"><label>控制盒名称</label><input value="智能海洋物联网控制盒-A01" /></div>
-                  <div class="field"><label>设备编号</label><input value="RK3576-AIOT-0001" /></div>
-                  <div class="field"><label>部署位置</label><input value="海域边缘监测站 01" /></div>
-                  <div class="field"><label>所属项目</label><input value="海洋环境在线监测项目" /></div>
+                  <div class="field"><label>控制盒名称</label><input id="baseBoxName" /></div>
+                  <div class="field"><label>设备编号</label><input id="baseBoxCode" /></div>
+                  <div class="field"><label>部署位置</label><input id="baseLocation" /></div>
+                  <div class="field"><label>所属项目</label><input id="baseProjectName" /></div>
                 </div>
                 <div>
-                  <div class="field"><label>运行模式</label><select><option>边缘本地</option><option>边缘 + 云协同</option></select></div>
-                  <div class="field"><label>设备描述</label><textarea>负责海洋环境监测、本地视频接入、协议转换与云平台推送。</textarea></div>
-                  <div class="inline-actions"><button class="primary-btn">保存基础配置</button><button class="secondary-btn">恢复默认</button></div>
+                  <div class="field"><label>运行模式</label><select id="baseRunMode"><option>边缘本地</option><option>边缘 + 云协同</option></select></div>
+                  <div class="field"><label>设备描述</label><textarea id="baseDescription"></textarea></div>
+                  <div class="inline-actions"><button class="primary-btn" id="saveBaseConfigBtn">保存基础配置</button><button class="secondary-btn" id="reloadBaseConfigBtn">重新加载</button></div><div class="result" id="baseConfigResultBox">基础配置结果将在这里显示。</div>
                 </div>
               </div>
             </section>
@@ -273,15 +273,15 @@
               <p class="panel-subtitle">配置采样周期、采集协议、告警阈值与网关接入策略。</p>
               <div class="grid-2">
                 <div>
-                  <div class="field"><label>采样周期</label><select><option>10 秒</option><option>30 秒</option><option>60 秒</option></select></div>
-                  <div class="field"><label>采集协议</label><select><option>MQTT</option><option>Modbus</option><option>HTTP</option></select></div>
-                  <div class="field"><label>网关映射策略</label><textarea>按海域分区自动映射至本地网关。</textarea></div>
+                  <div class="field"><label>采样周期</label><select id="collectSampleInterval"><option>10 秒</option><option>30 秒</option><option>60 秒</option></select></div>
+                  <div class="field"><label>采集协议</label><select id="collectProtocol"><option>MQTT</option><option>Modbus</option><option>HTTP</option></select></div>
+                  <div class="field"><label>网关映射策略</label><textarea id="collectGatewayMapping"></textarea></div>
                 </div>
                 <div>
-                  <div class="field"><label>水温告警阈值</label><input value="30 ℃" /></div>
-                  <div class="field"><label>PH 告警阈值</label><input value="8.5" /></div>
-                  <div class="field"><label>溶解氧阈值</label><input value="5.0 mg/L" /></div>
-                  <div class="inline-actions"><button class="primary-btn">保存采集配置</button><button class="secondary-btn">查看设备接口</button></div>
+                  <div class="field"><label>水温告警阈值</label><input id="collectTemperatureThreshold" /></div>
+                  <div class="field"><label>PH 告警阈值</label><input id="collectPhThreshold" /></div>
+                  <div class="field"><label>溶解氧阈值</label><input id="collectDissolvedOxygenThreshold" /></div>
+                  <div class="inline-actions"><button class="primary-btn" id="saveCollectConfigBtn">保存采集配置</button><button class="secondary-btn" onclick="window.open('/api/devices/', '_blank')">查看设备接口</button></div><div class="result" id="collectConfigResultBox">采集配置结果将在这里显示。</div>
                 </div>
               </div>
             </section>
@@ -481,6 +481,57 @@
 
       async function ensureSessionCookie() {
         await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+      }
+      let platformSettings = {};
+
+      function setConfigResult(id, message, level = 'normal') {
+        const box = document.getElementById(id);
+        if (!box) return;
+        box.textContent = message;
+        box.style.color = level === 'bad' ? '#b74c4c' : level === 'ok' ? '#13795b' : '#6d8197';
+      }
+
+      function fillBaseConfigForm(config) {
+        document.getElementById('baseBoxName').value = config.box_name || '';
+        document.getElementById('baseBoxCode').value = config.box_code || '';
+        document.getElementById('baseLocation').value = config.location || '';
+        document.getElementById('baseProjectName').value = config.project_name || '';
+        document.getElementById('baseRunMode').value = config.run_mode || '边缘本地';
+        document.getElementById('baseDescription').value = config.description || '';
+      }
+
+      function fillCollectConfigForm(config) {
+        document.getElementById('collectSampleInterval').value = config.sample_interval || '10 秒';
+        document.getElementById('collectProtocol').value = config.collect_protocol || 'MQTT';
+        document.getElementById('collectGatewayMapping').value = config.gateway_mapping || '';
+        document.getElementById('collectTemperatureThreshold').value = config.temperature_threshold || '';
+        document.getElementById('collectPhThreshold').value = config.ph_threshold || '';
+        document.getElementById('collectDissolvedOxygenThreshold').value = config.dissolved_oxygen_threshold || '';
+      }
+
+      async function loadPlatformSettings() {
+        const res = await fetch('/api/platform/settings/', { cache: 'no-store', credentials: 'same-origin' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'load settings failed');
+        platformSettings = data;
+        fillBaseConfigForm(data.base_config?.value || {});
+        fillCollectConfigForm(data.collect_config?.value || {});
+      }
+
+      async function updatePlatformSetting(key, value) {
+        await ensureSessionCookie();
+        const res = await fetch(`/api/platform/settings/${key}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify({ value }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
+        return data;
       }
 
       function switchView(viewId) {
@@ -711,7 +762,7 @@
         }
 
         accessStatus.textContent = `管理员权限已验证 · 当前用户：${data.user.display_name}`;
-        await Promise.all([loadUsers(), loadRuntimePanels()]);
+        await Promise.all([loadUsers(), loadRuntimePanels(), loadPlatformSettings()]);
       }
 
       async function logout() {
@@ -769,12 +820,46 @@
           setUserResult(err.message, 'bad');
         }
       });
-      document.getElementById('deleteUserBtn').addEventListener('click', async () => {
+      document.getElementById('saveBaseConfigBtn').addEventListener('click', async () => {
         try {
-          await deleteUser();
+          const value = {
+            box_name: document.getElementById('baseBoxName').value.trim(),
+            box_code: document.getElementById('baseBoxCode').value.trim(),
+            location: document.getElementById('baseLocation').value.trim(),
+            project_name: document.getElementById('baseProjectName').value.trim(),
+            run_mode: document.getElementById('baseRunMode').value,
+            description: document.getElementById('baseDescription').value.trim(),
+          };
+          await updatePlatformSetting('base_config', value);
+          setConfigResult('baseConfigResultBox', '基础配置保存成功。', 'ok');
+          await loadPlatformSettings();
         } catch (err) {
-          switchView('userManagementView');
-          setUserResult(err.message, 'bad');
+          setConfigResult('baseConfigResultBox', err.message, 'bad');
+        }
+      });
+      document.getElementById('reloadBaseConfigBtn').addEventListener('click', async () => {
+        try {
+          await loadPlatformSettings();
+          setConfigResult('baseConfigResultBox', '基础配置已重新加载。', 'ok');
+        } catch (err) {
+          setConfigResult('baseConfigResultBox', err.message, 'bad');
+        }
+      });
+      document.getElementById('saveCollectConfigBtn').addEventListener('click', async () => {
+        try {
+          const value = {
+            sample_interval: document.getElementById('collectSampleInterval').value,
+            collect_protocol: document.getElementById('collectProtocol').value,
+            gateway_mapping: document.getElementById('collectGatewayMapping').value.trim(),
+            temperature_threshold: document.getElementById('collectTemperatureThreshold').value.trim(),
+            ph_threshold: document.getElementById('collectPhThreshold').value.trim(),
+            dissolved_oxygen_threshold: document.getElementById('collectDissolvedOxygenThreshold').value.trim(),
+          };
+          await updatePlatformSetting('collect_config', value);
+          setConfigResult('collectConfigResultBox', '采集配置保存成功。', 'ok');
+          await loadPlatformSettings();
+        } catch (err) {
+          setConfigResult('collectConfigResultBox', err.message, 'bad');
         }
       });
 

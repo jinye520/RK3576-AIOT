@@ -14,11 +14,12 @@ from rest_framework.response import Response
 from django.shortcuts import redirect
 
 from .demo_data import PORTS_PAYLOAD
-from .models import Device, Gateway, PlatformUser, Telemetry
+from .models import Device, Gateway, PlatformSetting, PlatformUser, Telemetry
 from .serializers import (
     DeviceSerializer,
     GatewaySerializer,
     PlatformUserCreateSerializer,
+    PlatformSettingSerializer,
     PlatformUserSerializer,
     TelemetrySerializer,
 )
@@ -59,6 +60,71 @@ BIGSCREEN_VIDEO_SLOTS = [
 ]
 
 PROJECT_ROOT = Path('/app')
+
+
+DEFAULT_PLATFORM_SETTINGS = {
+    'base_config': {
+        'box_name': '智能海洋物联网控制盒-A01',
+        'box_code': 'RK3576-AIOT-0001',
+        'location': '海域边缘监测站 01',
+        'project_name': '海洋环境在线监测项目',
+        'run_mode': '边缘本地',
+        'description': '负责海洋环境监测、本地视频接入、协议转换与云平台推送。',
+    },
+    'collect_config': {
+        'sample_interval': '10 秒',
+        'collect_protocol': 'MQTT',
+        'gateway_mapping': '按海域分区自动映射至本地网关。',
+        'temperature_threshold': '30 ℃',
+        'ph_threshold': '8.5',
+        'dissolved_oxygen_threshold': '5.0 mg/L',
+    },
+    'protocol_config': {
+        'entry_path': '/nodered/',
+        'broker_status_api': '/api/system/status/',
+        'rule_strategy': '负责协议映射、清洗和转发',
+        'access_mode': '平台统一登录后进入协议转换管理界面',
+    },
+    'video_config': {
+        'entry_path': '/video-platform/',
+        'status_api': '/api/video/status/',
+        'slot_strategy': '当前按本地监控点位进行统一接入与展示，后续逐步在平台后台中聚合更多视频管理能力。',
+        'storage_policy': '录像存储策略待继续补充',
+    },
+    'cloud_config': {
+        'cloud_url': 'https://cloud.example.com/iot/upload',
+        'push_frequency': '实时',
+        'push_targets': '遥测数据、视频状态、设备告警、控制盒健康状态。',
+        'auth_type': 'Token',
+        'push_strategy': '关键告警实时上报，基础数据按策略聚合后推送。',
+    },
+}
+
+
+def _get_platform_setting(key):
+    defaults = DEFAULT_PLATFORM_SETTINGS.get(key, {})
+    setting, created = PlatformSetting.objects.get_or_create(key=key, defaults={'value': defaults})
+    if created and not setting.value:
+        setting.value = defaults
+        setting.save(update_fields=['value', 'updated_at'])
+    merged = defaults.copy()
+    if isinstance(setting.value, dict):
+        merged.update(setting.value)
+    return setting, merged
+
+
+def _platform_settings_payload():
+    payload = {}
+    for key in DEFAULT_PLATFORM_SETTINGS:
+        setting, merged = _get_platform_setting(key)
+        payload[key] = {
+            'key': key,
+            'value': merged,
+            'updated_by': setting.updated_by,
+            'updated_at': setting.updated_at.isoformat() if setting.updated_at else None,
+        }
+    return payload
+
 
 
 def _parse_int(value, default=None, minimum=None, maximum=None):
@@ -277,6 +343,35 @@ def health(request):
         'status': 'ok',
         'service': 'django-api',
         'timestamp': timezone.now().isoformat(),
+    })
+
+
+@api_view(['GET'])
+def platform_settings(request):
+    _, error_response = _require_admin_user(request)
+    if error_response:
+        return error_response
+    return Response(_platform_settings_payload())
+
+
+@api_view(['POST'])
+def platform_settings_update(request, key):
+    current_user, error_response = _require_admin_user(request)
+    if error_response:
+        return error_response
+    if key not in DEFAULT_PLATFORM_SETTINGS:
+        return Response({'detail': 'setting key not found'}, status=status.HTTP_404_NOT_FOUND)
+    value = request.data.get('value')
+    if not isinstance(value, dict):
+        return Response({'detail': 'value must be an object'}, status=status.HTTP_400_BAD_REQUEST)
+    setting, merged = _get_platform_setting(key)
+    merged.update(value)
+    setting.value = merged
+    setting.updated_by = current_user.username
+    setting.save(update_fields=['value', 'updated_by', 'updated_at'])
+    return Response({
+        'item': PlatformSettingSerializer(setting).data,
+        'merged_value': merged,
     })
 
 

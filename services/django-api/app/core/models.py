@@ -112,3 +112,26 @@ class PlatformUser(TimestampedModel):
 
     def set_password(self, raw_password):
         self.password_hash = make_password(raw_password)
+
+
+class PlatformSetting(TimestampedModel):
+    SETTING_BASE_CONFIG = 'base_config'
+    SETTING_COLLECT_CONFIG = 'collect_config'
+    SETTING_PROTOCOL_CONFIG = 'protocol_config'
+    SETTING_VIDEO_CONFIG = 'video_config'
+    SETTING_CLOUD_CONFIG = 'cloud_config'
+
+    SETTING_KEY_CHOICES = [
+        (SETTING_BASE_CONFIG, '基础配置'),
+        (SETTING_COLLECT_CONFIG, '数据采集配置'),
+        (SETTING_PROTOCOL_CONFIG, '协议转换配置'),
+        (SETTING_VIDEO_CONFIG, '视频接入配置'),
+        (SETTING_CLOUD_CONFIG, '云平台推送配置'),
+    ]
+
+    key = models.CharField(max_length=64, unique=True, choices=SETTING_KEY_CHOICES)
+    value = models.JSONField(default=dict, blank=True)
+    updated_by = models.CharField(max_length=64, blank=True, default='')
+
+    def __str__(self):
+        return f"{self.key}<{self.updated_by or 'system'}>"

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Device, Gateway, PlatformUser, Telemetry
+from .models import Device, Gateway, PlatformSetting, PlatformUser, Telemetry
 
 
 class GatewaySerializer(serializers.ModelSerializer):
@@ -69,3 +69,9 @@ class PlatformUserCreateSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+
+class PlatformSettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlatformSetting
+        fields = ['id', 'key', 'value', 'updated_by', 'created_at', 'updated_at']
