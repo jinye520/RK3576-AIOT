@@ -68,20 +68,20 @@
       .brand-badge {
         display: inline-flex;
         align-items: center;
-        padding: 9px 16px;
+        padding: 8px 14px;
         border-radius: 999px;
-        border: 1px solid rgba(153, 229, 255, 0.22);
+        border: 1px solid rgba(153, 229, 255, 0.18);
         color: #d9f7ff;
-        font-size: 12px;
+        font-size: 11px;
         letter-spacing: 0.18em;
         text-transform: uppercase;
-        background: rgba(255,255,255,0.05);
+        background: rgba(255,255,255,0.04);
       }
 
       .brand-title {
-        margin: 28px 0 12px;
-        max-width: 520px;
-        font-size: 58px;
+        margin: 28px 0 10px;
+        max-width: 420px;
+        font-size: 56px;
         line-height: 1.08;
         font-weight: 800;
         letter-spacing: 0.01em;
@@ -94,53 +94,6 @@
         font-size: 12px;
         letter-spacing: 0.24em;
         text-transform: uppercase;
-      }
-
-      .pill-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 28px;
-      }
-
-      .pill {
-        padding: 10px 14px;
-        border-radius: 999px;
-        border: 1px solid rgba(153, 229, 255, 0.18);
-        background: rgba(255,255,255,0.07);
-        font-size: 12px;
-        color: #effcff;
-      }
-
-      .brand-footer {
-        position: absolute;
-        left: 42px;
-        right: 42px;
-        bottom: 34px;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .stat-card {
-        min-height: 92px;
-        padding: 16px 16px 14px;
-        border-radius: 22px;
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(153, 229, 255, 0.14);
-      }
-
-      .stat-label {
-        color: rgba(213, 236, 244, 0.6);
-        font-size: 11px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-
-      .stat-value {
-        margin-top: 10px;
-        font-size: 18px;
-        font-weight: 800;
       }
 
       .auth-panel {
@@ -279,7 +232,6 @@
         .brand-panel, .auth-panel { padding: 24px 22px; }
         .brand-title { font-size: 40px; }
         .panel-title { font-size: 36px; }
-        .brand-footer { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -289,28 +241,6 @@
         <div class="brand-badge">Smart IoT Control Box</div>
         <h1 class="brand-title">智能海洋物联网控制盒</h1>
         <div class="brand-en">SMART MARINE IOT CONTROL BOX</div>
-        <div class="pill-row">
-          <span class="pill">数据采集</span>
-          <span class="pill">协议转换</span>
-          <span class="pill">视频接入</span>
-          <span class="pill">本地录像</span>
-          <span class="pill">云端推送</span>
-        </div>
-
-        <div class="brand-footer">
-          <div class="stat-card">
-            <div class="stat-label">部署位置</div>
-            <div class="stat-value">RK3576 边缘侧</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">主界面</div>
-            <div class="stat-value">控制盒指挥大屏</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">运维入口</div>
-            <div class="stat-value">管理员后台</div>
-          </div>
-        </div>
       </section>
 
       <section class="auth-panel">
