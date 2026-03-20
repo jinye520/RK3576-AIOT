@@ -6,16 +6,16 @@
     <title>RK3576 智能物联网控制盒 · 登录</title>
     <style>
       :root {
-        --text: #f3fbff;
-        --muted: rgba(213, 236, 244, 0.74);
-        --line: rgba(126, 216, 248, 0.16);
-        --line-strong: rgba(126, 216, 248, 0.38);
-        --primary: #69e0dc;
-        --accent: #7ee2fb;
+        --text: #f6fdff;
+        --muted: rgba(225, 241, 246, 0.86);
+        --line: rgba(153, 229, 255, 0.22);
+        --line-strong: rgba(153, 229, 255, 0.48);
+        --primary: #7be8e1;
+        --accent: #94ebff;
         --green: #4fd6a6;
         --amber: #f6c86b;
         --red: #ff7a7a;
-        --shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+        --shadow: 0 28px 80px rgba(7, 25, 38, 0.22);
       }
 
       * { box-sizing: border-box; }
@@ -24,7 +24,7 @@
         font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
         color: var(--text);
         background:
-          linear-gradient(rgba(2, 9, 19, 0.78), rgba(2, 9, 19, 0.82)),
+          linear-gradient(rgba(14, 39, 58, 0.42), rgba(10, 30, 46, 0.5)),
           url('/assets/login-ref/loginbg.png') center/cover no-repeat fixed;
         min-height: 100vh;
         display: grid;
@@ -39,10 +39,10 @@
         inset: 0;
         pointer-events: none;
         background:
-          linear-gradient(transparent 0 96%, rgba(126, 226, 251, 0.04) 96% 100%),
-          linear-gradient(90deg, transparent 0 96%, rgba(126, 226, 251, 0.022) 96% 100%);
+          linear-gradient(transparent 0 96%, rgba(148, 235, 255, 0.05) 96% 100%),
+          linear-gradient(90deg, transparent 0 96%, rgba(148, 235, 255, 0.03) 96% 100%);
         background-size: 100% 40px, 40px 100%;
-        opacity: 0.48;
+        opacity: 0.42;
       }
 
       .shell {
@@ -52,8 +52,8 @@
         grid-template-columns: 1.22fr 0.78fr;
         border-radius: 30px;
         overflow: hidden;
-        background: rgba(5, 18, 28, 0.46);
-        border: 1px solid rgba(126, 226, 251, 0.1);
+        background: rgba(11, 38, 57, 0.38);
+        border: 1px solid rgba(153, 229, 255, 0.16);
         backdrop-filter: blur(10px);
         box-shadow: var(--shadow);
       }
@@ -61,8 +61,8 @@
       .brand-panel {
         position: relative;
         padding: 46px 42px 34px;
-        background: linear-gradient(180deg, rgba(5, 22, 34, 0.34), rgba(5, 22, 34, 0.16));
-        border-right: 1px solid rgba(126, 226, 251, 0.08);
+        background: linear-gradient(180deg, rgba(16, 54, 77, 0.2), rgba(15, 48, 70, 0.08));
+        border-right: 1px solid rgba(153, 229, 255, 0.12);
       }
 
       .brand-badge {
@@ -70,12 +70,12 @@
         align-items: center;
         padding: 9px 16px;
         border-radius: 999px;
-        border: 1px solid rgba(126, 226, 251, 0.16);
-        color: #bfefff;
+        border: 1px solid rgba(153, 229, 255, 0.22);
+        color: #d9f7ff;
         font-size: 12px;
         letter-spacing: 0.18em;
         text-transform: uppercase;
-        background: rgba(255,255,255,0.02);
+        background: rgba(255,255,255,0.05);
       }
 
       .brand-title {
@@ -113,10 +113,10 @@
       .pill {
         padding: 10px 14px;
         border-radius: 999px;
-        border: 1px solid rgba(126, 226, 251, 0.14);
-        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(153, 229, 255, 0.18);
+        background: rgba(255,255,255,0.07);
         font-size: 12px;
-        color: #dff9ff;
+        color: #effcff;
       }
 
       .brand-footer {
@@ -133,8 +133,8 @@
         min-height: 92px;
         padding: 16px 16px 14px;
         border-radius: 22px;
-        background: rgba(255,255,255,0.024);
-        border: 1px solid rgba(126, 226, 251, 0.08);
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(153, 229, 255, 0.14);
       }
 
       .stat-label {
@@ -156,7 +156,7 @@
         align-items: center;
         justify-content: center;
         padding: 36px 34px;
-        background: linear-gradient(180deg, rgba(4, 16, 25, 0.9), rgba(4, 16, 25, 0.94));
+        background: linear-gradient(180deg, rgba(12, 39, 57, 0.62), rgba(10, 32, 48, 0.72));
       }
 
       .auth-card {
@@ -180,8 +180,8 @@
 
       .tab-btn {
         appearance: none;
-        border: 1px solid rgba(126, 226, 251, 0.12);
-        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(153, 229, 255, 0.18);
+        background: rgba(255,255,255,0.08);
         color: var(--text);
         cursor: pointer;
         border-radius: 20px;
@@ -221,10 +221,10 @@
 
       .field input {
         width: 100%;
-        border: 1px solid rgba(126, 226, 251, 0.12);
+        border: 1px solid rgba(153, 229, 255, 0.18);
         border-radius: 20px;
         padding: 17px 18px;
-        background: rgba(255,255,255,0.025);
+        background: rgba(255,255,255,0.09);
         color: var(--text);
         outline: none;
         font-size: 15px;
@@ -251,8 +251,8 @@
       .result {
         margin-top: 18px;
         border-radius: 20px;
-        border: 1px solid rgba(126, 226, 251, 0.1);
-        background: rgba(255,255,255,0.022);
+        border: 1px solid rgba(153, 229, 255, 0.14);
+        background: rgba(255,255,255,0.08);
         padding: 16px 18px;
         color: var(--muted);
         font-size: 13px;
