@@ -46,8 +46,10 @@
         gap: 16px;
       }
 
-      .brand {
-        padding: 18px 16px;
+      .brand,
+      .session-box,
+      .quick-box {
+        padding: 16px;
         border-radius: 18px;
         background: rgba(255,255,255,0.06);
         border: 1px solid rgba(255,255,255,0.08);
@@ -75,14 +77,6 @@
         color: rgba(238,247,255,0.7);
         font-size: 12px;
         line-height: 1.8;
-      }
-
-      .session-box,
-      .quick-box {
-        padding: 16px;
-        border-radius: 18px;
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.08);
       }
 
       .section-title {
@@ -147,7 +141,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 0 24px;
-        background: rgba(255,255,255,0.8);
+        background: rgba(255,255,255,0.82);
         border-bottom: 1px solid var(--line);
         backdrop-filter: blur(10px);
       }
@@ -164,9 +158,6 @@
       }
 
       .topbar-right {
-        display: flex;
-        align-items: center;
-        gap: 12px;
         color: var(--muted);
         font-size: 13px;
       }
@@ -177,13 +168,15 @@
         gap: 18px;
       }
 
-      .panel {
+      .panel,
+      .metric-card {
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 18px;
         box-shadow: var(--shadow);
-        padding: 20px;
       }
+
+      .panel { padding: 20px; }
 
       .hero {
         display: grid;
@@ -221,13 +214,7 @@
         gap: 16px;
       }
 
-      .metric-card {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        box-shadow: var(--shadow);
-        padding: 18px;
-      }
+      .metric-card { padding: 18px; }
 
       .metric-label {
         color: var(--muted);
@@ -236,7 +223,7 @@
 
       .metric-value {
         margin-top: 10px;
-        font-size: 30px;
+        font-size: 28px;
         font-weight: 800;
       }
 
@@ -256,6 +243,13 @@
         margin: 0 0 14px;
         font-size: 18px;
         font-weight: 700;
+      }
+
+      .panel-subtitle {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 0 0 16px;
+        line-height: 1.8;
       }
 
       .info-grid {
@@ -293,6 +287,7 @@
         border-bottom: 1px solid var(--line);
         text-align: left;
         font-size: 13px;
+        vertical-align: top;
       }
 
       .table th {
@@ -314,9 +309,86 @@
       .tag-green { background: #ecfbf5; color: var(--success); }
       .tag-amber { background: #fff7ea; color: var(--amber); }
 
-      @media (max-width: 1200px) {
+      .filters,
+      .actions,
+      .inline-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .inline-actions { margin-top: 10px; }
+
+      input,
+      select {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--line-strong);
+        background: #fff;
+        color: var(--text);
+        outline: none;
+      }
+
+      .field { margin-bottom: 12px; }
+      .field label {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .primary-btn,
+      .secondary-btn,
+      .danger-btn {
+        border: 0;
+        border-radius: 12px;
+        padding: 10px 12px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .primary-btn { background: var(--primary); color: #fff; }
+      .secondary-btn { background: var(--primary-soft); color: var(--primary); }
+      .danger-btn { background: #fff1f1; color: var(--danger); }
+
+      .result,
+      .confirm-box {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 14px;
+        font-size: 13px;
+        line-height: 1.75;
+      }
+
+      .result {
+        border: 1px solid var(--line);
+        background: var(--panel-soft);
+        color: var(--muted);
+      }
+
+      .confirm-box {
+        border: 1px solid #f3c6c6;
+        background: #fff6f6;
+        color: #b74c4c;
+        display: none;
+      }
+
+      .ok { color: var(--success); }
+      .warn { color: var(--amber); }
+      .bad { color: var(--danger); }
+
+      .user-list-toolbar {
+        display: grid;
+        grid-template-columns: 1.1fr 0.7fr auto;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      @media (max-width: 1280px) {
         .layout { grid-template-columns: 1fr; }
-        .hero, .metrics, .grid-2, .info-grid { grid-template-columns: 1fr; }
+        .hero, .metrics, .grid-2, .info-grid, .user-list-toolbar { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -337,7 +409,7 @@
 
         <nav class="nav">
           <a class="active" href="/admin.html">控制盒总览</a>
-          <a href="/users.html">用户管理</a>
+          <a href="#userManagementSection">用户管理</a>
           <a href="/api/devices/" target="_blank" rel="noreferrer">数据采集</a>
           <a href="/nodered/" target="_blank" rel="noreferrer">协议转换</a>
           <a href="http://localhost:28080/" target="_blank" rel="noreferrer">视频接入</a>
@@ -351,7 +423,7 @@
           <div class="section-title">Quick Actions</div>
           <div style="display:grid; gap:10px; margin-top:12px;">
             <button class="btn btn-light" id="goBigscreenBtn">打开监控大屏</button>
-            <button class="btn btn-light" id="goUsersBtn">打开用户管理</button>
+            <button class="btn btn-light" id="scrollUsersBtn">定位用户管理</button>
             <button class="btn btn-danger" id="logoutBtn">退出登录</button>
           </div>
         </section>
@@ -363,9 +435,7 @@
             <div class="topbar-title">控制盒管理与配置中心</div>
             <div class="topbar-subtitle">对当前智能海洋物联网控制盒进行本地管理、参数配置与运行查看</div>
           </div>
-          <div class="topbar-right">
-            <span id="accessStatus">正在验证管理员权限...</span>
-          </div>
+          <div class="topbar-right" id="accessStatus">正在验证管理员权限...</div>
         </header>
 
         <main class="page">
@@ -495,11 +565,6 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>用户管理</td>
-                    <td><a href="/users.html">/users.html</a></td>
-                    <td>管理员、操作员、访客账户维护</td>
-                  </tr>
-                  <tr>
                     <td>数据采集</td>
                     <td><a href="/api/devices/" target="_blank" rel="noreferrer">/api/devices/</a></td>
                     <td>查看采集设备、状态与接入结果</td>
@@ -558,11 +623,139 @@
               </table>
             </section>
           </section>
+
+          <section class="panel" id="userManagementSection">
+            <h3 class="panel-title">用户管理</h3>
+            <p class="panel-subtitle">已将独立用户管理页集成到当前管理后台。可在此查看、创建、修改、重置密码与删除平台用户。</p>
+
+            <div class="metrics" style="margin-bottom:16px;">
+              <div class="metric-card">
+                <div class="metric-label">账户总数</div>
+                <div class="metric-value" id="userStatTotal">--</div>
+                <div class="metric-foot">平台全部用户</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">管理员</div>
+                <div class="metric-value" id="userStatAdmin">--</div>
+                <div class="metric-foot">拥有完整后台权限</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">操作员</div>
+                <div class="metric-value" id="userStatOperator">--</div>
+                <div class="metric-foot">执行日常运维</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">观察员</div>
+                <div class="metric-value" id="userStatViewer">--</div>
+                <div class="metric-foot">默认大屏访问角色</div>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <section class="panel" style="padding:0; border:0; box-shadow:none; background:transparent;">
+                <div class="user-list-toolbar">
+                  <input id="userSearchInput" placeholder="按用户名 / 显示名称搜索" />
+                  <select id="roleFilterSelect">
+                    <option value="">全部角色</option>
+                    <option value="admin">管理员</option>
+                    <option value="operator">操作员</option>
+                    <option value="viewer">观察员</option>
+                  </select>
+                  <button class="secondary-btn" id="refreshUsersBtn">刷新列表</button>
+                </div>
+
+                <div class="panel" style="padding:0; overflow:hidden;">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>用户名</th>
+                        <th>显示名称</th>
+                        <th>角色</th>
+                        <th>状态</th>
+                        <th>菜单</th>
+                        <th>操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                      <tr><td colspan="6">正在加载用户列表...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section>
+                <div class="panel">
+                  <h3 class="panel-title">创建用户</h3>
+                  <div class="field">
+                    <label>用户名</label>
+                    <input id="createUsername" placeholder="请输入用户名" />
+                  </div>
+                  <div class="field">
+                    <label>显示名称</label>
+                    <input id="createDisplayName" placeholder="请输入显示名称" />
+                  </div>
+                  <div class="field">
+                    <label>角色</label>
+                    <select id="createRole">
+                      <option value="viewer">观察员</option>
+                      <option value="operator">操作员</option>
+                      <option value="admin">管理员</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>初始密码</label>
+                    <input id="createPassword" type="password" placeholder="至少 6 位" />
+                  </div>
+                  <button class="primary-btn" id="createUserBtn">创建用户</button>
+                </div>
+
+                <div class="panel" style="margin-top:18px;">
+                  <h3 class="panel-title">用户操作台</h3>
+                  <div class="field">
+                    <label>选中用户 ID</label>
+                    <input id="selectedUserId" placeholder="点击列表中的操作按钮自动填充" readonly />
+                  </div>
+                  <div class="field">
+                    <label>角色调整</label>
+                    <select id="editRole">
+                      <option value="admin">管理员</option>
+                      <option value="operator">操作员</option>
+                      <option value="viewer">观察员</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>账号状态</label>
+                    <select id="editActive">
+                      <option value="true">启用</option>
+                      <option value="false">停用</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>重置密码</label>
+                    <input id="resetPassword" type="password" placeholder="输入新密码" />
+                  </div>
+                  <div class="inline-actions">
+                    <button class="primary-btn" id="updateUserBtn">保存修改</button>
+                    <button class="secondary-btn" id="resetPasswordBtn">重置密码</button>
+                    <button class="danger-btn" id="deleteUserBtn">删除用户</button>
+                  </div>
+                  <div class="confirm-box" id="deleteConfirmBox">
+                    确认删除当前用户？再次点击“删除用户”将立即执行。
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div class="result" id="userResultBox">用户管理结果将在这里显示。</div>
+          </section>
         </main>
       </section>
     </div>
 
     <script>
+      let allUsers = [];
+      let deleteArmed = false;
+
       function getCookie(name) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -572,6 +765,170 @@
 
       async function ensureSessionCookie() {
         await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+      }
+
+      function setUserResult(message, level = 'normal') {
+        const box = document.getElementById('userResultBox');
+        box.className = 'result';
+        if (level === 'ok') box.classList.add('ok');
+        if (level === 'warn') box.classList.add('warn');
+        if (level === 'bad') box.classList.add('bad');
+        box.textContent = message;
+      }
+
+      function renderUserStats(users) {
+        const countByRole = users.reduce((acc, user) => {
+          acc[user.role] = (acc[user.role] || 0) + 1;
+          return acc;
+        }, {});
+        document.getElementById('userStatTotal').textContent = users.length;
+        document.getElementById('userStatAdmin').textContent = countByRole.admin || 0;
+        document.getElementById('userStatOperator').textContent = countByRole.operator || 0;
+        document.getElementById('userStatViewer').textContent = countByRole.viewer || 0;
+      }
+
+      function pickUser(user) {
+        document.getElementById('selectedUserId').value = user.id;
+        document.getElementById('editRole').value = user.role;
+        document.getElementById('editActive').value = String(user.is_active);
+        deleteArmed = false;
+        document.getElementById('deleteConfirmBox').style.display = 'none';
+        setUserResult(`已选中用户：${user.display_name}（${user.username}）`);
+      }
+
+      function renderUsersTable(users) {
+        const tbody = document.getElementById('usersTableBody');
+        if (!users.length) {
+          tbody.innerHTML = '<tr><td colspan="6">暂无匹配用户</td></tr>';
+          return;
+        }
+        tbody.innerHTML = users.map((user) => `
+          <tr>
+            <td>${user.username}</td>
+            <td>${user.display_name}</td>
+            <td>${user.role}</td>
+            <td>${user.is_active ? '启用' : '停用'}</td>
+            <td>${(user.menus || []).join(', ')}</td>
+            <td><button class="secondary-btn" data-pick-user="${user.id}">选择</button></td>
+          </tr>
+        `).join('');
+        tbody.querySelectorAll('[data-pick-user]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const id = Number(button.dataset.pickUser);
+            const user = allUsers.find(item => item.id === id);
+            if (user) pickUser(user);
+          });
+        });
+      }
+
+      function applyUserFilters() {
+        const keyword = document.getElementById('userSearchInput').value.trim().toLowerCase();
+        const role = document.getElementById('roleFilterSelect').value;
+        const filtered = allUsers.filter((user) => {
+          const matchKeyword = !keyword || user.username.toLowerCase().includes(keyword) || user.display_name.toLowerCase().includes(keyword);
+          const matchRole = !role || user.role === role;
+          return matchKeyword && matchRole;
+        });
+        renderUsersTable(filtered);
+      }
+
+      async function loadUsers() {
+        const res = await fetch('/api/platform/users/', { cache: 'no-store', credentials: 'same-origin' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'load users failed');
+        allUsers = data;
+        renderUserStats(allUsers);
+        applyUserFilters();
+      }
+
+      async function createUser() {
+        const payload = {
+          username: document.getElementById('createUsername').value.trim(),
+          display_name: document.getElementById('createDisplayName').value.trim(),
+          role: document.getElementById('createRole').value,
+          password: document.getElementById('createPassword').value,
+        };
+        await ensureSessionCookie();
+        const res = await fetch('/api/platform/users/create/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
+        setUserResult(`用户创建成功：${data.username}`, 'ok');
+        await loadUsers();
+      }
+
+      async function updateUser() {
+        const id = document.getElementById('selectedUserId').value;
+        if (!id) throw new Error('请先选择一个用户');
+        await ensureSessionCookie();
+        const res = await fetch(`/api/platform/users/${id}/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            role: document.getElementById('editRole').value,
+            is_active: document.getElementById('editActive').value === 'true',
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
+        setUserResult(`用户更新成功：${data.username}`, 'ok');
+        await loadUsers();
+      }
+
+      async function resetPassword() {
+        const id = document.getElementById('selectedUserId').value;
+        const password = document.getElementById('resetPassword').value;
+        if (!id) throw new Error('请先选择一个用户');
+        if (!password) throw new Error('请输入新密码');
+        await ensureSessionCookie();
+        const res = await fetch(`/api/platform/users/${id}/reset-password/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify({ password }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
+        setUserResult(`密码重置成功：${data.username}`, 'ok');
+      }
+
+      async function deleteUser() {
+        const id = document.getElementById('selectedUserId').value;
+        if (!id) throw new Error('请先选择一个用户');
+        const confirmBox = document.getElementById('deleteConfirmBox');
+        if (!deleteArmed) {
+          deleteArmed = true;
+          confirmBox.style.display = 'block';
+          setUserResult('再次点击“删除用户”以确认删除。', 'warn');
+          return;
+        }
+        await ensureSessionCookie();
+        const res = await fetch(`/api/platform/users/${id}/`, {
+          method: 'DELETE',
+          headers: { 'X-CSRFToken': getCookie('csrftoken') },
+          credentials: 'same-origin',
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
+        confirmBox.style.display = 'none';
+        deleteArmed = false;
+        setUserResult('用户删除成功。', 'ok');
+        document.getElementById('selectedUserId').value = '';
+        await loadUsers();
       }
 
       async function loadSession() {
@@ -601,6 +958,7 @@
         }
 
         accessStatus.textContent = '管理员权限已验证';
+        await loadUsers();
       }
 
       async function logout() {
@@ -616,12 +974,52 @@
       document.getElementById('goBigscreenBtn').addEventListener('click', () => {
         window.location.href = '/bigscreen.html';
       });
-      document.getElementById('goUsersBtn').addEventListener('click', () => {
-        window.location.href = '/users.html';
+      document.getElementById('scrollUsersBtn').addEventListener('click', () => {
+        document.getElementById('userManagementSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
       document.getElementById('logoutBtn').addEventListener('click', logout);
+      document.getElementById('userSearchInput').addEventListener('input', applyUserFilters);
+      document.getElementById('roleFilterSelect').addEventListener('change', applyUserFilters);
+      document.getElementById('refreshUsersBtn').addEventListener('click', async () => {
+        try {
+          await loadUsers();
+          setUserResult('用户列表已刷新。', 'ok');
+        } catch (err) {
+          setUserResult(err.message, 'bad');
+        }
+      });
+      document.getElementById('createUserBtn').addEventListener('click', async () => {
+        try {
+          await createUser();
+        } catch (err) {
+          setUserResult(err.message, 'bad');
+        }
+      });
+      document.getElementById('updateUserBtn').addEventListener('click', async () => {
+        try {
+          await updateUser();
+        } catch (err) {
+          setUserResult(err.message, 'bad');
+        }
+      });
+      document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
+        try {
+          await resetPassword();
+        } catch (err) {
+          setUserResult(err.message, 'bad');
+        }
+      });
+      document.getElementById('deleteUserBtn').addEventListener('click', async () => {
+        try {
+          await deleteUser();
+        } catch (err) {
+          setUserResult(err.message, 'bad');
+        }
+      });
 
-      loadSession();
+      loadSession().catch((err) => {
+        setUserResult(err.message, 'bad');
+      });
     </script>
   </body>
 </html>
