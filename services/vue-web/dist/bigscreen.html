@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>海域指挥大屏 · RK3576</title>
+    <title>RK3576 边缘控制中心大屏</title>
     <style>
       :root {
         --deep-1: #02111b;
@@ -94,7 +94,7 @@
       .header {
         border-radius: 24px;
         display: grid;
-        grid-template-columns: 260px 1fr 460px;
+        grid-template-columns: 280px 1fr 480px;
         align-items: center;
         padding: 0 24px;
       }
@@ -131,7 +131,7 @@
       .header-center h1 {
         margin: 0;
         font-size: 34px;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
       }
 
@@ -139,7 +139,7 @@
         margin: 6px 0 0;
         color: var(--muted);
         font-size: 13px;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.12em;
       }
 
       .header-side {
@@ -296,7 +296,7 @@
       }
 
       .video-card::before {
-        content: "SEA LINK";
+        content: "EDGE VIDEO";
         position: absolute;
         top: 16px;
         left: 16px;
@@ -428,12 +428,12 @@
     <div class="screen">
       <header class="header">
         <div class="brand">
-          <div class="brand-badge">Ocean Edge IoT</div>
-          <div class="brand-title">海域指挥大屏</div>
+          <div class="brand-badge">RK3576 Edge Control Center</div>
+          <div class="brand-title">边缘控制中心大屏</div>
         </div>
         <div class="header-center">
-          <h1>OCEAN COMMAND SCREEN</h1>
-          <p>海域视频 · 海洋遥测 · 海上设备 · 边缘站点联动</p>
+          <h1>SMART IOT CONTROL BOX</h1>
+          <p>数据采集 · 协议转换 · 视频接入 · 本地录像 · 云端推送</p>
         </div>
         <div class="header-side">
           <div class="clock" id="clockText">--:--:--</div>
@@ -449,29 +449,29 @@
 
       <section class="metric-row">
         <div class="metric">
-          <div class="metric-label">海域在线设备</div>
+          <div class="metric-label">在线采集设备</div>
           <div class="metric-value" id="metricDevices">--</div>
-          <div class="metric-foot">平台识别海洋感知设备总量</div>
+          <div class="metric-foot">控制盒当前识别的设备总量</div>
         </div>
         <div class="metric">
-          <div class="metric-label">实时在线感知</div>
+          <div class="metric-label">实时在线设备</div>
           <div class="metric-value" id="metricOnlineDevices">--</div>
-          <div class="metric-foot">当前状态为 online 的设备</div>
+          <div class="metric-foot">当前状态为 online 的现场设备</div>
         </div>
         <div class="metric">
-          <div class="metric-label">海域视频点位</div>
+          <div class="metric-label">视频接入点位</div>
           <div class="metric-value" id="metricVideoDevices">--</div>
-          <div class="metric-foot">WVP 当前可见视频点位数量</div>
+          <div class="metric-foot">视频系统当前可见点位数量</div>
         </div>
         <div class="metric">
           <div class="metric-label">媒体节点在线</div>
           <div class="metric-value" id="metricMediaNodes">--</div>
-          <div class="metric-foot">海域视频链路节点在线情况</div>
+          <div class="metric-foot">视频链路节点在线情况</div>
         </div>
         <div class="metric">
-          <div class="metric-label">海洋遥测累计</div>
+          <div class="metric-label">遥测累计</div>
           <div class="metric-value" id="metricTelemetry">--</div>
-          <div class="metric-foot">平台累计接收遥测数据</div>
+          <div class="metric-foot">控制盒累计接收遥测数据</div>
         </div>
         <div class="metric">
           <div class="metric-label">视频链路状态</div>
@@ -485,8 +485,8 @@
           <div class="panel" style="flex: 0 0 46%;">
             <div class="panel-head">
               <div>
-                <div class="panel-title">海域运行状态</div>
-                <div class="panel-subtitle">海洋物联与视频服务实时可用性</div>
+                <div class="panel-title">控制盒运行状态</div>
+                <div class="panel-subtitle">采集、转换、视频与本地服务实时可用性</div>
               </div>
             </div>
             <div class="status-grid" id="statusGrid"></div>
@@ -496,7 +496,7 @@
           <div class="panel" style="flex: 1;">
             <div class="panel-head">
               <div>
-                <div class="panel-title">海洋遥测趋势</div>
+                <div class="panel-title">遥测趋势</div>
                 <div class="panel-subtitle">最近 10 条感知数据的动态折线</div>
               </div>
             </div>
@@ -509,8 +509,8 @@
         <div class="panel">
           <div class="panel-head">
             <div>
-              <div class="panel-title">海域视频矩阵</div>
-              <div class="panel-subtitle">展示海域监控点位，可后续接入真实视频流</div>
+              <div class="panel-title">视频接入矩阵</div>
+              <div class="panel-subtitle">展示控制盒接入的视频点位，可后续接入真实视频流</div>
             </div>
           </div>
           <div class="video-grid" id="videoGrid">
@@ -522,12 +522,12 @@
           <div class="panel" style="flex: 1;">
             <div class="panel-head">
               <div>
-                <div class="panel-title">最新感知流</div>
-                <div class="panel-subtitle">实时展示最近上报的海洋感知数据</div>
+                <div class="panel-title">最新采集流</div>
+                <div class="panel-subtitle">实时展示最近上报的感知与采集数据</div>
               </div>
             </div>
             <div class="telemetry-feed" id="telemetryFeed">
-              <div class="empty">正在加载感知流...</div>
+              <div class="empty">正在加载采集流...</div>
             </div>
           </div>
 
@@ -535,7 +535,7 @@
             <div class="panel-head">
               <div>
                 <div class="panel-title">视频资源摘要</div>
-                <div class="panel-subtitle">海域视频链路核心资源</div>
+                <div class="panel-subtitle">视频接入与媒体链路核心资源</div>
               </div>
             </div>
             <div class="footer-strip" id="videoSummaryStrip"></div>
@@ -594,7 +594,7 @@
         if (!items || items.length === 0) {
           chartCtx.fillStyle = 'rgba(141,184,196,0.8)';
           chartCtx.font = '14px sans-serif';
-          chartCtx.fillText('暂无海洋遥测曲线', 24, height / 2);
+          chartCtx.fillText('暂无控制盒遥测曲线', 24, height / 2);
           return;
         }
 
@@ -658,7 +658,7 @@
         const userInfoText = document.getElementById('userInfoText');
         const adminEntryBtn = document.getElementById('adminEntryBtn');
         if (!session || !session.authenticated || !session.user) {
-          el.textContent = '当前未登录平台账户，大屏处于海域演示模式。';
+          el.textContent = '当前未登录控制盒账户，大屏处于演示模式。';
           userInfoText.textContent = '当前未登录';
           adminEntryBtn.classList.add('hidden');
           return;
@@ -666,10 +666,10 @@
         userInfoText.textContent = `当前用户：${session.user.display_name}（${session.user.role}）`;
         if (session.user.role === 'admin') {
           adminEntryBtn.classList.remove('hidden');
-          el.textContent = `当前登录：${session.user.display_name}（管理员），已开放海洋后台入口。`;
+          el.textContent = `当前登录：${session.user.display_name}（管理员），已开放控制盒后台入口。`;
         } else {
           adminEntryBtn.classList.add('hidden');
-          el.textContent = `当前登录：${session.user.display_name}（${session.user.role}），当前仅显示海域指挥大屏。`;
+          el.textContent = `当前登录：${session.user.display_name}（${session.user.role}），当前仅显示控制盒指挥大屏。`;
         }
       }
 
@@ -690,13 +690,13 @@
         const inventory = data.video_inventory || {};
         const items = [
           ['平台 API', data.status === 'ok' ? '正常' : '异常', data.status === 'ok' ? 'ok' : 'bad'],
-          ['海域视频服务', video.wvp?.status || '--', video.wvp?.status === 'running' ? 'ok' : 'warn'],
+          ['视频接入服务', video.wvp?.status || '--', video.wvp?.status === 'running' ? 'ok' : 'warn'],
           ['媒体节点服务', video.zlm?.status || '--', video.zlm?.status === 'running' ? 'ok' : 'warn'],
           ['视频后台登录', inventory.login_ready ? '可用' : '不可用', inventory.login_ready ? 'ok' : 'bad'],
           ['管理前端入口', inventory.frontend_ready ? '可访问' : '不可访问', inventory.frontend_ready ? 'ok' : 'warn'],
           ['接口文档入口', inventory.api_doc_ready ? '可访问' : '不可访问', inventory.api_doc_ready ? 'ok' : 'warn'],
           ['管理员账户', runtime.admin_user_present ? '存在' : '缺失', runtime.admin_user_present ? 'ok' : 'bad'],
-          ['海域节点 ID', runtime.server_id || '--', 'ok'],
+          ['控制盒节点 ID', runtime.server_id || '--', 'ok'],
         ];
 
         document.getElementById('statusGrid').innerHTML = items.map(([name, value, cls]) => `
@@ -710,7 +710,7 @@
       function renderTelemetryFeed(items) {
         const container = document.getElementById('telemetryFeed');
         if (!items || items.length === 0) {
-          container.innerHTML = '<div class="empty">暂无海洋感知流数据</div>';
+          container.innerHTML = '<div class="empty">暂无控制盒采集流数据</div>';
           return;
         }
         container.innerHTML = items.map(item => {
@@ -737,7 +737,7 @@
       function renderVideoGrid(slots) {
         const container = document.getElementById('videoGrid');
         if (!slots || slots.length === 0) {
-          container.innerHTML = '<div class="empty">暂无海域视频槽位数据</div>';
+          container.innerHTML = '<div class="empty">暂无视频接入槽位数据</div>';
           return;
         }
         container.innerHTML = slots.map(slot => `
@@ -756,7 +756,7 @@
 
       function renderVideoSummaryStrip(inventory) {
         const items = [
-          ['海域视频点位', inventory.device_total ?? 0],
+          ['视频点位', inventory.device_total ?? 0],
           ['级联平台', inventory.platform_total ?? 0],
           ['媒体节点', inventory.media_server_total ?? 0],
           ['在线节点', inventory.media_server_online ?? 0],
@@ -791,9 +791,9 @@
           renderVideoSummaryStrip(inventory);
           drawSensorChart(latestSeries);
         } catch (err) {
-          document.getElementById('statusGrid').innerHTML = '<div class="empty">海域大屏数据加载失败</div>';
-          document.getElementById('telemetryFeed').innerHTML = '<div class="empty">海洋感知流加载失败</div>';
-          document.getElementById('videoGrid').innerHTML = '<div class="empty">海域视频矩阵加载失败</div>';
+          document.getElementById('statusGrid').innerHTML = '<div class="empty">控制盒运行数据加载失败</div>';
+          document.getElementById('telemetryFeed').innerHTML = '<div class="empty">控制盒采集流加载失败</div>';
+          document.getElementById('videoGrid').innerHTML = '<div class="empty">视频接入矩阵加载失败</div>';
           document.getElementById('videoSummaryStrip').innerHTML = '<div class="empty">视频摘要加载失败</div>';
           drawSensorChart([]);
         }

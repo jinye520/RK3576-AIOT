@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>海洋物联网后台 · RK3576</title>
+    <title>智能物联网控制盒后台 · RK3576</title>
     <style>
       :root {
         --deep-1: #02111b;
@@ -150,25 +150,26 @@
     <div class="layout">
       <aside class="sidebar">
         <section class="brand">
-          <div class="brand-badge">Ocean Backend</div>
-          <div class="brand-title">海洋物联网后台</div>
-          <div class="brand-desc">用于海域监控平台的运维与配置管理，包括用户、海洋设备、海域网关、遥测链路、视频系统与平台状态。</div>
+          <div class="brand-badge">Edge Control Center</div>
+          <div class="brand-title">智能物联网控制盒后台</div>
+          <div class="brand-desc">用于 RK3576 智能物联网控制盒的运维与配置管理，包括数据采集、协议转换、视频接入、录像存储、云平台推送与系统状态。</div>
         </section>
 
         <section class="session">
-          <div class="section-kicker">Platform Session</div>
+          <div class="section-kicker">Control Box Session</div>
           <div class="session-user" id="sessionUser">未检查</div>
           <div class="session-meta" id="sessionMeta">正在检查登录态...</div>
         </section>
 
         <nav class="menu">
-          <a class="active" href="/admin.html">后台首页</a>
+          <a class="active" href="/admin.html">控制盒总览</a>
           <a href="/users.html">用户管理</a>
-          <a href="/api/devices/" target="_blank" rel="noreferrer">海洋设备</a>
-          <a href="/api/gateways/" target="_blank" rel="noreferrer">海域网关</a>
-          <a href="/api/telemetry/" target="_blank" rel="noreferrer">海洋遥测</a>
-          <a href="http://localhost:28080/" target="_blank" rel="noreferrer">海域视频</a>
-          <a href="/api/system/status/" target="_blank" rel="noreferrer">平台状态</a>
+          <a href="/api/devices/" target="_blank" rel="noreferrer">数据采集</a>
+          <a href="/nodered/" target="_blank" rel="noreferrer">协议转换</a>
+          <a href="http://localhost:28080/" target="_blank" rel="noreferrer">视频接入</a>
+          <a href="/api/video/status/" target="_blank" rel="noreferrer">录像存储</a>
+          <a href="/api/system/status/" target="_blank" rel="noreferrer">云平台推送</a>
+          <a href="/api/system/status/" target="_blank" rel="noreferrer">系统状态</a>
           <a href="/bigscreen.html">指挥大屏</a>
         </nav>
 
@@ -184,29 +185,29 @@
 
       <main class="main">
         <section class="panel hero">
-          <div class="section-kicker">Ocean Operations Backend</div>
-          <h1>海域监控后台</h1>
+          <div class="section-kicker">RK3576 Smart IoT Control Box</div>
+          <h1>边缘控制中心后台</h1>
           <div class="hero-desc">
-            这是管理员使用的海洋物联网后台。普通用户登录后不会在海域指挥大屏中看到后台入口。管理员可从大屏进入此处，继续访问用户管理、海洋设备、海域网关、海洋遥测、海域视频与平台状态等模块。
+            这是管理员使用的智能物联网控制盒后台。普通用户登录后不会在指挥大屏中看到后台入口。管理员可从大屏进入此处，继续管理控制盒的数据采集、协议转换、视频接入、本地录像、云端推送与系统状态等能力。
           </div>
           <div class="status" id="accessStatus">正在验证管理员权限...</div>
         </section>
 
         <section class="metrics">
           <div class="metric">
-            <div class="metric-label">后台模块</div>
-            <div class="metric-value">7</div>
-            <div class="metric-foot">当前已开放的后台管理分区</div>
+            <div class="metric-label">核心能力</div>
+            <div class="metric-value">5</div>
+            <div class="metric-foot">采集 / 转换 / 视频 / 录像 / 推送</div>
           </div>
           <div class="metric">
-            <div class="metric-label">管理入口</div>
-            <div class="metric-value">RBAC</div>
-            <div class="metric-foot">管理员从大屏进入后台</div>
+            <div class="metric-label">部署位置</div>
+            <div class="metric-value">RK3576</div>
+            <div class="metric-foot">边缘控制盒本地部署</div>
           </div>
           <div class="metric">
-            <div class="metric-label">业务方向</div>
-            <div class="metric-value">海域</div>
-            <div class="metric-foot">围绕海洋监测与海域视频联动</div>
+            <div class="metric-label">运行模式</div>
+            <div class="metric-value">边缘</div>
+            <div class="metric-foot">本地处理与本地存储优先</div>
           </div>
           <div class="metric">
             <div class="metric-label">主界面</div>
@@ -218,44 +219,44 @@
         <section class="grid">
           <section class="panel">
             <h2>后台模块</h2>
-            <p>当前后台首页作为统一导航入口，连接现有页面和 API，后续可逐步扩展为完整的海洋物联网多模块后台系统。</p>
+            <p>当前后台首页作为统一导航入口，连接现有页面和 API，后续可继续扩展为智能物联网控制盒的完整本地管理后台。</p>
             <div class="menu-grid">
               <a class="menu-card" href="/users.html">
                 <h3>用户管理</h3>
                 <p>平台账户、角色、启停状态、密码重置与删除。</p>
               </a>
               <a class="menu-card" href="/api/devices/" target="_blank" rel="noreferrer">
-                <h3>海洋设备</h3>
-                <p>查看海洋传感器、设备列表、协议和状态。</p>
+                <h3>数据采集</h3>
+                <p>查看现场采集设备、协议与数据接入状态。</p>
               </a>
-              <a class="menu-card" href="/api/gateways/" target="_blank" rel="noreferrer">
-                <h3>海域网关</h3>
-                <p>查看海域边缘站点、网关对象与归属关系。</p>
-              </a>
-              <a class="menu-card" href="/api/telemetry/" target="_blank" rel="noreferrer">
-                <h3>海洋遥测</h3>
-                <p>查看海洋环境采集数据与实时遥测信息。</p>
+              <a class="menu-card" href="/nodered/" target="_blank" rel="noreferrer">
+                <h3>协议转换</h3>
+                <p>查看协议转换流程、规则流与 MQTT 联动链路。</p>
               </a>
               <a class="menu-card" href="http://localhost:28080/" target="_blank" rel="noreferrer">
-                <h3>海域视频</h3>
-                <p>进入 WVP 后台查看视频设备、节点与录像模块。</p>
+                <h3>视频接入</h3>
+                <p>进入 WVP 后台查看视频设备、节点与流管理。</p>
+              </a>
+              <a class="menu-card" href="/api/video/status/" target="_blank" rel="noreferrer">
+                <h3>录像存储</h3>
+                <p>查看视频状态、媒体节点与本地录像相关能力。</p>
               </a>
               <a class="menu-card" href="/api/system/status/" target="_blank" rel="noreferrer">
-                <h3>平台状态</h3>
-                <p>查看平台端口、聚合运行态与视频诊断。</p>
+                <h3>云平台推送 / 系统状态</h3>
+                <p>查看本地服务、聚合运行态与云端推送链路基础状态。</p>
               </a>
             </div>
           </section>
 
           <section class="panel">
-            <h2>业务逻辑摘要</h2>
+            <h2>控制盒业务逻辑</h2>
             <p>
-              1. 用户在登录页完成登录或注册。<br/>
-              2. 登录成功后统一进入海域指挥大屏。<br/>
-              3. 普通用户仅查看大屏内容。<br/>
-              4. 管理员在大屏中可见后台管理按钮。<br/>
-              5. 管理员进入后台后，使用用户管理、海洋设备、海域网关、海洋遥测、海域视频与平台状态等模块。<br/>
-              6. 后台保留返回指挥大屏入口。
+              1. 现场设备与传感器接入控制盒。<br/>
+              2. 控制盒完成数据采集与协议解析。<br/>
+              3. 在边缘侧执行协议转换、规则处理与状态聚合。<br/>
+              4. 接入视频流并执行本地录像与缓存。<br/>
+              5. 将关键数据、状态与告警推送到云平台。<br/>
+              6. 本地通过指挥大屏和后台界面完成统一监控与配置。
             </p>
           </section>
         </section>
@@ -283,8 +284,8 @@
 
         if (!data.authenticated || !data.user) {
           userEl.textContent = '未登录';
-          metaEl.textContent = '请先登录平台账户。';
-          accessStatus.textContent = '未登录，无法进入海洋后台。';
+          metaEl.textContent = '请先登录控制盒管理账户。';
+          accessStatus.textContent = '未登录，无法进入控制盒后台。';
           accessStatus.classList.add('bad');
           window.location.href = '/login.html';
           return;
@@ -294,7 +295,7 @@
         metaEl.textContent = `账号：${data.user.username} · 角色：${data.user.role}`;
 
         if (data.user.role !== 'admin') {
-          accessStatus.textContent = '当前账户不是管理员，海洋后台入口不可用。';
+          accessStatus.textContent = '当前账户不是管理员，控制盒后台入口不可用。';
           accessStatus.classList.add('bad');
           setTimeout(() => {
             window.location.href = '/bigscreen.html';
@@ -302,7 +303,7 @@
           return;
         }
 
-        accessStatus.textContent = '管理员权限已验证，可进入海洋后台管理模块。';
+        accessStatus.textContent = '管理员权限已验证，可进入控制盒后台管理模块。';
       }
 
       async function logout() {

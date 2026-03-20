@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>海洋物联网监控平台 · 登录</title>
+    <title>RK3576 智能物联网控制盒 · 登录</title>
     <style>
       :root {
         --deep-1: #02111b;
@@ -177,7 +177,6 @@
       .tab-btn.active {
         color: #032435;
         background: linear-gradient(135deg, #58d6d0, #7ce7ff);
-        border-color: transparent;
       }
       .panel-title { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
       .panel-subtitle { color: var(--muted); font-size: 13px; line-height: 1.8; margin-bottom: 22px; }
@@ -239,20 +238,21 @@
   <body>
     <div class="shell">
       <section class="hero">
-        <div class="badge">Ocean Edge IoT</div>
-        <h1>海洋物联网监控平台</h1>
+        <div class="badge">Smart IoT Control Box</div>
+        <h1>RK3576 智能物联网控制盒</h1>
         <div class="hero-desc">
-          面向海域感知、边缘站点、视频联动与海洋环境监测的统一入口。用户登录或注册成功后，将直接进入海域指挥大屏；管理员在大屏中额外看到后台管理入口。
+          部署在 RK3576 上的海洋场景边缘控制中心，负责数据采集、协议转换、视频接入、本地录像与云平台推送。登录或注册成功后，将直接进入控制盒指挥大屏；管理员在大屏中额外看到后台入口。
         </div>
         <div class="hero-pills">
-          <span class="pill">海域感知</span>
-          <span class="pill">视频联动</span>
-          <span class="pill">边缘监控</span>
-          <span class="pill">海洋遥测</span>
+          <span class="pill">数据采集</span>
+          <span class="pill">协议转换</span>
+          <span class="pill">视频接入</span>
+          <span class="pill">本地录像</span>
+          <span class="pill">云端推送</span>
         </div>
         <div class="hero-links">
-          <a href="/bigscreen.html" target="_blank" rel="noreferrer">海域指挥大屏</a>
-          <a href="http://localhost:28080/#/login" target="_blank" rel="noreferrer">WVP 视频登录</a>
+          <a href="/bigscreen.html" target="_blank" rel="noreferrer">控制盒指挥大屏</a>
+          <a href="/admin.html" target="_blank" rel="noreferrer">控制盒后台</a>
         </div>
       </section>
 
@@ -265,7 +265,7 @@
 
         <div id="loginPanel">
           <div class="panel-title">登录</div>
-          <div class="panel-subtitle">登录成功后将直接进入海域指挥大屏。</div>
+          <div class="panel-subtitle">登录成功后将直接进入智能物联网控制盒指挥大屏。</div>
           <div class="field">
             <label>用户名</label>
             <input id="loginUsername" value="admin" />
@@ -279,7 +279,7 @@
 
         <div id="registerPanel" class="hidden">
           <div class="panel-title">注册</div>
-          <div class="panel-subtitle">新用户注册后默认成为观察员，并自动进入海域指挥大屏。</div>
+          <div class="panel-subtitle">新用户注册后默认成为观察员，并自动进入控制盒指挥大屏。</div>
           <div class="field">
             <label>显示名称</label>
             <input id="registerDisplayName" placeholder="请输入显示名称" />
@@ -340,7 +340,7 @@
       async function login() {
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value;
-        setResult('正在连接海域监控平台...');
+        setResult('正在连接智能物联网控制盒...');
         try {
           await ensureSessionCookie();
           const res = await fetch('/api/platform/login/', {
@@ -354,7 +354,7 @@
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.detail || 'login failed');
-          setResult(`登录成功，正在进入海域指挥大屏：${data.user.display_name}`, 'ok');
+          setResult(`登录成功，正在进入控制盒指挥大屏：${data.user.display_name}`, 'ok');
           window.location.href = data.redirect_to || '/bigscreen.html';
         } catch (err) {
           setResult(err.message, 'bad');
@@ -368,7 +368,7 @@
           password: document.getElementById('registerPassword').value,
           confirm_password: document.getElementById('registerConfirmPassword').value,
         };
-        setResult('正在创建海域监控账户...');
+        setResult('正在创建控制盒访问账户...');
         try {
           await ensureSessionCookie();
           const res = await fetch('/api/platform/register/', {
@@ -382,7 +382,7 @@
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.detail || 'register failed');
-          setResult(`注册成功，正在进入海域指挥大屏：${data.user.display_name}`, 'ok');
+          setResult(`注册成功，正在进入控制盒指挥大屏：${data.user.display_name}`, 'ok');
           window.location.href = data.redirect_to || '/bigscreen.html';
         } catch (err) {
           setResult(err.message, 'bad');
