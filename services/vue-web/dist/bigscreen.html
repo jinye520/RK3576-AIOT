@@ -26,9 +26,9 @@
         font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at 18% 16%, rgba(188, 243, 255, 0.3), transparent 24%),
-          radial-gradient(circle at 82% 18%, rgba(138, 236, 232, 0.22), transparent 22%),
-          linear-gradient(180deg, #5ba5c8 0%, #6bb3d3 34%, #77bdd9 100%);
+          radial-gradient(circle at 18% 16%, rgba(148, 235, 255, 0.18), transparent 22%),
+          radial-gradient(circle at 82% 18%, rgba(123, 232, 225, 0.14), transparent 20%),
+          linear-gradient(180deg, #0d3a57 0%, #114563 38%, #14506f 100%);
         overflow: hidden;
       }
 
@@ -62,11 +62,11 @@
       }
 
       .header {
-        border-radius: 28px;
+        border-radius: 30px;
         display: grid;
         grid-template-columns: 320px 1fr 220px;
         align-items: center;
-        padding: 0 24px;
+        padding: 0 26px;
       }
 
       .brand-tag {
@@ -79,8 +79,7 @@
         background: rgba(255,255,255,0.05);
         color: #d9f7ff;
         font-size: 11px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
+        letter-spacing: 0.08em;
       }
 
       .brand-title {
@@ -97,16 +96,17 @@
       }
 
       .center-title {
-        font-size: 30px;
+        font-size: 32px;
         font-weight: 800;
         letter-spacing: 0.04em;
+        text-shadow: 0 6px 20px rgba(7, 25, 38, 0.24);
       }
 
       .center-time {
-        color: rgba(246, 253, 255, 0.9);
+        color: rgba(246, 253, 255, 0.88);
         font-size: 14px;
         font-weight: 600;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.06em;
       }
 
       .header-side {
@@ -237,6 +237,22 @@
         min-height: 0;
         display: flex;
         flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent 28%);
+        opacity: 0.55;
+      }
+
+      .panel > * {
+        position: relative;
+        z-index: 1;
       }
 
       .panel-head {
@@ -559,7 +575,7 @@
     <div class="screen">
       <header class="header">
         <div class="header-left">
-          <div class="brand-tag">Smart Marine Control Box</div>
+          <div class="brand-tag">海洋物联网控制盒</div>
           <div class="header-actions">
             <button class="nav-chip primary hidden" id="adminEntryBtn">后台管理</button>
             <button class="nav-chip" id="logoutBtn">退出登录</button>
