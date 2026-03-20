@@ -310,6 +310,41 @@
         border-color: transparent;
       }
 
+      .mini-trend-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .mini-trend-card {
+        border-radius: 18px;
+        border: 1px solid rgba(153, 229, 255, 0.12);
+        background: rgba(255,255,255,0.05);
+        padding: 10px;
+      }
+
+      .mini-trend-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .mini-trend-title {
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .mini-trend-value {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .mini-canvas-wrap {
+        height: 120px;
+      }
+
       .chart-wrap {
         flex: 1;
         min-height: 0;
@@ -516,6 +551,7 @@
               </div>
             </div>
             <div class="sensor-summary-grid" id="sensorSummaryGrid"></div>
+            <div class="mini-trend-grid" id="miniTrendGrid"></div>
             <div class="trend-tabs" id="trendTabs"></div>
             <div class="chart-wrap">
               <canvas id="sensorChart"></canvas>
@@ -561,6 +597,7 @@
       const dashboardUrl = '/api/video/bigscreen/';
       const chartCanvas = document.getElementById('sensorChart');
       const chartCtx = chartCanvas.getContext('2d');
+      const miniTrendMetrics = ['temperature', 'depth', 'ph', 'dissolved_oxygen'];
       const trendMetricConfig = {
         temperature: { label: '水温', unit: '°C' },
         depth: { label: '水深', unit: 'm' },
@@ -718,6 +755,56 @@
         });
       }
 
+      function drawMiniChart(canvas, values) {
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * window.devicePixelRatio;
+        canvas.height = rect.height * window.devicePixelRatio;
+        ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+        ctx.clearRect(0, 0, rect.width, rect.height);
+        if (!values.length) return;
+        const min = Math.min(...values, 0);
+        const max = Math.max(...values, 1);
+        const range = Math.max(max - min, 1);
+        const left = 8;
+        const right = rect.width - 8;
+        const top = 8;
+        const bottom = rect.height - 10;
+        const stepX = values.length > 1 ? (right - left) / (values.length - 1) : 0;
+        ctx.beginPath();
+        values.forEach((value, index) => {
+          const x = left + stepX * index;
+          const y = bottom - ((value - min) / range) * (bottom - top);
+          if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.strokeStyle = '#94ebff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      function renderMiniTrends(items) {
+        const container = document.getElementById('miniTrendGrid');
+        container.innerHTML = miniTrendMetrics.map((metric) => {
+          const config = trendMetricConfig[metric];
+          const latest = items.length ? formatMetric(metric, getMetricValue(items[items.length - 1].payload || {}, metric)) : '--';
+          return `
+            <div class="mini-trend-card">
+              <div class="mini-trend-head">
+                <div class="mini-trend-title">${config.label}</div>
+                <div class="mini-trend-value">${latest}</div>
+              </div>
+              <div class="mini-canvas-wrap"><canvas data-mini-metric="${metric}"></canvas></div>
+            </div>
+          `;
+        }).join('');
+
+        container.querySelectorAll('canvas[data-mini-metric]').forEach((canvas) => {
+          const metric = canvas.dataset.miniMetric;
+          const values = items.map(item => getMetricValue(item.payload || {}, metric));
+          drawMiniChart(canvas, values);
+        });
+      }
+
       function updateAccessNote(session) {
         const userInfoText = document.getElementById('userInfoText');
         const adminEntryBtn = document.getElementById('adminEntryBtn');
@@ -782,18 +869,21 @@
           container.innerHTML = '<div class="summary-card" style="padding:14px;">暂无本地视频点位</div>';
           return;
         }
-        container.innerHTML = slots.map(slot => `
-          <a class="video-card" href="${slot.player_url || '#'}" target="_blank" rel="noreferrer">
-            <div class="video-empty">视频未接入</div>
-            <div class="video-meta">
-              <div>
-                <div class="video-name">${slot.name}</div>
-                <div class="video-desc">${slot.channel} · ${slot.status}</div>
+        container.innerHTML = slots.map(slot => {
+          const online = slot.status && slot.status !== 'standby';
+          return `
+            <a class="video-card" style="border-color:${online ? 'rgba(123, 232, 225, 0.55)' : 'rgba(153, 229, 255, 0.12)'};" href="${slot.player_url || '#'}" target="_blank" rel="noreferrer">
+              <div class="video-empty">${online ? '视频在线' : '视频未接入'}</div>
+              <div class="video-meta">
+                <div>
+                  <div class="video-name">${slot.name}</div>
+                  <div class="video-desc">${slot.channel} · ${slot.status}</div>
+                </div>
+                <div class="video-tag">${slot.tag || '--'}</div>
               </div>
-              <div class="video-tag">${slot.tag || '--'}</div>
-            </div>
-          </a>
-        `).join('');
+            </a>
+          `;
+        }).join('');
       }
 
       function renderDeviceStatus(stats, inventory) {
@@ -824,12 +914,15 @@
           latestSeries = data.latest_telemetry || [];
 
           renderSensorSummary(latestSeries);
+          renderMiniTrends(latestSeries);
           renderTrendTabs();
           renderTelemetryFeed(latestSeries);
           renderVideoGrid(data.video_slots || []);
           renderDeviceStatus(stats, inventory);
           drawSensorChart(latestSeries);
         } catch (err) {
+          document.getElementById('sensorSummaryGrid').innerHTML = '<div class="summary-card" style="padding:14px; grid-column: 1 / -1;">海洋监测摘要加载失败</div>';
+          document.getElementById('miniTrendGrid').innerHTML = '<div class="summary-card" style="padding:14px; grid-column: 1 / -1;">趋势小图加载失败</div>';
           document.getElementById('telemetryFeed').innerHTML = '<div class="summary-card" style="padding:14px;">本地采集流加载失败</div>';
           document.getElementById('videoGrid').innerHTML = '<div class="summary-card" style="padding:14px;">本地视频加载失败</div>';
           document.getElementById('deviceStatusGrid').innerHTML = '<div class="summary-card" style="padding:14px; grid-column: 1 / -1;">设备状态加载失败</div>';
@@ -854,7 +947,10 @@
 
       syncClock();
       setInterval(syncClock, 1000);
-      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        renderMiniTrends(latestSeries);
+      });
       setTimeout(resizeCanvas, 80);
       loadSession();
       refreshBigscreen();
