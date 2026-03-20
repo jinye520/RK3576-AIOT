@@ -3,21 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>平台登录 · RK3576 Edge AIOT</title>
+    <title>海洋物联网监控平台 · 登录</title>
     <style>
       :root {
-        --bg: #050816;
-        --panel: rgba(8, 14, 28, 0.88);
-        --line: rgba(123, 162, 255, 0.16);
-        --line-strong: rgba(123, 162, 255, 0.28);
-        --text: #edf4ff;
-        --muted: #8ea2c6;
-        --primary: #73b9ff;
-        --cyan: #6ae9ff;
-        --green: #34d399;
-        --amber: #f6c363;
-        --red: #f87171;
-        --shadow: 0 28px 90px rgba(0, 0, 0, 0.46);
+        --deep-1: #02111b;
+        --deep-2: #062334;
+        --deep-3: #0a3244;
+        --panel: rgba(4, 23, 36, 0.78);
+        --line: rgba(91, 206, 214, 0.18);
+        --line-strong: rgba(124, 235, 255, 0.36);
+        --text: #ebfbff;
+        --muted: #8db8c4;
+        --primary: #58d6d0;
+        --accent: #7ce7ff;
+        --green: #4fd6a6;
+        --amber: #f6c86b;
+        --red: #ff7a7a;
+        --shadow: 0 34px 120px rgba(0, 0, 0, 0.42);
       }
       * { box-sizing: border-box; }
       html, body { margin: 0; min-height: 100%; }
@@ -28,46 +30,71 @@
         font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at top right, rgba(115,185,255,0.18), transparent 20%),
-          radial-gradient(circle at bottom left, rgba(70,223,200,0.14), transparent 26%),
-          linear-gradient(180deg, #02040b 0%, #07101d 46%, #091221 100%);
+          radial-gradient(circle at 84% 12%, rgba(124,231,255,0.18), transparent 18%),
+          radial-gradient(circle at 10% 88%, rgba(79,214,166,0.12), transparent 22%),
+          linear-gradient(180deg, #010b11 0%, #041826 46%, #07283b 100%);
+        overflow: hidden;
       }
       body::before {
         content: "";
         position: fixed;
         inset: 0;
         pointer-events: none;
+        background:
+          radial-gradient(circle at 20% 30%, rgba(124,231,255,0.08), transparent 18%),
+          radial-gradient(circle at 70% 60%, rgba(88,214,208,0.08), transparent 22%),
+          linear-gradient(transparent 0 96%, rgba(124,231,255,0.05) 96% 100%);
+        background-size: auto, auto, 100% 44px;
+        opacity: 0.9;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
         background-image:
-          linear-gradient(rgba(115,185,255,0.035) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(115,185,255,0.035) 1px, transparent 1px);
-        background-size: 44px 44px;
-        mask-image: radial-gradient(circle at center, black 30%, transparent 88%);
+          linear-gradient(90deg, transparent 0 96%, rgba(124,231,255,0.035) 96% 100%);
+        background-size: 44px 100%;
+        mask-image: radial-gradient(circle at center, black 32%, transparent 88%);
       }
       .shell {
-        width: min(960px, calc(100vw - 32px));
+        width: min(980px, calc(100vw - 32px));
         display: grid;
-        grid-template-columns: 1.05fr 0.95fr;
-        gap: 20px;
+        grid-template-columns: 1.08fr 0.92fr;
+        gap: 22px;
       }
       .hero,
       .card {
+        position: relative;
         background: var(--panel);
         border: 1px solid var(--line);
-        border-radius: 28px;
+        border-radius: 30px;
         box-shadow: var(--shadow);
-        backdrop-filter: blur(16px);
+        backdrop-filter: blur(18px);
+        overflow: hidden;
       }
       .hero {
-        padding: 34px;
-        position: relative;
-        overflow: hidden;
+        padding: 36px;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        right: -80px;
+        bottom: -80px;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        border: 1px solid rgba(124,231,255,0.14);
+        box-shadow:
+          0 0 0 32px rgba(124,231,255,0.03),
+          0 0 0 72px rgba(124,231,255,0.02);
       }
       .hero::after {
         content: "";
         position: absolute;
-        inset: auto -18% -28% 36%;
-        height: 220px;
-        background: radial-gradient(circle, rgba(115,185,255,0.22), transparent 62%);
+        inset: auto -12% 8% 34%;
+        height: 180px;
+        background: radial-gradient(circle, rgba(88,214,208,0.16), transparent 64%);
         pointer-events: none;
       }
       .badge {
@@ -75,8 +102,8 @@
         align-items: center;
         padding: 8px 12px;
         border-radius: 999px;
-        border: 1px solid rgba(106,233,255,0.2);
-        color: var(--cyan);
+        border: 1px solid rgba(124,231,255,0.22);
+        color: var(--accent);
         font-size: 12px;
         letter-spacing: 0.16em;
         text-transform: uppercase;
@@ -89,7 +116,7 @@
       .hero-desc {
         color: var(--muted);
         font-size: 15px;
-        line-height: 1.9;
+        line-height: 1.95;
         max-width: 620px;
       }
       .hero-pills {
@@ -101,15 +128,15 @@
       .pill {
         padding: 8px 10px;
         border-radius: 999px;
-        border: 1px solid rgba(115,185,255,0.14);
-        background: rgba(115,185,255,0.08);
+        border: 1px solid rgba(124,231,255,0.14);
+        background: rgba(124,231,255,0.08);
         font-size: 12px;
       }
       .hero-links {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-        margin-top: 20px;
+        margin-top: 22px;
       }
       .hero-links a {
         text-decoration: none;
@@ -118,19 +145,27 @@
         font-size: 13px;
         font-weight: 700;
         color: var(--text);
-        border: 1px solid rgba(123,162,255,0.16);
+        border: 1px solid rgba(124,231,255,0.16);
         background: rgba(255,255,255,0.035);
       }
-      .card { padding: 24px; }
+      .card {
+        padding: 24px;
+      }
+      .section-kicker {
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
       .tabs {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 8px;
-        margin-bottom: 18px;
+        margin: 14px 0 18px;
       }
       .tab-btn {
         appearance: none;
-        border: 1px solid rgba(123,162,255,0.16);
+        border: 1px solid rgba(124,231,255,0.14);
         background: rgba(255,255,255,0.03);
         color: var(--text);
         cursor: pointer;
@@ -140,8 +175,8 @@
         font-weight: 700;
       }
       .tab-btn.active {
-        color: #05192a;
-        background: linear-gradient(135deg, #73b9ff, #6ae9ff);
+        color: #032435;
+        background: linear-gradient(135deg, #58d6d0, #7ce7ff);
         border-color: transparent;
       }
       .panel-title { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
@@ -152,7 +187,7 @@
         width: 100%;
         padding: 14px 16px;
         border-radius: 14px;
-        border: 1px solid rgba(123,162,255,0.14);
+        border: 1px solid rgba(124,231,255,0.14);
         background: rgba(255,255,255,0.03);
         color: var(--text);
         outline: none;
@@ -168,12 +203,12 @@
       }
       .primary-btn {
         border: 0;
-        color: #05192a;
-        background: linear-gradient(135deg, #73b9ff, #6ae9ff);
+        color: #032435;
+        background: linear-gradient(135deg, #58d6d0, #7ce7ff);
       }
       .ghost-btn {
         margin-top: 10px;
-        border: 1px solid rgba(123,162,255,0.16);
+        border: 1px solid rgba(124,231,255,0.16);
         color: var(--text);
         background: rgba(255,255,255,0.035);
       }
@@ -181,7 +216,7 @@
         margin-top: 18px;
         padding: 14px;
         border-radius: 16px;
-        border: 1px solid rgba(123,162,255,0.12);
+        border: 1px solid rgba(124,231,255,0.12);
         background: rgba(255,255,255,0.03);
         color: var(--muted);
         font-size: 13px;
@@ -204,24 +239,25 @@
   <body>
     <div class="shell">
       <section class="hero">
-        <div class="badge">Command Screen Entry</div>
-        <h1>登录平台后<br />直接进入指挥大屏</h1>
+        <div class="badge">Ocean Edge IoT</div>
+        <h1>海洋物联网监控平台</h1>
         <div class="hero-desc">
-          平台使用“登录 → 指挥大屏 → 管理员后台”的结构。普通用户登录后仅进入指挥大屏；管理员登录后，在大屏中额外看到后台管理入口。
+          面向海域感知、边缘站点、视频联动与海洋环境监测的统一入口。用户登录或注册成功后，将直接进入海域指挥大屏；管理员在大屏中额外看到后台管理入口。
         </div>
         <div class="hero-pills">
-          <span class="pill">指挥大屏</span>
-          <span class="pill">用户登录</span>
-          <span class="pill">新用户注册</span>
-          <span class="pill">管理员后台</span>
+          <span class="pill">海域感知</span>
+          <span class="pill">视频联动</span>
+          <span class="pill">边缘监控</span>
+          <span class="pill">海洋遥测</span>
         </div>
         <div class="hero-links">
-          <a href="/bigscreen.html" target="_blank" rel="noreferrer">查看指挥大屏</a>
-          <a href="http://localhost:28080/#/login" target="_blank" rel="noreferrer">WVP 登录</a>
+          <a href="/bigscreen.html" target="_blank" rel="noreferrer">海域指挥大屏</a>
+          <a href="http://localhost:28080/#/login" target="_blank" rel="noreferrer">WVP 视频登录</a>
         </div>
       </section>
 
       <section class="card">
+        <div class="section-kicker">Access Portal</div>
         <div class="tabs">
           <button class="tab-btn active" id="tabLoginBtn">用户登录</button>
           <button class="tab-btn" id="tabRegisterBtn">新用户注册</button>
@@ -229,7 +265,7 @@
 
         <div id="loginPanel">
           <div class="panel-title">登录</div>
-          <div class="panel-subtitle">登录成功后将直接跳转到指挥大屏。</div>
+          <div class="panel-subtitle">登录成功后将直接进入海域指挥大屏。</div>
           <div class="field">
             <label>用户名</label>
             <input id="loginUsername" value="admin" />
@@ -243,7 +279,7 @@
 
         <div id="registerPanel" class="hidden">
           <div class="panel-title">注册</div>
-          <div class="panel-subtitle">新用户注册后默认成为观察员，并自动进入指挥大屏。</div>
+          <div class="panel-subtitle">新用户注册后默认成为观察员，并自动进入海域指挥大屏。</div>
           <div class="field">
             <label>显示名称</label>
             <input id="registerDisplayName" placeholder="请输入显示名称" />
@@ -263,8 +299,7 @@
           <button class="primary-btn" id="registerBtn">注册并进入指挥大屏</button>
         </div>
 
-        <button class="ghost-btn" id="backBigscreenBtn">直接进入指挥大屏演示</button>
-
+        <button class="ghost-btn" id="backBigscreenBtn">直接进入大屏演示</button>
         <div class="result" id="resultBox">默认测试账号：admin / admin123456</div>
       </section>
     </div>
@@ -305,7 +340,7 @@
       async function login() {
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value;
-        setResult('登录中...');
+        setResult('正在连接海域监控平台...');
         try {
           await ensureSessionCookie();
           const res = await fetch('/api/platform/login/', {
@@ -319,7 +354,7 @@
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.detail || 'login failed');
-          setResult(`登录成功，正在进入指挥大屏：${data.user.display_name}`, 'ok');
+          setResult(`登录成功，正在进入海域指挥大屏：${data.user.display_name}`, 'ok');
           window.location.href = data.redirect_to || '/bigscreen.html';
         } catch (err) {
           setResult(err.message, 'bad');
@@ -333,7 +368,7 @@
           password: document.getElementById('registerPassword').value,
           confirm_password: document.getElementById('registerConfirmPassword').value,
         };
-        setResult('注册中...');
+        setResult('正在创建海域监控账户...');
         try {
           await ensureSessionCookie();
           const res = await fetch('/api/platform/register/', {
@@ -347,7 +382,7 @@
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.detail || 'register failed');
-          setResult(`注册成功，正在进入指挥大屏：${data.user.display_name}`, 'ok');
+          setResult(`注册成功，正在进入海域指挥大屏：${data.user.display_name}`, 'ok');
           window.location.href = data.redirect_to || '/bigscreen.html';
         } catch (err) {
           setResult(err.message, 'bad');

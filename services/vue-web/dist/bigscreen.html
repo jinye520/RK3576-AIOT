@@ -3,21 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>RK3576 AIOT · 指挥大屏</title>
+    <title>海域指挥大屏 · RK3576</title>
     <style>
       :root {
-        --bg: #030813;
-        --panel: rgba(6, 16, 30, 0.82);
-        --line: rgba(84, 214, 255, 0.16);
-        --cyan: #54d6ff;
-        --blue: #3b82f6;
-        --teal: #2dd4bf;
-        --green: #22c55e;
-        --amber: #f59e0b;
-        --red: #ef4444;
-        --text: #eaf6ff;
-        --muted: #7da0bd;
-        --shadow: 0 30px 120px rgba(0, 0, 0, 0.45);
+        --deep-1: #02111b;
+        --deep-2: #062334;
+        --deep-3: #0a3244;
+        --panel: rgba(4, 23, 36, 0.78);
+        --line: rgba(91, 206, 214, 0.18);
+        --line-strong: rgba(124, 235, 255, 0.36);
+        --text: #ebfbff;
+        --muted: #8db8c4;
+        --primary: #58d6d0;
+        --accent: #7ce7ff;
+        --green: #4fd6a6;
+        --amber: #f6c86b;
+        --red: #ff7a7a;
+        --shadow: 0 34px 120px rgba(0, 0, 0, 0.42);
       }
 
       * { box-sizing: border-box; }
@@ -27,9 +29,9 @@
         color: var(--text);
         font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
         background:
-          radial-gradient(circle at top right, rgba(84,214,255,0.16), transparent 20%),
-          radial-gradient(circle at bottom left, rgba(45,212,191,0.12), transparent 24%),
-          linear-gradient(180deg, #02050c 0%, #081220 48%, #050b15 100%);
+          radial-gradient(circle at 84% 12%, rgba(124,231,255,0.18), transparent 18%),
+          radial-gradient(circle at 10% 88%, rgba(79,214,166,0.12), transparent 22%),
+          linear-gradient(180deg, #010b11 0%, #041826 46%, #07283b 100%);
         overflow: hidden;
       }
 
@@ -38,18 +40,29 @@
         position: fixed;
         inset: 0;
         pointer-events: none;
-        background-image:
-          linear-gradient(rgba(84,214,255,0.045) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(84,214,255,0.045) 1px, transparent 1px);
-        background-size: 48px 48px;
-        mask-image: radial-gradient(circle at center, black 38%, transparent 92%);
+        background:
+          radial-gradient(circle at 20% 30%, rgba(124,231,255,0.08), transparent 18%),
+          radial-gradient(circle at 70% 60%, rgba(88,214,208,0.08), transparent 22%),
+          linear-gradient(transparent 0 96%, rgba(124,231,255,0.05) 96% 100%);
+        background-size: auto, auto, 100% 44px;
+        opacity: 0.9;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image: linear-gradient(90deg, transparent 0 96%, rgba(124,231,255,0.035) 96% 100%);
+        background-size: 44px 100%;
+        mask-image: radial-gradient(circle at center, black 32%, transparent 88%);
       }
 
       .screen {
         height: 100vh;
         padding: 18px;
         display: grid;
-        grid-template-rows: 108px 130px 1fr;
+        grid-template-rows: 112px 130px 1fr;
         gap: 16px;
       }
 
@@ -68,7 +81,7 @@
         gap: 10px;
         padding: 8px 12px;
         border-radius: 999px;
-        border: 1px solid rgba(84,214,255,0.16);
+        border: 1px solid rgba(124,231,255,0.16);
         background: rgba(255,255,255,0.04);
         color: var(--text);
         text-decoration: none;
@@ -81,7 +94,7 @@
       .header {
         border-radius: 24px;
         display: grid;
-        grid-template-columns: 260px 1fr 420px;
+        grid-template-columns: 260px 1fr 460px;
         align-items: center;
         padding: 0 24px;
       }
@@ -98,8 +111,8 @@
         width: fit-content;
         padding: 6px 10px;
         border-radius: 999px;
-        border: 1px solid rgba(84,214,255,0.22);
-        color: var(--cyan);
+        border: 1px solid rgba(124,231,255,0.22);
+        color: var(--accent);
         font-size: 12px;
         letter-spacing: 0.14em;
         text-transform: uppercase;
@@ -118,7 +131,7 @@
       .header-center h1 {
         margin: 0;
         font-size: 34px;
-        letter-spacing: 0.16em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
       }
 
@@ -126,7 +139,7 @@
         margin: 6px 0 0;
         color: var(--muted);
         font-size: 13px;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.14em;
       }
 
       .header-side {
@@ -138,7 +151,7 @@
       .clock {
         font-size: 32px;
         font-weight: 800;
-        color: var(--cyan);
+        color: var(--accent);
       }
 
       .subline {
@@ -164,7 +177,7 @@
         position: absolute;
         inset: auto -20% -60% 40%;
         height: 120px;
-        background: radial-gradient(circle, rgba(84,214,255,0.22), transparent 65%);
+        background: radial-gradient(circle, rgba(124,231,255,0.22), transparent 65%);
         pointer-events: none;
       }
 
@@ -218,7 +231,7 @@
       .panel-title {
         font-size: 18px;
         font-weight: 700;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.04em;
       }
 
       .panel-subtitle {
@@ -237,7 +250,7 @@
         align-items: center;
         padding: 12px 14px;
         border-radius: 14px;
-        border: 1px solid rgba(84,214,255,0.1);
+        border: 1px solid rgba(124,231,255,0.1);
         background: rgba(255,255,255,0.03);
       }
 
@@ -251,7 +264,7 @@
         flex: 1;
         min-height: 0;
         border-radius: 18px;
-        border: 1px solid rgba(84,214,255,0.08);
+        border: 1px solid rgba(124,231,255,0.08);
         background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
         padding: 12px;
       }
@@ -275,27 +288,27 @@
         min-height: 190px;
         border-radius: 18px;
         overflow: hidden;
-        border: 1px solid rgba(84,214,255,0.12);
+        border: 1px solid rgba(124,231,255,0.12);
         background:
-          linear-gradient(180deg, rgba(9,22,40,0.2), rgba(3,8,19,0.88)),
-          radial-gradient(circle at top right, rgba(59,130,246,0.22), transparent 30%),
-          linear-gradient(135deg, #0a1526, #08192c 40%, #050b14);
+          linear-gradient(180deg, rgba(7,28,44,0.3), rgba(2,12,19,0.9)),
+          radial-gradient(circle at top right, rgba(88,214,208,0.16), transparent 30%),
+          linear-gradient(135deg, #062334, #0a3244 40%, #02111b);
       }
 
       .video-card::before {
-        content: "NO SIGNAL";
+        content: "SEA LINK";
         position: absolute;
         top: 16px;
         left: 16px;
         font-size: 11px;
         letter-spacing: 0.18em;
-        color: rgba(234,246,255,0.56);
+        color: rgba(235,251,255,0.58);
       }
 
       .scan {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, transparent 0%, rgba(84,214,255,0.12) 50%, transparent 100%);
+        background: linear-gradient(180deg, transparent 0%, rgba(124,231,255,0.12) 50%, transparent 100%);
         animation: scan 4.2s linear infinite;
       }
 
@@ -335,7 +348,7 @@
 
       .telemetry-row {
         border-radius: 14px;
-        border: 1px solid rgba(84,214,255,0.08);
+        border: 1px solid rgba(124,231,255,0.08);
         background: rgba(255,255,255,0.025);
         padding: 12px 14px;
       }
@@ -360,8 +373,8 @@
       .kv-pill {
         padding: 8px 10px;
         border-radius: 12px;
-        background: rgba(84,214,255,0.08);
-        border: 1px solid rgba(84,214,255,0.12);
+        background: rgba(124,231,255,0.08);
+        border: 1px solid rgba(124,231,255,0.12);
         min-width: 110px;
       }
 
@@ -377,7 +390,7 @@
       .mini {
         padding: 12px 14px;
         border-radius: 16px;
-        border: 1px solid rgba(84,214,255,0.1);
+        border: 1px solid rgba(124,231,255,0.1);
         background: rgba(255,255,255,0.025);
       }
 
@@ -415,12 +428,12 @@
     <div class="screen">
       <header class="header">
         <div class="brand">
-          <div class="brand-badge">RK3576 · AIOT</div>
-          <div class="brand-title">边缘智联总控大屏</div>
+          <div class="brand-badge">Ocean Edge IoT</div>
+          <div class="brand-title">海域指挥大屏</div>
         </div>
         <div class="header-center">
-          <h1>EDGE AIOT COMMAND SCREEN</h1>
-          <p>视频监控 · 传感器遥测 · 设备状态 · 边缘规则引擎</p>
+          <h1>OCEAN COMMAND SCREEN</h1>
+          <p>海域视频 · 海洋遥测 · 海上设备 · 边缘站点联动</p>
         </div>
         <div class="header-side">
           <div class="clock" id="clockText">--:--:--</div>
@@ -436,34 +449,34 @@
 
       <section class="metric-row">
         <div class="metric">
-          <div class="metric-label">物联网设备总数</div>
+          <div class="metric-label">海域在线设备</div>
           <div class="metric-value" id="metricDevices">--</div>
-          <div class="metric-foot">Django 中台识别设备数量</div>
+          <div class="metric-foot">平台识别海洋感知设备总量</div>
         </div>
         <div class="metric">
-          <div class="metric-label">实时在线设备</div>
+          <div class="metric-label">实时在线感知</div>
           <div class="metric-value" id="metricOnlineDevices">--</div>
-          <div class="metric-foot">当前状态为 online 的传感设备</div>
+          <div class="metric-foot">当前状态为 online 的设备</div>
         </div>
         <div class="metric">
-          <div class="metric-label">视频设备总数</div>
+          <div class="metric-label">海域视频点位</div>
           <div class="metric-value" id="metricVideoDevices">--</div>
-          <div class="metric-foot">WVP 侧当前可见视频设备数量</div>
+          <div class="metric-foot">WVP 当前可见视频点位数量</div>
         </div>
         <div class="metric">
-          <div class="metric-label">在线媒体节点</div>
+          <div class="metric-label">媒体节点在线</div>
           <div class="metric-value" id="metricMediaNodes">--</div>
-          <div class="metric-foot">ZLM 节点在线情况</div>
+          <div class="metric-foot">海域视频链路节点在线情况</div>
         </div>
         <div class="metric">
-          <div class="metric-label">累计遥测条数</div>
+          <div class="metric-label">海洋遥测累计</div>
           <div class="metric-value" id="metricTelemetry">--</div>
-          <div class="metric-foot">平台累计接收数据</div>
+          <div class="metric-foot">平台累计接收遥测数据</div>
         </div>
         <div class="metric">
-          <div class="metric-label">WVP 登录状态</div>
+          <div class="metric-label">视频链路状态</div>
           <div class="metric-value" id="metricWvpLogin">--</div>
-          <div class="metric-foot">后台与管理面入口健康度</div>
+          <div class="metric-foot">后台与视频管理面健康度</div>
         </div>
       </section>
 
@@ -472,8 +485,8 @@
           <div class="panel" style="flex: 0 0 46%;">
             <div class="panel-head">
               <div>
-                <div class="panel-title">平台运行状态</div>
-                <div class="panel-subtitle">物联网与视频服务实时可用性</div>
+                <div class="panel-title">海域运行状态</div>
+                <div class="panel-subtitle">海洋物联与视频服务实时可用性</div>
               </div>
             </div>
             <div class="status-grid" id="statusGrid"></div>
@@ -483,8 +496,8 @@
           <div class="panel" style="flex: 1;">
             <div class="panel-head">
               <div>
-                <div class="panel-title">传感器数据趋势</div>
-                <div class="panel-subtitle">最近 10 条遥测数据的动态折线</div>
+                <div class="panel-title">海洋遥测趋势</div>
+                <div class="panel-subtitle">最近 10 条感知数据的动态折线</div>
               </div>
             </div>
             <div class="chart-wrap">
@@ -496,8 +509,8 @@
         <div class="panel">
           <div class="panel-head">
             <div>
-              <div class="panel-title">视频监控矩阵</div>
-              <div class="panel-subtitle">当前以指挥大屏形式展示视频点位占位，可后续接入真实流</div>
+              <div class="panel-title">海域视频矩阵</div>
+              <div class="panel-subtitle">展示海域监控点位，可后续接入真实视频流</div>
             </div>
           </div>
           <div class="video-grid" id="videoGrid">
@@ -509,12 +522,12 @@
           <div class="panel" style="flex: 1;">
             <div class="panel-head">
               <div>
-                <div class="panel-title">最新遥测流</div>
-                <div class="panel-subtitle">实时展示最近上报的传感器数据</div>
+                <div class="panel-title">最新感知流</div>
+                <div class="panel-subtitle">实时展示最近上报的海洋感知数据</div>
               </div>
             </div>
             <div class="telemetry-feed" id="telemetryFeed">
-              <div class="empty">正在加载遥测流...</div>
+              <div class="empty">正在加载感知流...</div>
             </div>
           </div>
 
@@ -522,7 +535,7 @@
             <div class="panel-head">
               <div>
                 <div class="panel-title">视频资源摘要</div>
-                <div class="panel-subtitle">视频子系统核心资源</div>
+                <div class="panel-subtitle">海域视频链路核心资源</div>
               </div>
             </div>
             <div class="footer-strip" id="videoSummaryStrip"></div>
@@ -568,7 +581,7 @@
         const height = rect.height;
         chartCtx.clearRect(0, 0, width, height);
 
-        chartCtx.strokeStyle = 'rgba(84,214,255,0.12)';
+        chartCtx.strokeStyle = 'rgba(124,231,255,0.12)';
         chartCtx.lineWidth = 1;
         for (let i = 0; i < 5; i++) {
           const y = 24 + (height - 48) * (i / 4);
@@ -579,9 +592,9 @@
         }
 
         if (!items || items.length === 0) {
-          chartCtx.fillStyle = 'rgba(125,160,189,0.8)';
+          chartCtx.fillStyle = 'rgba(141,184,196,0.8)';
           chartCtx.font = '14px sans-serif';
-          chartCtx.fillText('暂无曲线数据', 24, height / 2);
+          chartCtx.fillText('暂无海洋遥测曲线', 24, height / 2);
           return;
         }
 
@@ -607,8 +620,8 @@
         });
 
         const gradient = chartCtx.createLinearGradient(0, top, 0, bottom);
-        gradient.addColorStop(0, 'rgba(84,214,255,0.35)');
-        gradient.addColorStop(1, 'rgba(84,214,255,0.02)');
+        gradient.addColorStop(0, 'rgba(124,231,255,0.35)');
+        gradient.addColorStop(1, 'rgba(124,231,255,0.02)');
 
         chartCtx.beginPath();
         chartCtx.moveTo(points[0].x, bottom);
@@ -623,14 +636,14 @@
           if (index === 0) chartCtx.moveTo(point.x, point.y);
           else chartCtx.lineTo(point.x, point.y);
         });
-        chartCtx.strokeStyle = '#54d6ff';
+        chartCtx.strokeStyle = '#7ce7ff';
         chartCtx.lineWidth = 3;
         chartCtx.stroke();
 
         points.forEach((point) => {
           chartCtx.beginPath();
           chartCtx.arc(point.x, point.y, 4, 0, Math.PI * 2);
-          chartCtx.fillStyle = '#7df9ff';
+          chartCtx.fillStyle = '#58d6d0';
           chartCtx.fill();
         });
       }
@@ -645,7 +658,7 @@
         const userInfoText = document.getElementById('userInfoText');
         const adminEntryBtn = document.getElementById('adminEntryBtn');
         if (!session || !session.authenticated || !session.user) {
-          el.textContent = '当前未登录平台账户，大屏处于公开演示模式。';
+          el.textContent = '当前未登录平台账户，大屏处于海域演示模式。';
           userInfoText.textContent = '当前未登录';
           adminEntryBtn.classList.add('hidden');
           return;
@@ -653,10 +666,10 @@
         userInfoText.textContent = `当前用户：${session.user.display_name}（${session.user.role}）`;
         if (session.user.role === 'admin') {
           adminEntryBtn.classList.remove('hidden');
-          el.textContent = `当前登录：${session.user.display_name}（管理员），已开放后台管理入口。`;
+          el.textContent = `当前登录：${session.user.display_name}（管理员），已开放海洋后台入口。`;
         } else {
           adminEntryBtn.classList.add('hidden');
-          el.textContent = `当前登录：${session.user.display_name}（${session.user.role}），仅显示指挥大屏内容。`;
+          el.textContent = `当前登录：${session.user.display_name}（${session.user.role}），当前仅显示海域指挥大屏。`;
         }
       }
 
@@ -677,13 +690,13 @@
         const inventory = data.video_inventory || {};
         const items = [
           ['平台 API', data.status === 'ok' ? '正常' : '异常', data.status === 'ok' ? 'ok' : 'bad'],
-          ['WVP 服务', video.wvp?.status || '--', video.wvp?.status === 'running' ? 'ok' : 'warn'],
-          ['ZLM 服务', video.zlm?.status || '--', video.zlm?.status === 'running' ? 'ok' : 'warn'],
-          ['WVP 登录', inventory.login_ready ? '可用' : '不可用', inventory.login_ready ? 'ok' : 'bad'],
-          ['前端入口', inventory.frontend_ready ? '可访问' : '不可访问', inventory.frontend_ready ? 'ok' : 'warn'],
-          ['文档入口', inventory.api_doc_ready ? '可访问' : '不可访问', inventory.api_doc_ready ? 'ok' : 'warn'],
-          ['Admin 账户', runtime.admin_user_present ? '存在' : '缺失', runtime.admin_user_present ? 'ok' : 'bad'],
-          ['Server ID', runtime.server_id || '--', 'ok'],
+          ['海域视频服务', video.wvp?.status || '--', video.wvp?.status === 'running' ? 'ok' : 'warn'],
+          ['媒体节点服务', video.zlm?.status || '--', video.zlm?.status === 'running' ? 'ok' : 'warn'],
+          ['视频后台登录', inventory.login_ready ? '可用' : '不可用', inventory.login_ready ? 'ok' : 'bad'],
+          ['管理前端入口', inventory.frontend_ready ? '可访问' : '不可访问', inventory.frontend_ready ? 'ok' : 'warn'],
+          ['接口文档入口', inventory.api_doc_ready ? '可访问' : '不可访问', inventory.api_doc_ready ? 'ok' : 'warn'],
+          ['管理员账户', runtime.admin_user_present ? '存在' : '缺失', runtime.admin_user_present ? 'ok' : 'bad'],
+          ['海域节点 ID', runtime.server_id || '--', 'ok'],
         ];
 
         document.getElementById('statusGrid').innerHTML = items.map(([name, value, cls]) => `
@@ -697,7 +710,7 @@
       function renderTelemetryFeed(items) {
         const container = document.getElementById('telemetryFeed');
         if (!items || items.length === 0) {
-          container.innerHTML = '<div class="empty">暂无遥测流数据</div>';
+          container.innerHTML = '<div class="empty">暂无海洋感知流数据</div>';
           return;
         }
         container.innerHTML = items.map(item => {
@@ -724,7 +737,7 @@
       function renderVideoGrid(slots) {
         const container = document.getElementById('videoGrid');
         if (!slots || slots.length === 0) {
-          container.innerHTML = '<div class="empty">暂无视频槽位数据</div>';
+          container.innerHTML = '<div class="empty">暂无海域视频槽位数据</div>';
           return;
         }
         container.innerHTML = slots.map(slot => `
@@ -743,7 +756,7 @@
 
       function renderVideoSummaryStrip(inventory) {
         const items = [
-          ['视频设备', inventory.device_total ?? 0],
+          ['海域视频点位', inventory.device_total ?? 0],
           ['级联平台', inventory.platform_total ?? 0],
           ['媒体节点', inventory.media_server_total ?? 0],
           ['在线节点', inventory.media_server_online ?? 0],
@@ -778,9 +791,9 @@
           renderVideoSummaryStrip(inventory);
           drawSensorChart(latestSeries);
         } catch (err) {
-          document.getElementById('statusGrid').innerHTML = '<div class="empty">大屏数据加载失败</div>';
-          document.getElementById('telemetryFeed').innerHTML = '<div class="empty">遥测数据加载失败</div>';
-          document.getElementById('videoGrid').innerHTML = '<div class="empty">视频矩阵加载失败</div>';
+          document.getElementById('statusGrid').innerHTML = '<div class="empty">海域大屏数据加载失败</div>';
+          document.getElementById('telemetryFeed').innerHTML = '<div class="empty">海洋感知流加载失败</div>';
+          document.getElementById('videoGrid').innerHTML = '<div class="empty">海域视频矩阵加载失败</div>';
           document.getElementById('videoSummaryStrip').innerHTML = '<div class="empty">视频摘要加载失败</div>';
           drawSensorChart([]);
         }
