@@ -256,6 +256,60 @@
       .warn { color: var(--amber); }
       .bad { color: var(--red); }
 
+      .sensor-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .sensor-summary-card {
+        border-radius: 18px;
+        border: 1px solid rgba(153, 229, 255, 0.12);
+        background: rgba(255,255,255,0.06);
+        padding: 12px;
+      }
+
+      .sensor-summary-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .sensor-summary-value {
+        margin-top: 8px;
+        font-size: 26px;
+        font-weight: 800;
+      }
+
+      .sensor-summary-foot {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .trend-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .trend-tab {
+        border: 1px solid rgba(153, 229, 255, 0.14);
+        background: rgba(255,255,255,0.06);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .trend-tab.active {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: #062336;
+        border-color: transparent;
+      }
+
       .chart-wrap {
         flex: 1;
         min-height: 0;
@@ -458,9 +512,11 @@
             <div class="panel-head">
               <div>
                 <div class="panel-title">本地遥测趋势</div>
-                <div class="panel-subtitle">最近 10 条采集数据趋势</div>
+                <div class="panel-subtitle">海洋监测数据与多指标趋势</div>
               </div>
             </div>
+            <div class="sensor-summary-grid" id="sensorSummaryGrid"></div>
+            <div class="trend-tabs" id="trendTabs"></div>
             <div class="chart-wrap">
               <canvas id="sensorChart"></canvas>
             </div>
@@ -505,7 +561,16 @@
       const dashboardUrl = '/api/video/bigscreen/';
       const chartCanvas = document.getElementById('sensorChart');
       const chartCtx = chartCanvas.getContext('2d');
+      const trendMetricConfig = {
+        temperature: { label: '水温', unit: '°C' },
+        depth: { label: '水深', unit: 'm' },
+        ph: { label: 'PH值', unit: '' },
+        dissolved_oxygen: { label: '溶解氧', unit: 'mg/L' },
+        salinity: { label: '盐度', unit: '‰' },
+        turbidity: { label: '浊度', unit: 'NTU' },
+      };
       let latestSeries = [];
+      let activeTrendMetric = 'temperature';
 
       function getCookie(name) {
         const value = `; ${document.cookie}`;
@@ -555,12 +620,7 @@
           return;
         }
 
-        const values = items.map(item => {
-          const payload = item.payload || {};
-          if (typeof payload.value === 'number') return payload.value;
-          const firstNumber = Object.values(payload).find(v => typeof v === 'number');
-          return typeof firstNumber === 'number' ? firstNumber : 0;
-        });
+        const values = items.map(item => getMetricValue(item.payload || {}, activeTrendMetric));
         const min = Math.min(...values, 0);
         const max = Math.max(...values, 1);
         const range = Math.max(max - min, 1);
@@ -602,6 +662,59 @@
           chartCtx.arc(point.x, point.y, 4, 0, Math.PI * 2);
           chartCtx.fillStyle = '#7be8e1';
           chartCtx.fill();
+        });
+      }
+
+      function getMetricValue(payload, metric) {
+        const direct = payload[metric];
+        if (typeof direct === 'number') return direct;
+        const aliases = {
+          temperature: ['temp', 'water_temp', 'temperature'],
+          depth: ['depth', 'water_depth'],
+          ph: ['ph', 'ph_value'],
+          dissolved_oxygen: ['do', 'dissolved_oxygen'],
+          salinity: ['salinity'],
+          turbidity: ['turbidity'],
+        };
+        for (const key of aliases[metric] || []) {
+          if (typeof payload[key] === 'number') return payload[key];
+        }
+        return 0;
+      }
+
+      function formatMetric(metric, value) {
+        const config = trendMetricConfig[metric] || { unit: '' };
+        return `${Number(value).toFixed(metric === 'ph' ? 2 : 1)}${config.unit}`;
+      }
+
+      function renderSensorSummary(items) {
+        const container = document.getElementById('sensorSummaryGrid');
+        const metrics = ['temperature', 'depth', 'ph', 'dissolved_oxygen'];
+        const latest = items && items.length ? items[items.length - 1].payload || {} : {};
+        container.innerHTML = metrics.map((metric) => {
+          const config = trendMetricConfig[metric];
+          const value = formatMetric(metric, getMetricValue(latest, metric));
+          return `
+            <div class="sensor-summary-card">
+              <div class="sensor-summary-label">${config.label}</div>
+              <div class="sensor-summary-value">${value}</div>
+              <div class="sensor-summary-foot">本地实时监测</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderTrendTabs() {
+        const container = document.getElementById('trendTabs');
+        container.innerHTML = Object.entries(trendMetricConfig).map(([metric, config]) => `
+          <button class="trend-tab ${metric === activeTrendMetric ? 'active' : ''}" data-metric="${metric}">${config.label}</button>
+        `).join('');
+        container.querySelectorAll('.trend-tab').forEach((button) => {
+          button.addEventListener('click', () => {
+            activeTrendMetric = button.dataset.metric;
+            renderTrendTabs();
+            drawSensorChart(latestSeries);
+          });
         });
       }
 
@@ -706,6 +819,8 @@
           const inventory = data.video_inventory || {};
           latestSeries = data.latest_telemetry || [];
 
+          renderSensorSummary(latestSeries);
+          renderTrendTabs();
           renderTelemetryFeed(latestSeries);
           renderVideoGrid(data.video_slots || []);
           renderDeviceStatus(stats, inventory);
