@@ -357,8 +357,46 @@ def platform_login(request):
     return Response({
         'authenticated': True,
         'token': f'local-role::{user.username}',
+        'redirect_to': '/bigscreen.html',
         'user': PlatformUserSerializer(user).data,
     })
+
+
+@api_view(['POST'])
+def platform_register(request):
+    _seed_platform_users()
+    username = request.data.get('username', '').strip()
+    display_name = request.data.get('display_name', '').strip()
+    password = request.data.get('password', '')
+    confirm_password = request.data.get('confirm_password', '')
+
+    if not username or not display_name or not password:
+        return Response({'detail': 'username, display_name and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+    if len(password) < 6:
+        return Response({'detail': 'password must be at least 6 characters'}, status=status.HTTP_400_BAD_REQUEST)
+    if password != confirm_password:
+        return Response({'detail': 'password and confirm_password do not match'}, status=status.HTTP_400_BAD_REQUEST)
+    if PlatformUser.objects.filter(username=username).exists():
+        return Response({'detail': 'username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = PlatformUser(
+        username=username,
+        display_name=display_name,
+        role=PlatformUser.ROLE_VIEWER,
+        is_active=True,
+    )
+    user.set_password(password)
+    user.save()
+
+    request.session['platform_username'] = user.username
+    request.session['platform_role'] = user.role
+    request.session['platform_menus'] = user.menus
+    return Response({
+        'authenticated': True,
+        'token': f'local-role::{user.username}',
+        'redirect_to': '/bigscreen.html',
+        'user': PlatformUserSerializer(user).data,
+    }, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])

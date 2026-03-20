@@ -49,7 +49,7 @@
         height: 100vh;
         padding: 18px;
         display: grid;
-        grid-template-rows: 92px 130px 1fr;
+        grid-template-rows: 108px 130px 1fr;
         gap: 16px;
       }
 
@@ -73,12 +73,15 @@
         color: var(--text);
         text-decoration: none;
         font-size: 12px;
+        cursor: pointer;
       }
+
+      .hidden { display: none !important; }
 
       .header {
         border-radius: 24px;
         display: grid;
-        grid-template-columns: 260px 1fr 320px;
+        grid-template-columns: 260px 1fr 420px;
         align-items: center;
         padding: 0 24px;
       }
@@ -398,6 +401,13 @@
         .metric-row {
           grid-template-columns: repeat(3, minmax(0, 1fr));
         }
+        .header {
+          grid-template-columns: 1fr;
+          gap: 12px;
+          padding: 18px;
+        }
+        .header-center,
+        .header-side { justify-items: start; text-align: left; }
       }
     </style>
   </head>
@@ -415,9 +425,11 @@
         <div class="header-side">
           <div class="clock" id="clockText">--:--:--</div>
           <div class="subline" id="dateText">--</div>
+          <div class="subline" id="userInfoText">当前未登录</div>
           <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:end;">
-            <a class="nav-chip" href="/" target="_blank" rel="noreferrer">返回控制台</a>
-            <a class="nav-chip" href="/login.html" target="_blank" rel="noreferrer">平台登录</a>
+            <a class="nav-chip" href="/login.html">切换登录</a>
+            <button class="nav-chip hidden" id="adminEntryBtn">后台管理</button>
+            <button class="nav-chip" id="logoutBtn">退出登录</button>
           </div>
         </div>
       </header>
@@ -489,46 +501,7 @@
             </div>
           </div>
           <div class="video-grid" id="videoGrid">
-            <div class="video-card">
-              <div class="scan"></div>
-              <div class="video-meta">
-                <div>
-                  <div class="video-name">东门人行通道</div>
-                  <div class="video-desc">GB28181 / 通道 01</div>
-                </div>
-                <div class="video-tag">1080P</div>
-              </div>
-            </div>
-            <div class="video-card">
-              <div class="scan"></div>
-              <div class="video-meta">
-                <div>
-                  <div class="video-name">仓储区广角位</div>
-                  <div class="video-desc">GB28181 / 通道 02</div>
-                </div>
-                <div class="video-tag">夜视</div>
-              </div>
-            </div>
-            <div class="video-card">
-              <div class="scan"></div>
-              <div class="video-meta">
-                <div>
-                  <div class="video-name">产线顶部吊装位</div>
-                  <div class="video-desc">GB28181 / 通道 03</div>
-                </div>
-                <div class="video-tag">巡检</div>
-              </div>
-            </div>
-            <div class="video-card">
-              <div class="scan"></div>
-              <div class="video-meta">
-                <div>
-                  <div class="video-name">主控大厅总览</div>
-                  <div class="video-desc">GB28181 / 通道 04</div>
-                </div>
-                <div class="video-tag">全景</div>
-              </div>
-            </div>
+            <div class="video-card"><div class="scan"></div></div>
           </div>
         </div>
 
@@ -563,6 +536,17 @@
       const chartCanvas = document.getElementById('sensorChart');
       const chartCtx = chartCanvas.getContext('2d');
       let latestSeries = [];
+
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return '';
+      }
+
+      async function ensureSessionCookie() {
+        await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+      }
 
       function syncClock() {
         const now = new Date();
@@ -658,12 +642,22 @@
 
       function updateAccessNote(session) {
         const el = document.getElementById('accessNote');
-        if (!el) return;
+        const userInfoText = document.getElementById('userInfoText');
+        const adminEntryBtn = document.getElementById('adminEntryBtn');
         if (!session || !session.authenticated || !session.user) {
           el.textContent = '当前未登录平台账户，大屏处于公开演示模式。';
+          userInfoText.textContent = '当前未登录';
+          adminEntryBtn.classList.add('hidden');
           return;
         }
-        el.textContent = `当前登录：${session.user.display_name}（${session.user.role}），已按角色联动首页菜单。`;
+        userInfoText.textContent = `当前用户：${session.user.display_name}（${session.user.role}）`;
+        if (session.user.role === 'admin') {
+          adminEntryBtn.classList.remove('hidden');
+          el.textContent = `当前登录：${session.user.display_name}（管理员），已开放后台管理入口。`;
+        } else {
+          adminEntryBtn.classList.add('hidden');
+          el.textContent = `当前登录：${session.user.display_name}（${session.user.role}），仅显示指挥大屏内容。`;
+        }
       }
 
       async function loadSession() {
@@ -729,7 +723,6 @@
 
       function renderVideoGrid(slots) {
         const container = document.getElementById('videoGrid');
-        if (!container) return;
         if (!slots || slots.length === 0) {
           container.innerHTML = '<div class="empty">暂无视频槽位数据</div>';
           return;
@@ -792,6 +785,21 @@
           drawSensorChart([]);
         }
       }
+
+      async function logout() {
+        await ensureSessionCookie();
+        await fetch('/api/platform/logout/', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCookie('csrftoken') },
+          credentials: 'same-origin',
+        });
+        window.location.href = '/login.html';
+      }
+
+      document.getElementById('adminEntryBtn').addEventListener('click', () => {
+        window.location.href = '/admin.html';
+      });
+      document.getElementById('logoutBtn').addEventListener('click', logout);
 
       syncClock();
       setInterval(syncClock, 1000);

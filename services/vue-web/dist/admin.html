@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>后台管理 · RK3576 Edge AIOT</title>
+    <style>
+      :root {
+        --bg: #050816;
+        --panel: rgba(8, 14, 28, 0.84);
+        --line: rgba(123, 162, 255, 0.16);
+        --text: #edf4ff;
+        --muted: #8ea2c6;
+        --primary: #73b9ff;
+        --cyan: #6ae9ff;
+        --green: #34d399;
+        --amber: #f6c363;
+        --red: #f87171;
+        --shadow: 0 26px 90px rgba(0, 0, 0, 0.42);
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; }
+      body {
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top right, rgba(115,185,255,0.18), transparent 20%),
+          radial-gradient(circle at bottom left, rgba(70,223,200,0.14), transparent 26%),
+          linear-gradient(180deg, #02040b 0%, #07101d 46%, #091221 100%);
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        min-height: 100vh;
+      }
+      .sidebar {
+        padding: 22px 18px;
+        background: rgba(3, 8, 18, 0.82);
+        border-right: 1px solid rgba(123, 162, 255, 0.1);
+        backdrop-filter: blur(18px);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .brand, .session, .menu, .quick, .panel, .menu-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
+      }
+      .brand, .session, .quick { padding: 18px; }
+      .brand-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(106,233,255,0.2);
+        color: var(--cyan);
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .brand-title { margin: 16px 0 8px; font-size: 28px; font-weight: 800; }
+      .brand-desc, .helper, .menu-card p { color: var(--muted); font-size: 13px; line-height: 1.8; }
+      .section-kicker {
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .session-user { margin-top: 10px; font-size: 18px; font-weight: 700; }
+      .session-meta { margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.75; }
+      .menu { padding: 12px; display: grid; gap: 8px; }
+      .menu a {
+        text-decoration: none;
+        color: var(--text);
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1px solid transparent;
+        background: rgba(255,255,255,0.03);
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .menu a:hover, .menu a.active {
+        border-color: rgba(115,185,255,0.2);
+        background: linear-gradient(135deg, rgba(115,185,255,0.12), rgba(106,233,255,0.06));
+      }
+      .btn {
+        width: 100%;
+        border-radius: 14px;
+        padding: 12px 14px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .ghost { color: var(--text); border: 1px solid rgba(123,162,255,0.16); background: rgba(255,255,255,0.035); }
+      .danger { color: #ffd7d7; border: 1px solid rgba(248,113,113,0.22); background: rgba(248,113,113,0.12); }
+      .main { padding: 24px; display: grid; gap: 18px; }
+      .hero { padding: 26px; }
+      .hero h1 { margin: 12px 0 10px; font-size: 38px; line-height: 1.08; }
+      .hero-desc { color: var(--muted); font-size: 14px; line-height: 1.9; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+      .panel { padding: 22px; }
+      .panel h2 { margin: 0 0 8px; font-size: 22px; }
+      .panel p { color: var(--muted); font-size: 13px; line-height: 1.8; }
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .menu-card { padding: 16px; text-decoration: none; color: var(--text); }
+      .menu-card h3 { margin: 0 0 8px; font-size: 16px; }
+      .status { margin-top: 12px; color: var(--green); font-size: 13px; font-weight: 700; }
+      .hidden { display: none !important; }
+      .bad { color: var(--red); }
+      @media (max-width: 1080px) {
+        .layout { grid-template-columns: 1fr; }
+        .grid, .menu-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <section class="brand">
+          <div class="brand-badge">Admin Console</div>
+          <div class="brand-title">后台管理</div>
+          <div class="brand-desc">后台用于平台运维与配置管理，包括用户、设备、网关、遥测、视频及系统状态入口。</div>
+        </section>
+
+        <section class="session">
+          <div class="section-kicker">Platform Session</div>
+          <div class="session-user" id="sessionUser">未检查</div>
+          <div class="session-meta" id="sessionMeta">正在检查登录态...</div>
+        </section>
+
+        <nav class="menu">
+          <a class="active" href="/admin.html">后台首页</a>
+          <a href="/users.html">用户管理</a>
+          <a href="/api/devices/" target="_blank" rel="noreferrer">设备管理</a>
+          <a href="/api/gateways/" target="_blank" rel="noreferrer">网关管理</a>
+          <a href="/api/telemetry/" target="_blank" rel="noreferrer">遥测监控</a>
+          <a href="http://localhost:28080/" target="_blank" rel="noreferrer">视频管理</a>
+          <a href="/api/system/status/" target="_blank" rel="noreferrer">系统状态</a>
+          <a href="/bigscreen.html">指挥大屏</a>
+        </nav>
+
+        <section class="quick">
+          <div class="section-kicker">Quick Actions</div>
+          <div style="display:grid; gap:10px; margin-top:12px;">
+            <button class="btn ghost" id="goBigscreenBtn">进入指挥大屏</button>
+            <button class="btn ghost" id="goConsoleBtn">返回首页</button>
+            <button class="btn danger" id="logoutBtn">退出登录</button>
+          </div>
+        </section>
+      </aside>
+
+      <main class="main">
+        <section class="panel hero">
+          <div class="section-kicker">Operations Backend</div>
+          <h1>物联网监控后台</h1>
+          <div class="hero-desc">
+            这是管理员使用的后台管理页。普通用户登录后不会在指挥大屏中看到后台入口。管理员可从指挥大屏进入此处，继续访问用户管理、设备管理、网关管理、遥测监控、视频管理与系统状态等模块。
+          </div>
+          <div class="status" id="accessStatus">正在验证管理员权限...</div>
+        </section>
+
+        <section class="grid">
+          <section class="panel">
+            <h2>后台模块</h2>
+            <p>当前阶段后台首页主要作为统一导航入口，连接现有页面和 API。后续可逐步扩展为正式多模块后台系统。</p>
+            <div class="menu-grid">
+              <a class="menu-card" href="/users.html">
+                <h3>用户管理</h3>
+                <p>平台账户、角色、启停状态、密码重置与删除。</p>
+              </a>
+              <a class="menu-card" href="/api/devices/" target="_blank" rel="noreferrer">
+                <h3>设备管理</h3>
+                <p>查看设备列表、协议、状态与建档情况。</p>
+              </a>
+              <a class="menu-card" href="/api/gateways/" target="_blank" rel="noreferrer">
+                <h3>网关管理</h3>
+                <p>查看网关对象、在线状态和设备归属。</p>
+              </a>
+              <a class="menu-card" href="/api/telemetry/" target="_blank" rel="noreferrer">
+                <h3>遥测监控</h3>
+                <p>查看平台采集数据与实时遥测信息。</p>
+              </a>
+              <a class="menu-card" href="http://localhost:28080/" target="_blank" rel="noreferrer">
+                <h3>视频管理</h3>
+                <p>进入 WVP 后台查看视频设备、节点与录像模块。</p>
+              </a>
+              <a class="menu-card" href="/api/system/status/" target="_blank" rel="noreferrer">
+                <h3>系统状态</h3>
+                <p>查看平台端口、聚合运行态与视频诊断。</p>
+              </a>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>业务逻辑摘要</h2>
+            <p>
+              1. 用户在登录页进行登录或注册。<br/>
+              2. 登录成功后统一跳转到指挥大屏。<br/>
+              3. 普通用户只可查看指挥大屏内容。<br/>
+              4. 管理员在指挥大屏可见“后台管理”按钮。<br/>
+              5. 管理员进入后台后，可使用用户管理、设备管理、网关管理、遥测监控、视频管理与系统状态等模块。<br/>
+              6. 后台中保留返回指挥大屏入口。
+            </p>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return '';
+      }
+
+      async function ensureSessionCookie() {
+        await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+      }
+
+      async function loadSession() {
+        const res = await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
+        const data = await res.json();
+        const userEl = document.getElementById('sessionUser');
+        const metaEl = document.getElementById('sessionMeta');
+        const accessStatus = document.getElementById('accessStatus');
+
+        if (!data.authenticated || !data.user) {
+          userEl.textContent = '未登录';
+          metaEl.textContent = '请先登录平台账户。';
+          accessStatus.textContent = '未登录，无法进入后台。';
+          accessStatus.classList.add('bad');
+          window.location.href = '/login.html';
+          return;
+        }
+
+        userEl.textContent = data.user.display_name;
+        metaEl.textContent = `账号：${data.user.username} · 角色：${data.user.role}`;
+
+        if (data.user.role !== 'admin') {
+          accessStatus.textContent = '当前账户不是管理员，后台入口不可用。';
+          accessStatus.classList.add('bad');
+          setTimeout(() => {
+            window.location.href = '/bigscreen.html';
+          }, 800);
+          return;
+        }
+
+        accessStatus.textContent = '管理员权限已验证，可进入后台管理模块。';
+      }
+
+      async function logout() {
+        await ensureSessionCookie();
+        await fetch('/api/platform/logout/', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCookie('csrftoken') },
+          credentials: 'same-origin',
+        });
+        window.location.href = '/login.html';
+      }
+
+      document.getElementById('goBigscreenBtn').addEventListener('click', () => {
+        window.location.href = '/bigscreen.html';
+      });
+      document.getElementById('goConsoleBtn').addEventListener('click', () => {
+        window.location.href = '/';
+      });
+      document.getElementById('logoutBtn').addEventListener('click', logout);
+
+      loadSession();
+    </script>
+  </body>
+</html>
