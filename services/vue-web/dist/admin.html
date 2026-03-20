@@ -38,6 +38,10 @@
       }
 
       .sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: auto;
         background: linear-gradient(180deg, var(--sidebar) 0%, var(--sidebar-soft) 100%);
         color: #eef7ff;
         padding: 20px 16px;
@@ -404,8 +408,7 @@
         <section class="quick-box">
           <div class="section-title">Quick Actions</div>
           <div style="display:grid; gap:10px; margin-top:12px;">
-            <button class="btn btn-light" id="goBigscreenBtn">打开监控大屏</button>
-            <button class="btn btn-light" id="goOverviewBtn">返回总览</button>
+            <button class="btn btn-light" id="goBigscreenBtn">监控大屏</button>
             <button class="btn btn-danger" id="logoutBtn">退出登录</button>
           </div>
         </section>
@@ -446,6 +449,19 @@
               <div class="metric-card"><div class="metric-label">配置方式</div><div class="metric-value">本地</div><div class="metric-foot">适合边缘侧独立运行</div></div>
               <div class="metric-card"><div class="metric-label">主流程</div><div class="metric-value">导航切换</div><div class="metric-foot">左侧选择，右侧展示</div></div>
               <div class="metric-card"><div class="metric-label">运维目标</div><div class="metric-value">配置 + 管理</div><div class="metric-foot">面向控制盒设备本体</div></div>
+            </section>
+
+            <section class="panel">
+              <h3 class="panel-title">后台布局说明</h3>
+              <p class="panel-subtitle">当前管理后台采用常见控制台布局：左侧固定导航，右侧按模块切换展示配置界面。后续每个模块可继续扩展为完整配置页。</p>
+              <table class="table">
+                <thead><tr><th>区域</th><th>定位</th><th>说明</th></tr></thead>
+                <tbody>
+                  <tr><td>左侧导航</td><td>固定</td><td>负责切换总览、基础配置、采集、协议、视频、上云、系统与用户管理。</td></tr>
+                  <tr><td>顶部栏</td><td>上下文标题</td><td>显示当前模块名称与说明，帮助快速识别当前配置页。</td></tr>
+                  <tr><td>右侧内容区</td><td>模块工作区</td><td>用于显示对应配置表单、说明表格与运行状态。</td></tr>
+                </tbody>
+              </table>
             </section>
 
             <section class="grid-2">
@@ -912,9 +928,6 @@
       });
       document.getElementById('goBigscreenBtn').addEventListener('click', () => {
         window.location.href = '/bigscreen.html';
-      });
-      document.getElementById('goOverviewBtn').addEventListener('click', () => {
-        switchView('overviewView');
       });
       document.getElementById('logoutBtn').addEventListener('click', logout);
       document.getElementById('userSearchInput').addEventListener('input', applyUserFilters);
