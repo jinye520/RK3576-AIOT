@@ -519,6 +519,36 @@ def video_inventory(request):
 def bigscreen_payload(request):
     latest_telemetry = Telemetry.objects.select_related('gateway', 'device').order_by('-collected_at', '-created_at')[:12]
     latest_data = TelemetrySerializer(latest_telemetry, many=True).data
+
+    defaults = [
+        {'temperature': 18.6, 'depth': 12.4, 'ph': 8.02, 'dissolved_oxygen': 6.8, 'salinity': 31.2, 'turbidity': 2.4},
+        {'temperature': 18.9, 'depth': 12.7, 'ph': 8.05, 'dissolved_oxygen': 6.9, 'salinity': 31.4, 'turbidity': 2.2},
+        {'temperature': 19.1, 'depth': 12.3, 'ph': 8.04, 'dissolved_oxygen': 7.0, 'salinity': 31.1, 'turbidity': 2.6},
+        {'temperature': 18.8, 'depth': 12.1, 'ph': 8.01, 'dissolved_oxygen': 6.7, 'salinity': 30.9, 'turbidity': 2.8},
+    ]
+
+    enriched_data = []
+    for index, item in enumerate(latest_data):
+        payload = item.get('payload') or {}
+        fallback = defaults[index % len(defaults)]
+        merged = {**fallback, **payload}
+        enriched_item = dict(item)
+        enriched_item['payload'] = merged
+        enriched_data.append(enriched_item)
+
+    if not enriched_data:
+        now = timezone.now()
+        for index, payload in enumerate(defaults):
+            enriched_data.append({
+                'id': index + 1,
+                'gateway': 0,
+                'device': 0,
+                'topic': 'edge/demo/marine/up',
+                'payload': payload,
+                'collected_at': now.isoformat(),
+                'created_at': now.isoformat(),
+            })
+
     video = _video_status_payload()
     return Response({
         'status': 'ok',
@@ -531,7 +561,7 @@ def bigscreen_payload(request):
         },
         'video_inventory': _video_inventory_payload(),
         'video_slots': BIGSCREEN_VIDEO_SLOTS,
-        'latest_telemetry': latest_data,
+        'latest_telemetry': enriched_data,
     })
 
 

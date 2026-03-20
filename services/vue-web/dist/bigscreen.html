@@ -751,14 +751,18 @@
           container.innerHTML = '<div class="summary-card" style="padding:14px;">暂无本地采集数据</div>';
           return;
         }
+        const metricOrder = ['temperature', 'depth', 'ph', 'dissolved_oxygen', 'salinity', 'turbidity'];
         container.innerHTML = items.map(item => {
           const payload = item.payload || {};
-          const kv = Object.entries(payload).map(([key, value]) => `
-            <div class="kv-pill">
-              <div class="kv-k">${key}</div>
-              <div class="kv-v">${typeof value === 'object' ? JSON.stringify(value) : value}</div>
-            </div>
-          `).join('');
+          const kv = metricOrder.map((metric) => {
+            const config = trendMetricConfig[metric];
+            return `
+              <div class="kv-pill">
+                <div class="kv-k">${config.label}</div>
+                <div class="kv-v">${formatMetric(metric, getMetricValue(payload, metric))}</div>
+              </div>
+            `;
+          }).join('');
           return `
             <div class="telemetry-row">
               <div class="telemetry-top">
