@@ -64,7 +64,7 @@
       .header {
         border-radius: 28px;
         display: grid;
-        grid-template-columns: 220px 1fr 280px;
+        grid-template-columns: 240px 1fr 260px;
         align-items: center;
         padding: 0 24px;
       }
@@ -93,19 +93,13 @@
         text-align: center;
         display: grid;
         justify-items: center;
-        gap: 6px;
-      }
-
-      .center-title {
-        font-size: 34px;
-        font-weight: 800;
-        letter-spacing: 0.06em;
       }
 
       .center-time {
-        color: var(--muted);
-        font-size: 13px;
-        letter-spacing: 0.16em;
+        color: var(--text);
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
       }
 
       .header-side {
@@ -552,8 +546,7 @@
           <div class="brand-title">控制盒本地监控大屏</div>
         </div>
         <div class="header-center">
-          <div class="center-title">控制盒本地监控大屏</div>
-          <div class="center-time" id="centerTimeText">监控时间 --</div>
+          <div class="center-time" id="centerTimeText">--</div>
         </div>
         <div class="header-side">
           <div class="clock" id="clockText">--:--:--</div>
@@ -651,7 +644,7 @@
         const dateText = now.toLocaleDateString('zh-CN', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' });
         document.getElementById('clockText').textContent = timeText;
         document.getElementById('dateText').textContent = dateText;
-        document.getElementById('centerTimeText').textContent = `监控时间 ${dateText} ${timeText}`;
+        document.getElementById('centerTimeText').textContent = `${dateText} ${timeText}`;
       }
 
       function resizeCanvas() {
