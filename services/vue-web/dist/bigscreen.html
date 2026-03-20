@@ -283,10 +283,8 @@
         min-height: 210px;
         border-radius: 22px;
         overflow: hidden;
-        border: 1px solid rgba(153, 229, 255, 0.14);
-        background:
-          linear-gradient(180deg, rgba(19, 62, 89, 0.22), rgba(10, 32, 47, 0.3)),
-          url('/assets/login-ref/operabg.png') center/cover no-repeat;
+        border: 1px solid rgba(153, 229, 255, 0.12);
+        background: linear-gradient(180deg, rgba(8, 16, 23, 0.9), rgba(3, 7, 11, 0.98));
         text-decoration: none;
         color: var(--text);
       }
@@ -298,14 +296,14 @@
         left: 16px;
         font-size: 11px;
         letter-spacing: 0.18em;
-        color: rgba(235, 251, 255, 0.72);
+        color: rgba(235, 251, 255, 0.54);
       }
 
       .video-card::after {
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(10, 29, 44, 0.02), rgba(10, 29, 44, 0.62));
+        background: linear-gradient(180deg, rgba(14, 24, 32, 0.04), rgba(2, 5, 8, 0.2));
       }
 
       .video-meta {
@@ -318,6 +316,18 @@
         justify-content: space-between;
         align-items: end;
         gap: 12px;
+      }
+
+      .video-empty {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(235, 251, 255, 0.38);
+        font-size: 14px;
+        letter-spacing: 0.12em;
       }
 
       .video-name {
@@ -424,7 +434,7 @@
         </div>
         <div class="header-center">
           <h1>LOCAL MONITORING SCREEN</h1>
-          <p>本地监控大屏</p>
+          <p>海洋物联网在线监控大屏</p>
         </div>
         <div class="header-side">
           <div class="clock" id="clockText">--:--:--</div>
@@ -489,7 +499,7 @@
         <section class="panel">
           <div class="panel-head">
             <div>
-              <div class="panel-title">本地视频矩阵</div>
+              <div class="panel-title">本地视频</div>
               <div class="panel-subtitle">控制盒接入点位与视频入口</div>
             </div>
           </div>
@@ -691,6 +701,7 @@
         }
         container.innerHTML = slots.map(slot => `
           <a class="video-card" href="${slot.player_url || '#'}" target="_blank" rel="noreferrer">
+            <div class="video-empty">视频未接入</div>
             <div class="video-meta">
               <div>
                 <div class="video-name">${slot.name}</div>
