@@ -5,7 +5,7 @@ from hashlib import md5
 import requests
 from django.contrib.auth.hashers import check_password
 from django.db.models import Count
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status
@@ -723,12 +723,67 @@ def _require_admin_html(request):
     return None
 
 
+def _reverse_proxy_redirect_html(target_url, title, description):
+    return HttpResponse(
+        f"""
+<!doctype html>
+<html lang=\"zh-CN\">
+  <head>
+    <meta charset=\"utf-8\" />
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+    <title>{title}</title>
+    <style>
+      body {{
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(180deg, #071726 0%, #0f2740 100%);
+        color: #eef7ff;
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      }}
+      .card {{
+        width: min(560px, calc(100vw - 32px));
+        padding: 28px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 16px 38px rgba(0,0,0,0.28);
+      }}
+      h1 {{ margin: 0 0 10px; font-size: 28px; }}
+      p {{ margin: 0; line-height: 1.9; color: rgba(238,247,255,0.82); }}
+      .actions {{ display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }}
+      a {{ text-decoration: none; border-radius: 12px; padding: 11px 15px; font-weight: 700; }}
+      .primary {{ background: #2d8cff; color: #fff; }}
+      .secondary {{ background: rgba(255,255,255,0.12); color: #eef7ff; }}
+    </style>
+  </head>
+  <body>
+    <div class=\"card\">
+      <h1>{title}</h1>
+      <p>{description}</p>
+      <div class=\"actions\">
+        <a class=\"primary\" href=\"{target_url}\">继续进入</a>
+        <a class=\"secondary\" href=\"/admin.html\">返回管理中心</a>
+      </div>
+    </div>
+  </body>
+</html>
+        """.strip(),
+        content_type='text/html; charset=utf-8',
+    )
+
+
 @api_view(['GET'])
 def platform_access_nodered(request):
     guard = _require_admin_html(request)
     if guard:
         return guard
-    return redirect('/nodered/')
+    return _reverse_proxy_redirect_html(
+        '/nodered/',
+        '统一协议转换入口',
+        '当前入口已纳入平台统一登录体系，仅管理员可访问。点击下方按钮继续进入协议转换与规则流管理界面。',
+    )
 
 
 @api_view(['GET'])
@@ -736,7 +791,21 @@ def platform_access_video(request):
     guard = _require_admin_html(request)
     if guard:
         return guard
-    return redirect('http://localhost:28080/')
+    return _reverse_proxy_redirect_html(
+        'http://localhost:28080/',
+        '统一视频管理入口',
+        '当前入口已纳入平台统一登录体系，仅管理员可访问。点击下方按钮继续进入视频接入与媒体服务管理界面。',
+    )
+
+
+@api_view(['GET'])
+def platform_proxy_guard(request):
+    user = _platform_session_user(request)
+    if not user:
+        return Response({'allowed': False, 'detail': 'authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+    if user.role != PlatformUser.ROLE_ADMIN:
+        return Response({'allowed': False, 'detail': 'admin role required'}, status=status.HTTP_403_FORBIDDEN)
+    return Response({'allowed': True, 'user': PlatformUserSerializer(user).data})
 
 
 @api_view(['GET', 'POST'])

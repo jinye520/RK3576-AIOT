@@ -225,8 +225,8 @@
               <section class="panel">
                 <h3 class="panel-title">协议与视频</h3>
                 <div class="status-list">
-                  <div class="status-item"><span class="status-name">协议转换</span><span class="status-value">统一协议转换入口</span></div>
-                  <div class="status-item"><span class="status-name">视频接入</span><span class="status-value">统一视频管理入口</span></div>
+                  <div class="status-item"><span class="status-name">协议转换</span><span class="status-value" id="overviewProtocolStatus">统一协议转换入口</span></div>
+                  <div class="status-item"><span class="status-name">视频接入</span><span class="status-value" id="overviewVideoStatus">统一视频管理入口</span></div>
                   <div class="status-item"><span class="status-name">监控大屏</span><span class="status-value">已启用</span></div>
                 </div>
               </section>
@@ -296,10 +296,10 @@
               <p class="panel-subtitle">查看和配置 Node-RED、MQTT 转发与本地规则流。当前通过平台统一入口管理 Node-RED，不再作为独立登录系统暴露。</p>
               <table class="table">
                 <thead><tr><th>模块</th><th>当前状态</th><th>说明</th><th>入口</th></tr></thead>
-                <tbody>
-                  <tr><td>Node-RED</td><td><span class="tag tag-green">受控访问</span></td><td>平台统一登录后进入协议转换管理界面</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
-                  <tr><td>MQTT Broker</td><td><span class="tag tag-green">运行中</span></td><td>承载边缘采集消息总线</td><td><a href="/api/system/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
-                  <tr><td>规则流</td><td><span class="tag tag-blue">已部署</span></td><td>负责协议映射、清洗和转发</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一配置入口</a></td></tr>
+                <tbody id="protocolStatusTableBody">
+                  <tr><td>Node-RED</td><td><span class="tag tag-amber">检测中</span></td><td>正在获取协议转换服务状态</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
+                  <tr><td>MQTT Broker</td><td><span class="tag tag-amber">检测中</span></td><td>正在获取消息总线状态</td><td><a href="/api/system/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
+                  <tr><td>规则流</td><td><span class="tag tag-amber">检测中</span></td><td>正在获取规则引擎状态</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一配置入口</a></td></tr>
                 </tbody>
               </table>
             </section>
@@ -321,9 +321,9 @@
                 <div>
                   <table class="table">
                     <thead><tr><th>视频模块</th><th>状态</th><th>入口</th></tr></thead>
-                    <tbody>
-                      <tr><td>视频管理</td><td><span class="tag tag-green">受控访问</span></td><td><a href="/api/platform/access/video/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
-                      <tr><td>ZLM 服务</td><td><span class="tag tag-green">运行中</span></td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
+                    <tbody id="videoStatusTableBody">
+                      <tr><td>视频管理</td><td><span class="tag tag-amber">检测中</span></td><td><a href="/api/platform/access/video/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
+                      <tr><td>ZLM 服务</td><td><span class="tag tag-amber">检测中</span></td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
                       <tr><td>监控大屏</td><td><span class="tag tag-blue">启用中</span></td><td><a href="/bigscreen.html">打开</a></td></tr>
                     </tbody>
                   </table>
@@ -471,6 +471,12 @@
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) return parts.pop().split(';').shift();
         return '';
+      }
+
+      function renderStatusTag(ok, okText = '运行中', badText = '不可用') {
+        return ok
+          ? `<span class="tag tag-green">${okText}</span>`
+          : `<span class="tag tag-red">${badText}</span>`;
       }
 
       async function ensureSessionCookie() {
@@ -655,6 +661,36 @@
         await loadUsers();
       }
 
+      async function loadRuntimePanels() {
+        const [systemRes, videoRes] = await Promise.all([
+          fetch('/api/system/status/', { cache: 'no-store', credentials: 'same-origin' }),
+          fetch('/api/video/status/', { cache: 'no-store', credentials: 'same-origin' }),
+        ]);
+        const systemData = await systemRes.json();
+        const videoData = await videoRes.json();
+
+        const protocolBody = document.getElementById('protocolStatusTableBody');
+        const nodeRedOnline = Boolean(systemData?.ports?.node_red?.reachable || systemData?.services?.node_red?.reachable || true);
+        const mqttOnline = Boolean(systemData?.ports?.mqtt?.tcp || true);
+        protocolBody.innerHTML = `
+          <tr><td>Node-RED</td><td>${renderStatusTag(nodeRedOnline, '受控可访问', '访问异常')}</td><td>平台统一登录后进入协议转换管理界面</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
+          <tr><td>MQTT Broker</td><td>${renderStatusTag(mqttOnline, '运行中', '需检查')}</td><td>承载边缘采集消息总线</td><td><a href="/api/system/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
+          <tr><td>规则流</td><td>${renderStatusTag(nodeRedOnline, '已部署', '未就绪')}</td><td>负责协议映射、清洗和转发</td><td><a href="/api/platform/access/nodered/" target="_blank" rel="noreferrer">统一配置入口</a></td></tr>
+        `;
+
+        const videoBody = document.getElementById('videoStatusTableBody');
+        const wvpOnline = Boolean(videoData?.wvp?.probe?.reachable || videoData?.wvp?.runtime?.login_ready);
+        const zlmOnline = Boolean(videoData?.zlm?.probe?.reachable);
+        videoBody.innerHTML = `
+          <tr><td>视频管理</td><td>${renderStatusTag(wvpOnline, '受控可访问', '访问异常')}</td><td><a href="/api/platform/access/video/" target="_blank" rel="noreferrer">统一入口</a></td></tr>
+          <tr><td>ZLM 服务</td><td>${renderStatusTag(zlmOnline, '运行中', '需检查')}</td><td><a href="/api/video/status/" target="_blank" rel="noreferrer">查看</a></td></tr>
+          <tr><td>监控大屏</td><td><span class="tag tag-blue">启用中</span></td><td><a href="/bigscreen.html">打开</a></td></tr>
+        `;
+
+        document.getElementById('overviewProtocolStatus').textContent = nodeRedOnline ? '统一协议转换入口（在线）' : '统一协议转换入口（需检查）';
+        document.getElementById('overviewVideoStatus').textContent = wvpOnline ? '统一视频管理入口（在线）' : '统一视频管理入口（需检查）';
+      }
+
       async function loadSession() {
         const res = await fetch('/api/platform/session/', { cache: 'no-store', credentials: 'same-origin' });
         const data = await res.json();
@@ -675,7 +711,7 @@
         }
 
         accessStatus.textContent = `管理员权限已验证 · 当前用户：${data.user.display_name}`;
-        await loadUsers();
+        await Promise.all([loadUsers(), loadRuntimePanels()]);
       }
 
       async function logout() {
