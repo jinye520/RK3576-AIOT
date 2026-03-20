@@ -10,18 +10,18 @@
         --deep-1: #031421;
         --deep-2: #07283b;
         --deep-3: #0d3a52;
-        --panel: rgba(5, 22, 34, 0.76);
+        --panel: rgba(5, 22, 34, 0.72);
         --panel-strong: rgba(8, 28, 42, 0.92);
-        --line: rgba(92, 208, 216, 0.16);
-        --line-strong: rgba(124, 235, 255, 0.36);
+        --line: rgba(92, 208, 216, 0.14);
+        --line-strong: rgba(124, 235, 255, 0.32);
         --text: #ecfbff;
-        --muted: #8db8c4;
+        --muted: #89afbb;
         --primary: #58d6d0;
         --accent: #7ce7ff;
         --green: #4fd6a6;
         --amber: #f6c86b;
         --red: #ff7a7a;
-        --shadow: 0 40px 120px rgba(0, 0, 0, 0.48);
+        --shadow: 0 38px 120px rgba(0, 0, 0, 0.48);
       }
       * { box-sizing: border-box; }
       html, body { margin: 0; min-height: 100%; }
@@ -32,8 +32,8 @@
         font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at 82% 14%, rgba(124,231,255,0.16), transparent 16%),
-          radial-gradient(circle at 14% 86%, rgba(79,214,166,0.1), transparent 20%),
+          radial-gradient(circle at 82% 14%, rgba(124,231,255,0.14), transparent 16%),
+          radial-gradient(circle at 14% 86%, rgba(79,214,166,0.08), transparent 18%),
           linear-gradient(180deg, #01070d 0%, #041522 42%, #07283b 100%);
         overflow: hidden;
       }
@@ -43,9 +43,9 @@
         inset: 0;
         pointer-events: none;
         background:
-          radial-gradient(circle at 16% 28%, rgba(124,231,255,0.08), transparent 18%),
-          radial-gradient(circle at 72% 58%, rgba(88,214,208,0.08), transparent 22%),
-          linear-gradient(transparent 0 97%, rgba(124,231,255,0.045) 97% 100%);
+          radial-gradient(circle at 16% 28%, rgba(124,231,255,0.07), transparent 18%),
+          radial-gradient(circle at 72% 58%, rgba(88,214,208,0.07), transparent 22%),
+          linear-gradient(transparent 0 97%, rgba(124,231,255,0.04) 97% 100%);
         background-size: auto, auto, 100% 40px;
       }
       body::after {
@@ -53,30 +53,30 @@
         position: fixed;
         inset: 0;
         pointer-events: none;
-        background-image: linear-gradient(90deg, transparent 0 97%, rgba(124,231,255,0.03) 97% 100%);
+        background-image: linear-gradient(90deg, transparent 0 97%, rgba(124,231,255,0.026) 97% 100%);
         background-size: 40px 100%;
         mask-image: radial-gradient(circle at center, black 34%, transparent 88%);
       }
       .shell {
         position: relative;
-        width: min(1120px, calc(100vw - 32px));
+        width: min(1140px, calc(100vw - 32px));
         min-height: min(760px, calc(100vh - 48px));
         display: grid;
-        grid-template-columns: 1.12fr 0.88fr;
+        grid-template-columns: 1.14fr 0.86fr;
         border-radius: 34px;
         overflow: hidden;
-        background: rgba(2, 11, 18, 0.5);
-        border: 1px solid rgba(124,231,255,0.12);
+        background: rgba(2, 11, 18, 0.46);
+        border: 1px solid rgba(124,231,255,0.1);
         box-shadow: var(--shadow);
         backdrop-filter: blur(18px);
       }
       .visual {
         position: relative;
-        padding: 42px 38px;
+        padding: 42px 40px;
         background:
-          radial-gradient(circle at top left, rgba(124,231,255,0.16), transparent 22%),
-          linear-gradient(180deg, rgba(4,18,30,0.82), rgba(5,25,39,0.56));
-        border-right: 1px solid rgba(124,231,255,0.1);
+          radial-gradient(circle at top left, rgba(124,231,255,0.12), transparent 22%),
+          linear-gradient(180deg, rgba(4,18,30,0.78), rgba(5,25,39,0.46));
+        border-right: 1px solid rgba(124,231,255,0.08);
         overflow: hidden;
       }
       .visual::before {
@@ -84,8 +84,8 @@
         position: absolute;
         inset: 0;
         background:
-          radial-gradient(circle at 78% 18%, rgba(88,214,208,0.18), transparent 18%),
-          radial-gradient(circle at 28% 76%, rgba(124,231,255,0.08), transparent 24%);
+          radial-gradient(circle at 78% 18%, rgba(88,214,208,0.14), transparent 18%),
+          radial-gradient(circle at 28% 76%, rgba(124,231,255,0.07), transparent 24%);
         pointer-events: none;
       }
       .visual::after {
@@ -96,11 +96,11 @@
         width: 460px;
         height: 460px;
         border-radius: 50%;
-        border: 1px solid rgba(124,231,255,0.12);
+        border: 1px solid rgba(124,231,255,0.1);
         box-shadow:
-          0 0 0 38px rgba(124,231,255,0.03),
-          0 0 0 90px rgba(124,231,255,0.02),
-          0 0 0 150px rgba(124,231,255,0.01);
+          0 0 0 38px rgba(124,231,255,0.025),
+          0 0 0 90px rgba(124,231,255,0.018),
+          0 0 0 150px rgba(124,231,255,0.008);
         pointer-events: none;
       }
       .badge {
@@ -110,7 +110,7 @@
         align-items: center;
         padding: 8px 12px;
         border-radius: 999px;
-        border: 1px solid rgba(124,231,255,0.22);
+        border: 1px solid rgba(124,231,255,0.2);
         color: var(--accent);
         font-size: 12px;
         letter-spacing: 0.16em;
@@ -119,18 +119,18 @@
       .visual h1 {
         position: relative;
         z-index: 1;
-        margin: 20px 0 14px;
-        font-size: 44px;
-        line-height: 1.08;
+        margin: 22px 0 14px;
+        font-size: 48px;
+        line-height: 1.04;
         letter-spacing: 0.01em;
       }
       .visual-desc {
         position: relative;
         z-index: 1;
-        max-width: 560px;
+        max-width: 540px;
         color: var(--muted);
         font-size: 15px;
-        line-height: 1.95;
+        line-height: 1.92;
       }
       .visual-pills {
         position: relative;
@@ -143,14 +143,14 @@
       .pill {
         padding: 8px 10px;
         border-radius: 999px;
-        border: 1px solid rgba(124,231,255,0.14);
-        background: rgba(124,231,255,0.08);
+        border: 1px solid rgba(124,231,255,0.12);
+        background: rgba(124,231,255,0.06);
         font-size: 12px;
       }
       .visual-footer {
         position: absolute;
-        left: 38px;
-        right: 38px;
+        left: 40px;
+        right: 40px;
         bottom: 34px;
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -160,8 +160,8 @@
       .mini-card {
         padding: 16px;
         border-radius: 20px;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(124,231,255,0.1);
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(124,231,255,0.08);
       }
       .mini-label {
         color: var(--muted);
@@ -179,11 +179,10 @@
         align-items: center;
         justify-content: center;
         padding: 36px;
-        background: linear-gradient(180deg, rgba(6,23,36,0.94), rgba(4,18,28,0.92));
+        background: linear-gradient(180deg, rgba(6,23,36,0.96), rgba(4,18,28,0.94));
       }
       .auth-card {
-        width: min(100%, 420px);
-        padding: 12px 0;
+        width: min(100%, 390px);
       }
       .section-kicker {
         color: var(--muted);
@@ -195,12 +194,12 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 8px;
-        margin: 16px 0 20px;
+        margin: 16px 0 22px;
       }
       .tab-btn {
         appearance: none;
-        border: 1px solid rgba(124,231,255,0.14);
-        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(124,231,255,0.12);
+        background: rgba(255,255,255,0.02);
         color: var(--text);
         cursor: pointer;
         border-radius: 16px;
@@ -234,8 +233,8 @@
         width: 100%;
         padding: 14px 16px;
         border-radius: 16px;
-        border: 1px solid rgba(124,231,255,0.14);
-        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(124,231,255,0.12);
+        background: rgba(255,255,255,0.025);
         color: var(--text);
         outline: none;
       }
@@ -256,8 +255,8 @@
         margin-top: 18px;
         padding: 14px;
         border-radius: 16px;
-        border: 1px solid rgba(124,231,255,0.12);
-        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(124,231,255,0.1);
+        background: rgba(255,255,255,0.025);
         color: var(--muted);
         font-size: 13px;
         line-height: 1.75;
@@ -285,7 +284,7 @@
       @media (max-width: 640px) {
         body { padding: 16px; }
         .visual, .auth { padding: 20px; }
-        .visual h1 { font-size: 34px; }
+        .visual h1 { font-size: 36px; }
         .visual-footer { grid-template-columns: 1fr; }
       }
     </style>
