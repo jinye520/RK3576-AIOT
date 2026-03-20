@@ -62,6 +62,19 @@
         backdrop-filter: blur(16px);
       }
 
+      .nav-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(84,214,255,0.16);
+        background: rgba(255,255,255,0.04);
+        color: var(--text);
+        text-decoration: none;
+        font-size: 12px;
+      }
+
       .header {
         border-radius: 24px;
         display: grid;
@@ -402,6 +415,10 @@
         <div class="header-side">
           <div class="clock" id="clockText">--:--:--</div>
           <div class="subline" id="dateText">--</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:end;">
+            <a class="nav-chip" href="/" target="_blank" rel="noreferrer">返回控制台</a>
+            <a class="nav-chip" href="/login.html" target="_blank" rel="noreferrer">平台登录</a>
+          </div>
         </div>
       </header>
 

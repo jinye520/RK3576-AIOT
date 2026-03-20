@@ -3,66 +3,118 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>平台登录 · RK3576 AIOT</title>
+    <title>平台登录 · RK3576 Edge Console</title>
     <style>
       :root {
-        --bg: #06101d;
-        --panel: rgba(9, 20, 36, 0.78);
-        --line: rgba(93, 214, 255, 0.18);
-        --text: #e5f3ff;
-        --muted: #8aa6bf;
-        --primary: #54d6ff;
-        --green: #22c55e;
-        --amber: #f59e0b;
+        --bg: #050816;
+        --panel: rgba(8, 14, 28, 0.84);
+        --panel-strong: rgba(12, 20, 38, 0.96);
+        --line: rgba(123, 162, 255, 0.16);
+        --line-strong: rgba(123, 162, 255, 0.26);
+        --text: #edf4ff;
+        --muted: #8ea2c6;
+        --primary: #73b9ff;
+        --cyan: #6ae9ff;
+        --teal: #46dfc8;
+        --green: #34d399;
+        --amber: #f6c363;
+        --red: #f87171;
+        --shadow: 0 26px 90px rgba(0, 0, 0, 0.42);
       }
       * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; }
       body {
-        margin: 0;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        font-family: "Segoe UI", "PingFang SC", sans-serif;
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at top right, rgba(84,214,255,0.18), transparent 22%),
-          radial-gradient(circle at bottom left, rgba(45,212,191,0.12), transparent 24%),
-          linear-gradient(180deg, #030812 0%, #08111f 100%);
+          radial-gradient(circle at top right, rgba(115,185,255,0.18), transparent 20%),
+          radial-gradient(circle at bottom left, rgba(70,223,200,0.14), transparent 26%),
+          linear-gradient(180deg, #02040b 0%, #07101d 46%, #091221 100%);
       }
-      .shell {
-        width: min(1120px, calc(100vw - 32px));
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(115,185,255,0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(115,185,255,0.035) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: radial-gradient(circle at center, black 30%, transparent 88%);
+      }
+      .wrap {
+        min-height: 100vh;
+        padding: 26px;
         display: grid;
         grid-template-columns: 1.05fr 0.95fr;
-        gap: 18px;
+        gap: 20px;
       }
       .panel {
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 28px;
-        box-shadow: 0 30px 120px rgba(0,0,0,0.45);
-        backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
       }
-      .hero { padding: 34px; }
+      .hero {
+        padding: 34px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto -18% -28% 36%;
+        height: 240px;
+        background: radial-gradient(circle, rgba(115,185,255,0.22), transparent 62%);
+        pointer-events: none;
+      }
       .badge {
         display: inline-flex;
         align-items: center;
         padding: 8px 12px;
         border-radius: 999px;
-        border: 1px solid rgba(84,214,255,0.26);
-        color: var(--primary);
+        border: 1px solid rgba(106,233,255,0.2);
+        color: var(--cyan);
         font-size: 12px;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
       }
       h1 {
         margin: 18px 0 12px;
-        font-size: 38px;
-        line-height: 1.12;
+        font-size: 42px;
+        line-height: 1.08;
+        letter-spacing: 0.01em;
       }
       .desc {
         color: var(--muted);
-        line-height: 1.8;
+        line-height: 1.9;
         font-size: 15px;
+        max-width: 700px;
       }
-      .menu-preview {
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 22px;
+      }
+      .nav-btn, button {
+        appearance: none;
+        border: 0;
+        cursor: pointer;
+        text-decoration: none;
+        border-radius: 14px;
+        padding: 12px 14px;
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .primary { color: #05192a; background: linear-gradient(135deg, #73b9ff, #6ae9ff); }
+      .ghost, .nav-btn {
+        color: var(--text);
+        border: 1px solid rgba(123,162,255,0.16);
+        background: rgba(255,255,255,0.035);
+      }
+      .grid-preview {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
@@ -71,42 +123,43 @@
       .mini {
         padding: 16px;
         border-radius: 18px;
-        border: 1px solid rgba(84,214,255,0.1);
-        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(123,162,255,0.1);
+        background: rgba(255,255,255,0.025);
       }
       .mini .title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-      .mini .text { color: var(--muted); font-size: 13px; line-height: 1.7; }
-      .login-box { padding: 30px; }
-      .login-title { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-      .login-subtitle { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+      .mini .text { color: var(--muted); font-size: 13px; line-height: 1.8; }
+      .side {
+        display: grid;
+        gap: 18px;
+      }
+      .login-box { padding: 28px; }
+      .section-kicker {
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .login-title { margin-top: 10px; font-size: 28px; font-weight: 800; }
+      .login-subtitle { color: var(--muted); font-size: 13px; margin-top: 8px; margin-bottom: 22px; line-height: 1.8; }
       .field { margin-bottom: 14px; }
-      .field label { display: block; margin-bottom: 8px; font-size: 13px; color: var(--muted); }
+      .field label { display: block; margin-bottom: 8px; font-size: 12px; color: var(--muted); }
       .field input, .field select {
         width: 100%;
         padding: 14px 16px;
         border-radius: 14px;
-        border: 1px solid rgba(84,214,255,0.14);
+        border: 1px solid rgba(123,162,255,0.14);
         background: rgba(255,255,255,0.03);
         color: var(--text);
         outline: none;
       }
-      .field input:focus, .field select:focus { border-color: rgba(84,214,255,0.4); }
-      .actions { display: flex; gap: 10px; margin-top: 18px; }
-      button {
-        border: 0;
-        border-radius: 14px;
-        padding: 13px 16px;
-        cursor: pointer;
-        font-weight: 700;
-      }
-      .primary { background: linear-gradient(135deg, #54d6ff, #6ee7f9); color: #052033; }
-      .ghost { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid rgba(84,214,255,0.12); }
-      .result, .user-list {
-        margin-top: 22px;
+      .field input:focus, .field select:focus { border-color: var(--line-strong); }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+      .result, .user-list, .create-box {
+        margin-top: 18px;
         padding: 16px;
         border-radius: 18px;
-        border: 1px solid rgba(84,214,255,0.1);
-        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(123,162,255,0.1);
+        background: rgba(255,255,255,0.025);
       }
       .result-title, .user-list-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
       .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -114,11 +167,12 @@
         padding: 8px 10px;
         border-radius: 999px;
         font-size: 12px;
-        background: rgba(84,214,255,0.08);
-        border: 1px solid rgba(84,214,255,0.14);
+        background: rgba(115,185,255,0.08);
+        border: 1px solid rgba(115,185,255,0.14);
       }
       .ok { color: var(--green); }
       .warn { color: var(--amber); }
+      .bad { color: var(--red); }
       .account-row {
         display: flex;
         justify-content: space-between;
@@ -126,27 +180,38 @@
         padding: 10px 0;
         border-bottom: 1px solid rgba(255,255,255,0.06);
       }
-
-      .create-box {
-        margin-top: 22px;
-        padding-top: 18px;
-        border-top: 1px solid rgba(255,255,255,0.08);
-      }
       .account-row:last-child { border-bottom: none; }
       .account-name { font-weight: 700; }
-      .account-meta { color: var(--muted); font-size: 12px; }
-      @media (max-width: 960px) { .shell { grid-template-columns: 1fr; } }
+      .account-meta { color: var(--muted); font-size: 12px; line-height: 1.7; }
+      .helper-note {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.75;
+      }
+      @media (max-width: 1080px) {
+        .wrap { grid-template-columns: 1fr; padding: 18px; }
+      }
+      @media (max-width: 640px) {
+        .hero, .login-box { padding: 18px; }
+        .grid-preview { grid-template-columns: 1fr; }
+        h1 { font-size: 32px; }
+      }
     </style>
   </head>
   <body>
-    <div class="shell">
+    <div class="wrap">
       <section class="panel hero">
-        <div class="badge">ROLE BASED ACCESS CONTROL</div>
-        <h1>平台登录与角色化菜单<br />控制中心</h1>
+        <div class="badge">Role Based Access Console</div>
+        <h1>平台登录与<br />角色控制中心</h1>
         <div class="desc">
-          当前先实现平台首页侧独立登录体系，与 WVP 登录并存。平台管理员、运维员、观察员登录后将获得不同菜单权限，用于首页、指挥大屏、视频入口和账户管理的差异化展示。
+          当前平台登录体系独立于 WVP 原生后台，用于控制首页控制台、指挥大屏、视频入口与账户管理权限。现在的视觉风格已与主控制台统一，后续可继续扩展为完整多页后台。
         </div>
-        <div class="menu-preview">
+        <div class="hero-actions">
+          <a class="nav-btn" href="/">返回控制台</a>
+          <a class="nav-btn" href="/bigscreen.html" target="_blank" rel="noreferrer">打开指挥大屏</a>
+          <a class="nav-btn" href="/users.html">打开用户管理</a>
+        </div>
+        <div class="grid-preview">
           <div class="mini">
             <div class="title">管理员</div>
             <div class="text">可见 Dashboard / 大屏 / 遥测 / 网关 / 设备 / 视频 / Node-RED / 用户管理 / 系统设置。</div>
@@ -157,7 +222,7 @@
           </div>
           <div class="mini">
             <div class="title">观察员</div>
-            <div class="text">可见 Dashboard / 大屏 / 遥测 / 视频，适合演示和观测场景。</div>
+            <div class="text">可见 Dashboard / 大屏 / 遥测 / 视频，适合演示和巡检查看场景。</div>
           </div>
           <div class="mini">
             <div class="title">默认账号</div>
@@ -166,61 +231,72 @@
         </div>
       </section>
 
-      <section class="panel login-box">
-        <div class="login-title">平台登录</div>
-        <div class="login-subtitle">登录成功后会展示账户信息与该角色对应菜单。</div>
+      <section class="side">
+        <section class="panel login-box">
+          <div class="section-kicker">Platform Login</div>
+          <div class="login-title">登录平台控制台</div>
+          <div class="login-subtitle">登录成功后会展示账户信息与该角色菜单，并联动控制台与用户管理页。</div>
 
-        <div class="field">
-          <label>用户名</label>
-          <input id="username" value="admin" />
-        </div>
-        <div class="field">
-          <label>密码</label>
-          <input id="password" type="password" value="admin123456" />
-        </div>
-        <div class="actions">
-          <button class="primary" id="loginBtn">立即登录</button>
-          <button class="ghost" id="loadUsersBtn">查看账户列表</button>
-          <button class="ghost" id="openUsersBtn">打开用户管理页</button>
-        </div>
-
-        <div class="result" id="resultBox">
-          <div class="result-title">登录结果</div>
-          <div class="account-meta">尚未登录。</div>
-        </div>
-
-        <div class="user-list" id="userListBox">
-          <div class="user-list-title">账户列表</div>
-          <div class="account-meta">点击“查看账户列表”加载。</div>
-        </div>
-
-        <div class="create-box">
-          <div class="login-title" style="font-size: 18px;">创建平台账户</div>
-          <div class="login-subtitle">管理员后续可基于此接口扩展正式用户管理页。</div>
-          <div class="field">
-            <label>显示名称</label>
-            <input id="createDisplayName" value="测试操作员" />
-          </div>
           <div class="field">
             <label>用户名</label>
-            <input id="createUsername" value="demo_operator" />
-          </div>
-          <div class="field">
-            <label>角色</label>
-            <select id="createRole">
-              <option value="operator">operator</option>
-              <option value="viewer">viewer</option>
-              <option value="admin">admin</option>
-            </select>
+            <input id="username" value="admin" />
           </div>
           <div class="field">
             <label>密码</label>
-            <input id="createPassword" type="password" value="demo123456" />
+            <input id="password" type="password" value="admin123456" />
           </div>
           <div class="actions">
-            <button class="primary" id="createUserBtn">创建账户</button>
+            <button class="primary" id="loginBtn">立即登录</button>
+            <button class="ghost" id="loadUsersBtn">查看账户列表</button>
+            <button class="ghost" id="openUsersBtn">打开用户管理页</button>
           </div>
-        </div>
+
+          <div class="result" id="resultBox">
+            <div class="result-title">登录结果</div>
+            <div class="helper-note">尚未登录。</div>
+          </div>
+        </section>
+
+        <section class="panel login-box">
+          <div class="section-kicker">Account Snapshot</div>
+          <div class="login-title" style="font-size: 22px;">账户列表快照</div>
+          <div class="login-subtitle">管理员登录后查看完整用户列表；普通角色会看到权限提示。</div>
+          <div class="user-list" id="userListBox" style="margin-top: 0;">
+            <div class="user-list-title">账户列表</div>
+            <div class="helper-note">点击“查看账户列表”加载。</div>
+          </div>
+        </section>
+
+        <section class="panel login-box">
+          <div class="section-kicker">Quick Create</div>
+          <div class="login-title" style="font-size: 22px;">创建平台账户</div>
+          <div class="login-subtitle">管理员后续可基于此接口扩展正式用户管理页。</div>
+          <div class="create-box" style="margin-top:0;">
+            <div class="field">
+              <label>显示名称</label>
+              <input id="createDisplayName" value="测试操作员" />
+            </div>
+            <div class="field">
+              <label>用户名</label>
+              <input id="createUsername" value="demo_operator" />
+            </div>
+            <div class="field">
+              <label>角色</label>
+              <select id="createRole">
+                <option value="operator">operator</option>
+                <option value="viewer">viewer</option>
+                <option value="admin">admin</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>密码</label>
+              <input id="createPassword" type="password" value="demo123456" />
+            </div>
+            <div class="actions">
+              <button class="primary" id="createUserBtn">创建账户</button>
+            </div>
+          </div>
+        </section>
       </section>
     </div>
 
@@ -240,7 +316,7 @@
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
         const resultBox = document.getElementById('resultBox');
-        resultBox.innerHTML = '<div class="result-title">登录结果</div><div class="account-meta">登录中...</div>';
+        resultBox.innerHTML = '<div class="result-title">登录结果</div><div class="helper-note">登录中...</div>';
         try {
           await ensureSessionCookie();
           const res = await fetch('/api/platform/login/', {
@@ -267,7 +343,7 @@
             <div class="pill-row">${(user.menus || []).map(menu => `<span class="pill">${menu}</span>`).join('')}</div>
           `;
         } catch (err) {
-          resultBox.innerHTML = `<div class="result-title">登录失败</div><div class="warn">${err.message}</div>`;
+          resultBox.innerHTML = `<div class="result-title">登录失败</div><div class="bad">${err.message}</div>`;
         }
       }
 
@@ -280,7 +356,7 @@
           is_active: true,
         };
         const box = document.getElementById('resultBox');
-        box.innerHTML = '<div class="result-title">创建账户</div><div class="account-meta">提交中...</div>';
+        box.innerHTML = '<div class="result-title">创建账户</div><div class="helper-note">提交中...</div>';
         try {
           await ensureSessionCookie();
           const res = await fetch('/api/platform/users/create/', {
@@ -307,16 +383,17 @@
           `;
           loadUsers();
         } catch (err) {
-          box.innerHTML = `<div class="result-title">创建失败</div><div class="warn">${err.message}</div>`;
+          box.innerHTML = `<div class="result-title">创建失败</div><div class="bad">${err.message}</div>`;
         }
       }
 
       async function loadUsers() {
         const box = document.getElementById('userListBox');
-        box.innerHTML = '<div class="user-list-title">账户列表</div><div class="account-meta">加载中...</div>';
+        box.innerHTML = '<div class="user-list-title">账户列表</div><div class="helper-note">加载中...</div>';
         try {
-          const res = await fetch('/api/platform/users/', { cache: 'no-store' });
+          const res = await fetch('/api/platform/users/', { cache: 'no-store', credentials: 'same-origin' });
           const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || 'load failed');
           const items = data.items || [];
           box.innerHTML = `
             <div class="user-list-title">账户列表</div>
@@ -331,7 +408,7 @@
             `).join('')}
           `;
         } catch (err) {
-          box.innerHTML = `<div class="user-list-title">账户列表</div><div class="warn">${err.message}</div>`;
+          box.innerHTML = `<div class="user-list-title">账户列表</div><div class="bad">${err.message}</div>`;
         }
       }
 

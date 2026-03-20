@@ -3,92 +3,205 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>用户管理 · RK3576 AIOT</title>
+    <title>用户管理 · RK3576 Edge Console</title>
     <style>
       :root {
-        --bg: #07101d;
-        --panel: rgba(10, 22, 38, 0.8);
-        --line: rgba(84, 214, 255, 0.14);
-        --text: #e6f2ff;
-        --muted: #8ea7bd;
-        --primary: #54d6ff;
-        --green: #22c55e;
-        --amber: #f59e0b;
-        --red: #ef4444;
+        --bg: #050816;
+        --panel: rgba(8, 14, 28, 0.84);
+        --panel-strong: rgba(12, 20, 38, 0.96);
+        --line: rgba(123, 162, 255, 0.16);
+        --line-strong: rgba(123, 162, 255, 0.26);
+        --text: #edf4ff;
+        --muted: #8ea2c6;
+        --primary: #73b9ff;
+        --cyan: #6ae9ff;
+        --teal: #46dfc8;
+        --green: #34d399;
+        --amber: #f6c363;
+        --red: #f87171;
+        --shadow: 0 26px 90px rgba(0, 0, 0, 0.42);
       }
       * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; }
       body {
-        margin: 0;
-        min-height: 100vh;
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
         color: var(--text);
-        font-family: "Segoe UI", "PingFang SC", sans-serif;
         background:
-          radial-gradient(circle at top right, rgba(84,214,255,0.18), transparent 22%),
-          linear-gradient(180deg, #020711 0%, #08111f 100%);
+          radial-gradient(circle at top right, rgba(115,185,255,0.18), transparent 20%),
+          radial-gradient(circle at bottom left, rgba(70,223,200,0.14), transparent 26%),
+          linear-gradient(180deg, #02040b 0%, #07101d 46%, #091221 100%);
       }
-      .wrap {
-        max-width: 1380px;
-        margin: 0 auto;
-        padding: 28px 18px 42px;
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(115,185,255,0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(115,185,255,0.035) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: radial-gradient(circle at center, black 30%, transparent 88%);
       }
-      .topbar, .panel {
+      .layout {
+        display: grid;
+        grid-template-columns: 288px 1fr;
+        min-height: 100vh;
+      }
+      .sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        padding: 22px 18px;
+        background: rgba(3, 8, 18, 0.82);
+        border-right: 1px solid rgba(123, 162, 255, 0.1);
+        backdrop-filter: blur(18px);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .brand,
+      .session-card,
+      .menu-group,
+      .quick-card,
+      .panel,
+      .stat-mini {
         background: var(--panel);
         border: 1px solid var(--line);
-        border-radius: 22px;
-        box-shadow: 0 20px 80px rgba(0,0,0,0.34);
-        backdrop-filter: blur(14px);
+        border-radius: 26px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
       }
-      .topbar {
+      .brand { padding: 20px; }
+      .brand-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(106,233,255,0.2);
+        color: var(--cyan);
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .brand-title { margin: 16px 0 8px; font-size: 28px; font-weight: 800; letter-spacing: 0.06em; }
+      .brand-desc { color: var(--muted); font-size: 13px; line-height: 1.85; }
+      .section-kicker {
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .session-card { padding: 18px; }
+      .session-user { margin-top: 10px; font-size: 18px; font-weight: 700; }
+      .session-meta { margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.75; }
+      .menu-group { padding: 14px; display: grid; gap: 8px; }
+      .menu-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        color: var(--text);
+        text-decoration: none;
+        border: 1px solid transparent;
+        background: rgba(255,255,255,0.02);
+        transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+      }
+      .menu-item:hover, .menu-item.active {
+        transform: translateX(2px);
+        border-color: rgba(115,185,255,0.2);
+        background: linear-gradient(135deg, rgba(115,185,255,0.12), rgba(106,233,255,0.06));
+      }
+      .menu-item-text strong { display: block; font-size: 14px; margin-bottom: 4px; }
+      .menu-item-text span { color: var(--muted); font-size: 12px; }
+      .menu-icon {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: rgba(115,185,255,0.14);
+        color: var(--cyan);
+        font-weight: 800;
+        font-size: 13px;
+      }
+      .quick-card { margin-top: auto; padding: 16px; }
+      .toolbar { display: grid; gap: 10px; }
+      .menu-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+      .menu-pill {
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(115,185,255,0.14);
+        background: rgba(115,185,255,0.08);
+        font-size: 12px;
+      }
+      .btn, button {
+        appearance: none;
+        border: 0;
+        cursor: pointer;
+        text-decoration: none;
+        border-radius: 14px;
+        padding: 12px 14px;
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .primary { color: #05192a; background: linear-gradient(135deg, #73b9ff, #6ae9ff); }
+      .ghost, .btn {
+        color: var(--text);
+        border: 1px solid rgba(123,162,255,0.16);
+        background: rgba(255,255,255,0.035);
+      }
+      .danger { background: rgba(248,113,113,0.12); color: #ffd7d7; border: 1px solid rgba(248,113,113,0.22); }
+      .main {
         padding: 24px;
         display: grid;
-        grid-template-columns: 1.3fr 0.9fr;
-        gap: 16px;
-        margin-bottom: 18px;
+        gap: 18px;
       }
-      .title { font-size: 34px; font-weight: 800; margin-bottom: 10px; }
-      .desc { color: var(--muted); line-height: 1.8; font-size: 14px; }
-      .session {
-        padding: 18px;
-        border-radius: 18px;
-        border: 1px solid rgba(84,214,255,0.12);
-        background: rgba(255,255,255,0.03);
-      }
-      .session-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-      .row-grid {
+      .hero {
+        padding: 26px;
         display: grid;
         grid-template-columns: 1.2fr 0.8fr;
         gap: 18px;
       }
-      .panel { padding: 20px; }
-      .panel-title { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-      .panel-subtitle { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+      .hero h1 { margin: 12px 0 10px; font-size: 38px; line-height: 1.08; }
+      .hero-desc { color: var(--muted); font-size: 14px; line-height: 1.9; }
+      .hero-box {
+        padding: 18px;
+        border-radius: 20px;
+        border: 1px solid rgba(123,162,255,0.1);
+        background: rgba(255,255,255,0.025);
+      }
+      .stats-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .stat-mini { padding: 16px; }
+      .stat-mini .label { color: var(--muted); font-size: 12px; }
+      .stat-mini .value { margin-top: 8px; font-size: 28px; font-weight: 800; }
+      .row-grid {
+        display: grid;
+        grid-template-columns: 1.25fr 0.9fr;
+        gap: 18px;
+      }
+      .panel { padding: 22px; }
+      .panel-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+      .panel-subtitle { color: var(--muted); font-size: 13px; margin-bottom: 16px; line-height: 1.8; }
       .filters, .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
       input, select {
         width: 100%;
-        padding: 12px 14px;
-        border-radius: 12px;
-        border: 1px solid rgba(84,214,255,0.14);
+        padding: 13px 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(123,162,255,0.14);
         background: rgba(255,255,255,0.03);
         color: var(--text);
         outline: none;
       }
       .field { margin-bottom: 12px; }
       .field label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
-      button {
-        border: 0;
-        border-radius: 12px;
-        padding: 12px 14px;
-        cursor: pointer;
-        font-weight: 700;
-      }
-      .primary { background: linear-gradient(135deg, #54d6ff, #73e7f9); color: #062133; }
-      .ghost { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid rgba(84,214,255,0.14); }
-      .danger { background: rgba(239,68,68,0.12); color: #ffd5d5; border: 1px solid rgba(239,68,68,0.22); }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-      }
+      table { width: 100%; border-collapse: collapse; font-size: 14px; }
       th, td {
         padding: 12px 10px;
         text-align: left;
@@ -101,8 +214,8 @@
         padding: 6px 9px;
         border-radius: 999px;
         font-size: 11px;
-        border: 1px solid rgba(84,214,255,0.12);
-        background: rgba(84,214,255,0.08);
+        border: 1px solid rgba(115,185,255,0.12);
+        background: rgba(115,185,255,0.08);
       }
       .ok { color: var(--green); }
       .warn { color: var(--amber); }
@@ -110,170 +223,241 @@
       .result {
         margin-top: 14px;
         padding: 14px;
-        border-radius: 14px;
-        border: 1px solid rgba(84,214,255,0.12);
+        border-radius: 16px;
+        border: 1px solid rgba(123,162,255,0.12);
         background: rgba(255,255,255,0.03);
         color: var(--muted);
         font-size: 13px;
-        line-height: 1.7;
+        line-height: 1.75;
       }
       .inline-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-      .stats-strip {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
-        margin: 0 0 18px;
-      }
-      .stat-mini {
-        padding: 14px 16px;
-        border-radius: 16px;
-        background: var(--panel);
-        border: 1px solid var(--line);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.24);
-      }
-      .stat-mini .label { color: var(--muted); font-size: 12px; }
-      .stat-mini .value { margin-top: 8px; font-size: 26px; font-weight: 800; }
       .confirm-box {
         margin-top: 14px;
         padding: 14px;
-        border-radius: 14px;
-        border: 1px solid rgba(239,68,68,0.2);
-        background: rgba(239,68,68,0.08);
+        border-radius: 16px;
+        border: 1px solid rgba(248,113,113,0.2);
+        background: rgba(248,113,113,0.08);
         color: #ffd7d7;
         font-size: 13px;
         display: none;
       }
-      @media (max-width: 1080px) {
-        .topbar, .row-grid { grid-template-columns: 1fr; }
+      .helper-note { color: var(--muted); font-size: 12px; line-height: 1.75; }
+      .mobile-topbar { display: none; }
+      @media (max-width: 1280px) {
+        .hero, .row-grid { grid-template-columns: 1fr; }
+        .stats-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 980px) {
+        .layout { grid-template-columns: 1fr; }
+        .sidebar { display: none; }
+        .mobile-topbar { display: block; padding: 18px 18px 0; }
+      }
+      @media (max-width: 640px) {
+        .main { padding: 16px; }
+        .mobile-topbar { padding: 16px 16px 0; }
+        .panel, .hero, .stat-mini { padding: 18px; }
+        .stats-strip { grid-template-columns: 1fr; }
+        .hero h1 { font-size: 30px; }
       }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <section class="topbar">
-        <div>
-          <div class="title">平台用户管理</div>
-          <div class="desc">该页面用于平台账户列表、创建、编辑角色、启停账户和重置密码。当前仅管理员可访问，后续可继续扩展审计日志与更细粒度权限。</div>
-        </div>
-        <div class="session">
-          <div class="session-title">当前登录态</div>
-          <div id="sessionInfo">正在检查...</div>
-          <div class="actions" style="margin-top:12px;">
+    <div class="mobile-topbar">
+      <div class="panel" style="padding:16px 18px;">
+        <div class="section-kicker">Mobile Console</div>
+        <div style="margin-top:8px; font-size:22px; font-weight:800;">平台用户管理</div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <section class="brand">
+          <div class="brand-badge">RK3576 · AIOT</div>
+          <div class="brand-title">Edge Console</div>
+          <div class="brand-desc">统一风格的后台控制台侧栏。当前页面聚焦平台账户、角色权限与 RBAC 运维。</div>
+        </section>
+
+        <section class="session-card">
+          <div class="section-kicker">Platform Session</div>
+          <div class="session-user" id="sessionUser">未检查</div>
+          <div class="session-meta" id="sessionMeta">正在检查当前平台登录态...</div>
+          <div class="menu-pills" id="menuPills">
+            <span class="menu-pill">users</span>
+          </div>
+        </section>
+
+        <nav class="menu-group">
+          <a class="menu-item" href="/">
+            <div class="menu-item-text">
+              <strong>总览控制台</strong>
+              <span>返回首页与运营总览</span>
+            </div>
+            <div class="menu-icon">DA</div>
+          </a>
+          <a class="menu-item" href="/login.html">
+            <div class="menu-item-text">
+              <strong>平台登录</strong>
+              <span>切换账号与登录入口</span>
+            </div>
+            <div class="menu-icon">LG</div>
+          </a>
+          <a class="menu-item active" href="/users.html">
+            <div class="menu-item-text">
+              <strong>用户管理</strong>
+              <span>账户、角色与重置密码</span>
+            </div>
+            <div class="menu-icon">US</div>
+          </a>
+          <a class="menu-item" href="/bigscreen.html" target="_blank" rel="noreferrer">
+            <div class="menu-item-text">
+              <strong>指挥大屏</strong>
+              <span>视频矩阵与传感器曲线</span>
+            </div>
+            <div class="menu-icon">BS</div>
+          </a>
+        </nav>
+
+        <section class="quick-card">
+          <div class="section-kicker">Quick Actions</div>
+          <div class="toolbar" style="margin-top:12px;">
             <button class="ghost" id="backDashboardBtn">返回首页</button>
             <button class="danger" id="logoutBtn">退出登录</button>
+            <button class="ghost" id="refreshBtn">刷新列表</button>
           </div>
-        </div>
-      </section>
+        </section>
+      </aside>
 
-      <section class="stats-strip">
-        <div class="stat-mini">
-          <div class="label">账户总数</div>
-          <div class="value" id="statTotal">--</div>
-        </div>
-        <div class="stat-mini">
-          <div class="label">管理员</div>
-          <div class="value" id="statAdmin">--</div>
-        </div>
-        <div class="stat-mini">
-          <div class="label">运维员</div>
-          <div class="value" id="statOperator">--</div>
-        </div>
-        <div class="stat-mini">
-          <div class="label">观察员</div>
-          <div class="value" id="statViewer">--</div>
-        </div>
-      </section>
+      <main class="main">
+        <section class="panel hero">
+          <div>
+            <div class="section-kicker">RBAC Admin Console</div>
+            <h1>平台用户管理与<br />角色权限维护</h1>
+            <div class="hero-desc">
+              该页面用于平台账户列表、创建、编辑角色、启停账户、重置密码和删除。当前仅管理员可访问，已经与首页控制台统一视觉体系，后续可以继续加上审计日志与更细粒度权限点。
+            </div>
+          </div>
+          <div class="hero-box">
+            <div class="section-kicker">Admin Notes</div>
+            <div style="margin-top:10px; font-size:18px; font-weight:700;">用户管理规则</div>
+            <div class="helper-note" style="margin-top:10px;">
+              - 仅 admin 可访问用户管理接口<br/>
+              - 支持角色筛选与关键字搜索<br/>
+              - 禁止删除当前登录管理员自己<br/>
+              - 支持创建、更新、重置密码、删除
+            </div>
+          </div>
+        </section>
 
-      <section class="row-grid">
-        <section class="panel">
-          <div class="panel-title">账户列表</div>
-          <div class="panel-subtitle">支持按角色和关键字过滤，并对账户执行编辑/重置密码。</div>
-          <div class="filters">
-            <div style="flex:1; min-width: 180px;">
-              <select id="filterRole">
-                <option value="">全部角色</option>
+        <section class="stats-strip">
+          <div class="stat-mini">
+            <div class="label">账户总数</div>
+            <div class="value" id="statTotal">--</div>
+          </div>
+          <div class="stat-mini">
+            <div class="label">管理员</div>
+            <div class="value" id="statAdmin">--</div>
+          </div>
+          <div class="stat-mini">
+            <div class="label">运维员</div>
+            <div class="value" id="statOperator">--</div>
+          </div>
+          <div class="stat-mini">
+            <div class="label">观察员</div>
+            <div class="value" id="statViewer">--</div>
+          </div>
+        </section>
+
+        <section class="row-grid">
+          <section class="panel">
+            <div class="panel-title">账户列表</div>
+            <div class="panel-subtitle">支持按角色和关键字过滤，并对账户执行编辑、启停、重置密码与删除。</div>
+            <div class="filters">
+              <div style="flex:1; min-width: 180px;">
+                <select id="filterRole">
+                  <option value="">全部角色</option>
+                  <option value="admin">admin</option>
+                  <option value="operator">operator</option>
+                  <option value="viewer">viewer</option>
+                </select>
+              </div>
+              <div style="flex:1.4; min-width: 220px;">
+                <input id="filterKeyword" placeholder="搜索用户名或显示名称" />
+              </div>
+              <button class="ghost" id="searchBtn">查询</button>
+              <button class="ghost" id="refreshBtnInline">刷新</button>
+            </div>
+            <div style="overflow:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>账户</th>
+                    <th>角色</th>
+                    <th>菜单</th>
+                    <th>状态</th>
+                    <th>最近登录</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                  <tr><td colspan="7">加载中...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-title">账户编辑器</div>
+            <div class="panel-subtitle">可创建新账户，也可对选中账户修改显示名、角色、启用状态，或执行删除。</div>
+            <div class="field">
+              <label>编辑目标 ID</label>
+              <input id="editId" placeholder="新建时留空" />
+            </div>
+            <div class="field">
+              <label>显示名称</label>
+              <input id="editDisplayName" />
+            </div>
+            <div class="field">
+              <label>用户名</label>
+              <input id="editUsername" />
+            </div>
+            <div class="field">
+              <label>角色</label>
+              <select id="editRole">
                 <option value="admin">admin</option>
                 <option value="operator">operator</option>
                 <option value="viewer">viewer</option>
               </select>
             </div>
-            <div style="flex:1.4; min-width: 220px;">
-              <input id="filterKeyword" placeholder="搜索用户名或显示名称" />
+            <div class="field">
+              <label>状态</label>
+              <select id="editActive">
+                <option value="true">启用</option>
+                <option value="false">停用</option>
+              </select>
             </div>
-            <button class="ghost" id="searchBtn">查询</button>
-            <button class="ghost" id="refreshBtn">刷新</button>
-          </div>
-          <div style="overflow:auto;">
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>账户</th>
-                  <th>角色</th>
-                  <th>菜单</th>
-                  <th>状态</th>
-                  <th>最近登录</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody id="usersTableBody">
-                <tr><td colspan="7">加载中...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-title">账户编辑器</div>
-          <div class="panel-subtitle">可创建新账户，也可对选中账户修改显示名、角色、启用状态，或执行删除。</div>
-          <div class="field">
-            <label>编辑目标 ID</label>
-            <input id="editId" placeholder="新建时留空" />
-          </div>
-          <div class="field">
-            <label>显示名称</label>
-            <input id="editDisplayName" />
-          </div>
-          <div class="field">
-            <label>用户名</label>
-            <input id="editUsername" />
-          </div>
-          <div class="field">
-            <label>角色</label>
-            <select id="editRole">
-              <option value="admin">admin</option>
-              <option value="operator">operator</option>
-              <option value="viewer">viewer</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>状态</label>
-            <select id="editActive">
-              <option value="true">启用</option>
-              <option value="false">停用</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>创建时密码 / 重置密码</label>
-            <input id="editPassword" type="password" placeholder="至少 6 位" />
-          </div>
-          <div class="actions">
-            <button class="primary" id="createBtn">创建账户</button>
-            <button class="ghost" id="updateBtn">保存修改</button>
-            <button class="ghost" id="resetPwdBtn">重置密码</button>
-            <button class="danger" id="deleteBtn">删除账户</button>
-            <button class="ghost" id="clearFormBtn">清空表单</button>
-          </div>
-          <div class="confirm-box" id="confirmDeleteBox">
-            将删除当前选中的账户。该操作不可撤销，且不能删除当前登录管理员自己。
-            <div class="actions" style="margin-top:10px; margin-bottom:0;">
-              <button class="danger" id="confirmDeleteBtn">确认删除</button>
-              <button class="ghost" id="cancelDeleteBtn">取消</button>
+            <div class="field">
+              <label>创建时密码 / 重置密码</label>
+              <input id="editPassword" type="password" placeholder="至少 6 位" />
             </div>
-          </div>
-          <div class="result" id="resultBox">等待操作。</div>
+            <div class="actions">
+              <button class="primary" id="createBtn">创建账户</button>
+              <button class="ghost" id="updateBtn">保存修改</button>
+              <button class="ghost" id="resetPwdBtn">重置密码</button>
+              <button class="danger" id="deleteBtn">删除账户</button>
+              <button class="ghost" id="clearFormBtn">清空表单</button>
+            </div>
+            <div class="confirm-box" id="confirmDeleteBox">
+              将删除当前选中的账户。该操作不可撤销，且不能删除当前登录管理员自己。
+              <div class="actions" style="margin-top:10px; margin-bottom:0;">
+                <button class="danger" id="confirmDeleteBtn">确认删除</button>
+                <button class="ghost" id="cancelDeleteBtn">取消</button>
+              </div>
+            </div>
+            <div class="result" id="resultBox">等待操作。</div>
+          </section>
         </section>
-      </section>
+      </main>
     </div>
 
     <script>
@@ -302,12 +486,18 @@
 
       function renderSession(session) {
         currentSession = session;
-        const el = document.getElementById('sessionInfo');
+        const userEl = document.getElementById('sessionUser');
+        const metaEl = document.getElementById('sessionMeta');
+        const pills = document.getElementById('menuPills');
         if (!session || !session.authenticated || !session.user) {
-          el.innerHTML = '<span class="bad">未登录</span>，请先前往平台登录页。';
+          userEl.textContent = '未登录';
+          metaEl.textContent = '请先使用 admin 账户登录，再访问用户管理页。';
+          pills.innerHTML = '<span class="menu-pill">未登录</span>';
           return false;
         }
-        el.innerHTML = `当前用户：<strong>${session.user.display_name}</strong>（${session.user.username}）<br/>角色：<strong>${session.user.role}</strong>`;
+        userEl.textContent = `${session.user.display_name}`;
+        metaEl.textContent = `账号：${session.user.username} · 角色：${session.user.role} · 当前页面用于 RBAC 运维管理。`;
+        pills.innerHTML = (session.user.menus || []).map(menu => `<span class="menu-pill">${menu}</span>`).join('');
         return session.user.role === 'admin';
       }
 
@@ -562,6 +752,7 @@
 
       document.getElementById('searchBtn').addEventListener('click', loadUsers);
       document.getElementById('refreshBtn').addEventListener('click', loadUsers);
+      document.getElementById('refreshBtnInline').addEventListener('click', loadUsers);
       document.getElementById('createBtn').addEventListener('click', createUser);
       document.getElementById('updateBtn').addEventListener('click', updateUser);
       document.getElementById('resetPwdBtn').addEventListener('click', resetPassword);
